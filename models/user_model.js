@@ -1,30 +1,60 @@
 const db = require('../lib/database');
 
-const UserModel = {
-  findOne: (email, password) => {
-    return db
-      .one('SELECT id FROM users WHERE email = $1 AND password = $2', [
-        email,
-        password,
-      ])
-      .then(function(data) {
-        return data.id;
-      })
-      .catch(function(err) {
-        return err;
-      });
-  },
+class UserModel {
+  constructor(data = {}) {
+    this.data = data;
+  }
 
-  findOneById: id => {
-    return db
-      .one('SELECT name, email FROM users WHERE id = $1', parseInt(id))
-      .then(function(data) {
-        return data;
-      })
-      .catch(function(err) {
-        return err;
-      });
-  },
-};
+  setData(data) {
+    this.data = data;
+  }
+
+  static async findByCredentials(email, password) {
+    try {
+      // Must return a plain object to passport
+      return await db.one(
+        'SELECT id, name, email FROM users WHERE email = $1 AND password = $2',
+        [email, password],
+      );
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  static async find(id) {
+    try {
+      // Return a user object
+      const data = await db.one(
+        'SELECT id, name, email FROM users WHERE id = $1',
+        parseInt(id),
+      );
+      return new UserModel(data);
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  async performers() {
+    try {
+      return await db.any(
+        'SELECT * FROM performers WHERE active = $1 AND user_id = $2',
+        [true, this.data.id],
+      );
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  async performer(id) {
+    try {
+      return await db.one(
+        'SELECT * FROM performers WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
+        [true, this.data.id, id],
+      );
+    } catch (e) {
+      return {error: 'Performer not found.'};
+    }
+  }
+}
 
 module.exports = UserModel;
