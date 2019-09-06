@@ -1,5 +1,5 @@
 const passport = require('passport');
-require('../lib/passport');
+require('./passport');
 const auth = require('../controllers/auth');
 const indexRouter = require('../controllers/index');
 const performers = require('../controllers/performers');

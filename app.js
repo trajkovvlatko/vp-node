@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const router = require('./lib/router')(app);
+const router = require('./config/router')(app);
 
 // error handler
 app.use(function(err, req, res, next) {

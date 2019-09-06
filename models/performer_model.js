@@ -1,4 +1,4 @@
-const db = require('../lib/database');
+const db = require('../config/database');
 
 class PerformerModel {
   static async all() {
