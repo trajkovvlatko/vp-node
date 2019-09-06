@@ -55,6 +55,28 @@ class UserModel {
       return {error: 'Performer not found.'};
     }
   }
+
+  async venues() {
+    try {
+      return await db.any(
+        'SELECT * FROM venues WHERE active = $1 AND user_id = $2',
+        [true, this.data.id],
+      );
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  async venue(id) {
+    try {
+      return await db.one(
+        'SELECT * FROM venues WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
+        [true, this.data.id, id],
+      );
+    } catch (e) {
+      return {error: 'Venue not found.'};
+    }
+  }
 }
 
 module.exports = UserModel;
