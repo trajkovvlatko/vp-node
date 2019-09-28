@@ -4,27 +4,33 @@ const app = require('../../app.js');
 const create = require('../factories');
 require('../spec_helper');
 
-// Configure chai
 chai.use(chaiHttp);
 chai.should();
 
 describe('venues', () => {
+  let venueIds, user;
+
   beforeEach(async () => {
-    const user = await create('users');
-    const venue = await create('venues', {userId: user.id});
+    user = await create('users');
   });
 
   describe('GET /', () => {
-    it('should return 200', done => {
-      chai
-        .request(app)
-        .get('/venues')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.an('array');
-          res.body.length.should.eq(1);
-          done();
-        });
+    it('should return empty array for no venues present', async () => {
+      const res = await chai.request(app).get('/venues')
+      res.should.have.status(200);
+      res.body.should.deep.eq([]);
+    });
+
+    it('should return list of venues', async () => {
+      venueIds = [
+        (await create('venues', {userId: user.id})).id,
+        (await create('venues', {userId: user.id})).id,
+      ];
+      const res = await chai.request(app).get('/venues')
+      res.should.have.status(200);
+      res.body.should.be.an('array');
+      res.body.length.should.eq(2);
+      res.body.map((p) => p.id).should.deep.eq(venueIds);
     });
   });
 });
