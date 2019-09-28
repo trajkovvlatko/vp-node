@@ -9,7 +9,6 @@ const secret = JSON.parse(fs.readFileSync('./config/secrets.json')).JWT.secret;
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', {session: false}, (err, user, info) => {
     if (err || !user) {
-      console.log('controllers/auth.js', err);
       return res.status(400).json({
         message: 'Something is not right',
         user: user,

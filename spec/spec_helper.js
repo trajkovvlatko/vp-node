@@ -13,6 +13,7 @@ async function loadDb() {
 async function clearTables() {
   await db.any('TRUNCATE TABLE public.users CASCADE;');
   await db.any('TRUNCATE TABLE public.performers CASCADE;');
+  await db.any('TRUNCATE TABLE public.venues CASCADE;');
 }
 
 before(async () => {

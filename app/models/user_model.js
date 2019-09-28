@@ -13,7 +13,7 @@ class UserModel {
     try {
       // Must return a plain object to passport
       return await db.one(
-        'SELECT id, name, email FROM users WHERE email = $1 AND password = $2',
+        'SELECT id, name, email FROM public.users WHERE email = $1 AND password = $2',
         [email, password],
       );
     } catch (e) {
@@ -25,7 +25,7 @@ class UserModel {
     try {
       // Return a user object
       const data = await db.one(
-        'SELECT id, name, email FROM users WHERE id = $1',
+        'SELECT id, name, email FROM public.users WHERE id = $1',
         parseInt(id),
       );
       return new UserModel(data);

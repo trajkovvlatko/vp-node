@@ -7,7 +7,7 @@ const performers = require('../app/controllers/performers');
 const admin_performers = require('../app/controllers/admin/performers');
 const venues = require('../app/controllers/venues');
 const admin_venues = require('../app/controllers/admin/venues');
-const user = require('../app/controllers/user');
+const users = require('../app/controllers/users');
 
 function authenticate() {
   return passport.authenticate('jwt', {session: false});
@@ -20,7 +20,7 @@ module.exports = function (app) {
   app.use('/venues', venues);
 
   // with user
-  app.use('/profile', authenticate(), user);
+  app.use('/profile', authenticate(), users);
   app.use('/admin/performers', authenticate(), admin_performers);
   app.use('/admin/venues', authenticate(), admin_venues);
 

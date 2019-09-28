@@ -10,8 +10,8 @@ router.get('/', async function(req, res, next) {
 
 /* GET show */
 router.get('/:id', async function(req, res, next) {
-  const venue = await VenueModel.find(id);
-  res.send(venue);
+  const venue = await VenueModel.find(req.params.id);
+  res.status(venue.error ? 404 : 200).send(venue);
 });
 
 module.exports = router;

@@ -19,7 +19,7 @@ async function addUser(options) {
     `INSERT INTO public.users
     (name, email, password, active, created_at, updated_at)
     VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING id, name, email, active, created_at, updated_at`,
+    RETURNING *`,
     [
       options.name || rand(),
       options.email || `${rand()}@${rand()}.${rand()}`,
