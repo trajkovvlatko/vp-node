@@ -8,17 +8,17 @@ require('../spec_helper');
 chai.use(chaiHttp);
 chai.should();
 
-describe('performers', () => {
+describe('venues', () => {
   beforeEach(async () => {
     const user = await create('users');
-    const performer = await create('performers', {userId: user.id});
+    const venue = await create('venues', {userId: user.id});
   });
 
   describe('GET /', () => {
     it('should return 200', done => {
       chai
         .request(app)
-        .get('/performers')
+        .get('/venues')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('array');
