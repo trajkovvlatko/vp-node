@@ -9,18 +9,14 @@ router.get('/', async function(req, res, next) {
 });
 
 /* GET show */
-router.get('/id', async function(req, res, next) {
-  // TODO: dynamic id param
-  const id = 1;
+router.get('/:id', async function(req, res, next) {
   const venue = await req.user.venue(id);
   res.send(venue);
 });
 
 
 /* PATCH update */
-router.patch('/id', async function(req, res, next) {
-  // TODO: dynamic id param
-  const id = 1;
+router.patch('/:id', async function(req, res, next) {
   const venue = await VenueModel.find(id);
   if (venue.update(req.params)) {
     res.send(venue);

@@ -9,9 +9,7 @@ router.get('/', async function(req, res, next) {
 });
 
 /* GET show */
-router.get('/id', async function(req, res, next) {
-  // TODO: dynamic id param
-  const id = 6;
+router.get('/:id', async function(req, res, next) {
   const performer = await PerformerModel.find(id);
   res.send(performer);
 });

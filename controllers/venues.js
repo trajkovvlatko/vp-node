@@ -9,9 +9,7 @@ router.get('/', async function(req, res, next) {
 });
 
 /* GET show */
-router.get('/id', async function(req, res, next) {
-  // TODO: dynamic id param
-  const id = 1;
+router.get('/:id', async function(req, res, next) {
   const venue = await VenueModel.find(id);
   res.send(venue);
 });
