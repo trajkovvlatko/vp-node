@@ -8,7 +8,6 @@ chai.should();
 
 describe("index", () => {
   describe("GET /", () => {
-    // Test to get all students record
     it("should return 200", (done) => {
       chai.request(app)
         .get('/')
