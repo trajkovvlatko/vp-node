@@ -7,7 +7,7 @@ const ExtractJWT = passportJWT.ExtractJwt;
 
 const fs = require('fs');
 const secret = JSON.parse(fs.readFileSync('./config/secrets.json')).JWT.secret;
-const UserModel = require('../models/user_model.js');
+const UserModel = require('../app/models/user_model.js');
 
 passport.use(
   new LocalStrategy(

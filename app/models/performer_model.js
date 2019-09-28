@@ -1,9 +1,9 @@
-const db = require('../config/database');
+const db = require('../../config/database');
 
-class VenueModel {
+class PerformerModel {
   static async all() {
     try {
-      return await db.any('SELECT * FROM venues WHERE active IS TRUE');
+      return await db.any('SELECT * FROM performers WHERE active IS TRUE');
     } catch (e) {
       return {error: e};
     }
@@ -12,7 +12,7 @@ class VenueModel {
   static async find(id) {
     try {
       return await db.one(
-        'SELECT * FROM venues WHERE active IS TRUE AND id = $1',
+        'SELECT * FROM performers WHERE active IS TRUE AND id = $1',
         id,
       );
     } catch (e) {
@@ -21,4 +21,4 @@ class VenueModel {
   }
 }
 
-module.exports = VenueModel;
+module.exports = PerformerModel;
