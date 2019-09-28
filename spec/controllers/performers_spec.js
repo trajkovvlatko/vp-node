@@ -16,7 +16,7 @@ describe('performers', () => {
 
   describe('GET /', () => {
     it('should return empty array for no performers present', async () => {
-      const res = await chai.request(app).get('/performers')
+      const res = await chai.request(app).get('/performers');
       res.should.have.status(200);
       res.body.should.deep.eq([]);
     });
@@ -26,11 +26,11 @@ describe('performers', () => {
         (await create('performers', {userId: user.id})).id,
         (await create('performers', {userId: user.id})).id,
       ];
-      const res = await chai.request(app).get('/performers')
+      const res = await chai.request(app).get('/performers');
       res.should.have.status(200);
       res.body.should.be.an('array');
       res.body.length.should.eq(2);
-      res.body.map((p) => p.id).should.deep.eq(performerIds);
+      res.body.map(p => p.id).should.deep.eq(performerIds);
     });
   });
 });
