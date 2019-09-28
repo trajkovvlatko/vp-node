@@ -37,7 +37,7 @@ class UserModel {
   async performers() {
     try {
       return await db.any(
-        'SELECT * FROM performers WHERE active = $1 AND user_id = $2',
+        'SELECT * FROM public.performers WHERE active = $1 AND user_id = $2',
         [true, this.data.id],
       );
     } catch (e) {
@@ -48,7 +48,7 @@ class UserModel {
   async performer(id) {
     try {
       return await db.one(
-        'SELECT * FROM performers WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
+        'SELECT * FROM public.performers WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
         [true, this.data.id, id],
       );
     } catch (e) {
@@ -59,7 +59,7 @@ class UserModel {
   async venues() {
     try {
       return await db.any(
-        'SELECT * FROM venues WHERE active = $1 AND user_id = $2',
+        'SELECT * FROM public.venues WHERE active = $1 AND user_id = $2',
         [true, this.data.id],
       );
     } catch (e) {
@@ -70,7 +70,7 @@ class UserModel {
   async venue(id) {
     try {
       return await db.one(
-        'SELECT * FROM venues WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
+        'SELECT * FROM public.venues WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
         [true, this.data.id, id],
       );
     } catch (e) {

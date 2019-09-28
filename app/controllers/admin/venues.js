@@ -10,14 +10,13 @@ router.get('/', async function(req, res, next) {
 
 /* GET show */
 router.get('/:id', async function(req, res, next) {
-  const venue = await req.user.venue(id);
-  res.send(venue);
+  const venue = await req.user.venue(req.params.id);
+  res.status(venue.error ? 404 : 200).send(venue);
 });
-
 
 /* PATCH update */
 router.patch('/:id', async function(req, res, next) {
-  const venue = await VenueModel.find(id);
+  const venue = await VenueModel.find(req.params.id);
   if (venue.update(req.params)) {
     res.send(venue);
   } else {

@@ -7,25 +7,25 @@ const {authUser} = require('../../spec_helper');
 chai.use(chaiHttp);
 chai.should();
 
-describe('admin/performers', () => {
+describe('admin/venues', () => {
   context('when user is not signed in', () => {
-    describe('GET /admin/performers', () => {
+    describe('GET /admin/venues', () => {
       it('returns 401', async () => {
-        await create('performers', {
+        await create('venues', {
           userId: (await create('users')).id,
         });
-        const res = await chai.request(app).get(`/admin/performers`);
+        const res = await chai.request(app).get(`/admin/venues`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
     });
 
-    describe('GET /admin/performers/:id', () => {
+    describe('GET /admin/venues/:id', () => {
       it('returns 401', async () => {
-        const id = (await create('performers', {
+        const id = (await create('venues', {
           userId: (await create('users')).id,
         })).id;
-        const res = await chai.request(app).get(`/admin/performers/${id}`);
+        const res = await chai.request(app).get(`/admin/venues/${id}`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
@@ -40,63 +40,63 @@ describe('admin/performers', () => {
       token = await authUser(user);
     });
 
-    describe('GET /admin/performers', () => {
-      it('returns empty array for no performers found for user', async () => {
-        // performer owned by another user
-        await create('performers', {userId: (await create('users')).id});
+    describe('GET /admin/venues', () => {
+      it('returns empty array for no venues found for user', async () => {
+        // venues owned by another user
+        await create('venues', {userId: (await create('users')).id});
         const res = await chai
           .request(app)
-          .get('/admin/performers')
+          .get('/admin/venues')
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.should.deep.eq([]);
       });
 
-      it('returns an array of performers owned by a user', async () => {
-        // performer owned by another user
-        await create('performers', {userId: (await create('users')).id});
+      it('returns an array of venues owned by a user', async () => {
+        // venue owned by another user
+        await create('venues', {userId: (await create('users')).id});
 
-        // own performers
+        // own venues
         const ids = [
-          (await create('performers', {userId: user.id})).id,
-          (await create('performers', {userId: user.id})).id,
+          (await create('venues', {userId: user.id})).id,
+          (await create('venues', {userId: user.id})).id,
         ];
 
         const res = await chai
           .request(app)
-          .get('/admin/performers')
+          .get('/admin/venues')
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.map(p => p.id).should.deep.eq(ids);
       });
     });
 
-    describe('GET /admin/performers/:id', () => {
-      it('returns 404 for performer not found', async () => {
+    describe('GET /admin/venues/:id', () => {
+      it('returns 404 for venue not found', async () => {
         const res = await chai
           .request(app)
-          .get(`/admin/performers/-1`)
+          .get(`/admin/venues/-1`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(404);
-        res.body.error.should.eq('Performer not found.');
+        res.body.error.should.eq('Venue not found.');
       });
 
-      it('returns 404 for performer not owned by the user', async () => {
+      it('returns 404 for venue not owned by the user', async () => {
         const tmpUser = await create('users');
-        const id = (await create('performers', {userId: tmpUser.id})).id;
+        const id = (await create('venues', {userId: tmpUser.id})).id;
         const res = await chai
           .request(app)
-          .get(`/admin/performers/${id}`)
+          .get(`/admin/venues/${id}`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(404);
-        res.body.error.should.eq('Performer not found.');
+        res.body.error.should.eq('Venue not found.');
       });
 
-      it('returns a performer when owned by a user', async () => {
-        const id = (await create('performers', {userId: user.id})).id;
+      it('returns a venue when owned by a user', async () => {
+        const id = (await create('venues', {userId: user.id})).id;
         const res = await chai
           .request(app)
-          .get(`/admin/performers/${id}`)
+          .get(`/admin/venues/${id}`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.id.should.eq(id);

@@ -2,17 +2,10 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../app.js');
 const create = require('../factories');
-require('../spec_helper');
+const {authUser} = require('../spec_helper');
 
 chai.use(chaiHttp);
 chai.should();
-
-async function authUser(user) {
-  const auth = await chai
-    .request(app)
-    .post(`/auth/login?email=${user.email}&password=${user.password}`);
-  return auth.body.token;
-}
 
 describe('users', () => {
   beforeEach(async () => {});
