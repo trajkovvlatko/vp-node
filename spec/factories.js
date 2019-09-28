@@ -16,12 +16,17 @@ async function create(table, options = {}) {
 
 async function addUser(options) {
   return await db.one(
-    'INSERT INTO public.users (name, email, password, active, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, email, active, created_at, updated_at',
+    `INSERT INTO public.users
+    (name, email, password, active, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING id, name, email, active, created_at, updated_at`,
     [
       options.name || rand(),
       options.email || `${rand()}@${rand()}.${rand()}`,
       options.password || rand(),
-      (typeof(options.active) !== 'undefined' && options.active !== null) ? options.active : true,
+      typeof options.active !== 'undefined' && options.active !== null
+        ? options.active
+        : true,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],
@@ -30,13 +35,18 @@ async function addUser(options) {
 
 async function addPerformer(options) {
   return await db.one(
-    'INSERT INTO public.performers(name, user_id, location, phone, active, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+    `INSERT INTO public.performers
+    (name, user_id, location, phone, active, created_at, updated_at)
+    VALUES($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *`,
     [
       options.name || rand(),
       options.userId,
       options.location || rand(),
       options.phone || rand(),
-      (typeof(options.active) !== 'undefined' && options.active !== null) ? options.active : true,
+      typeof options.active !== 'undefined' && options.active !== null
+        ? options.active
+        : true,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],
@@ -45,13 +55,18 @@ async function addPerformer(options) {
 
 async function addVenue(options) {
   return await db.one(
-    'INSERT INTO public.venues(name, user_id, location, phone, active, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+    `INSERT INTO public.venues
+    (name, user_id, location, phone, active, created_at, updated_at)
+    VALUES($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *`,
     [
       options.name || rand(),
       options.userId,
       options.location || rand(),
       options.phone || rand(),
-      (typeof(options.active) !== 'undefined' && options.active !== null) ? options.active : true,
+      typeof options.active !== 'undefined' && options.active !== null
+        ? options.active
+        : true,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],
