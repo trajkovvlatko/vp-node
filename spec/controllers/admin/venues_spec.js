@@ -30,6 +30,22 @@ describe('admin/venues', () => {
         res.body.should.deep.eq({});
       });
     });
+
+    describe('PATCH /admin/venues/:id', () => {
+      it('returns 401', async () => {
+        const id = (await create('venues', {
+          userId: (await create('users')).id,
+        })).id;
+        const options = {name: 'new name'};
+        const res = await chai
+          .request(app)
+          .patch(`/admin/venues/${id}`)
+          .set('content-type', 'application/json')
+          .send(options)
+        res.should.have.status(401);
+        res.body.should.deep.eq({});
+      });
+    });
   });
 
   context('when user is signed in', () => {
@@ -102,5 +118,44 @@ describe('admin/venues', () => {
         res.body.id.should.eq(id);
       });
     });
+
+    describe('PATCH /admin/venues/:id', () => {
+      it('updates venue data', async () => {
+        const venue = await create('venues', {userId: user.id});
+        const options = {
+          name: 'new name',
+          location: 'new location',
+          phone: 'new phone',
+          details: 'new details',
+          website: 'new website',
+          active: false,
+        }
+        const res = await chai
+          .request(app)
+          .patch(`/admin/venues/${venue.id}`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options)
+        res.should.have.status(200);
+        res.body.should.include(options);
+        res.body.updated_at.should.not.eq(venue.updated_at);
+      });
+
+      it("doesn't update venues not owned by the user", async () => {
+        const venue = await create('venues', {
+          userId: (await create('users')).id,
+        });
+        const options = {name: 'new name'}
+        const res = await chai
+          .request(app)
+          .patch(`/admin/venues/${venue.id}`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options)
+        res.should.have.status(404);
+        res.body.error.should.eq('Error updating venue.');
+      });
+    });
+
   });
 });

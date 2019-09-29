@@ -77,6 +77,33 @@ class UserModel {
       return {error: 'Venue not found.'};
     }
   }
+
+  async updateVenue(params = {}) {
+    let columns = [];
+    let values = {};
+    ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
+      column => {
+        if (typeof params[column] !== 'undefined' && params[column] !== null) {
+          columns.push(`${column} = \$\{${column}\}`);
+          values[column] = params[column];
+        }
+      },
+    );
+
+    try {
+      return await db.one(
+        `UPDATE public.venues
+        SET ${columns.join(', ')}, updated_at = now()
+        WHERE active IS TRUE
+        AND user_id = \$\{userId\}
+        AND id = $\{id\}
+        RETURNING *`,
+        {...values, ...{userId: this.data.id}, ...{id: params.id}},
+      );
+    } catch (e) {
+      return {error: 'Error updating venue.'};
+    }
+  }
 }
 
 module.exports = UserModel;

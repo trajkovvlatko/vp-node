@@ -16,12 +16,11 @@ router.get('/:id', async function(req, res, next) {
 
 /* PATCH update */
 router.patch('/:id', async function(req, res, next) {
-  const venue = await VenueModel.find(req.params.id);
-  if (venue.update(req.params)) {
+  const venue = await req.user.updateVenue({...req.params, ...req.body});
+  if (!venue.error) {
     res.send(venue);
   } else {
-    res.status(500);
-    res.send({error: true});
+    res.status(404).send(venue);
   }
 });
 
