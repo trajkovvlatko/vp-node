@@ -3,7 +3,9 @@ const db = require('../../config/database');
 class PerformerModel {
   static async all() {
     try {
-      return await db.any('SELECT * FROM public.performers WHERE active IS TRUE');
+      return await db.any(
+        'SELECT * FROM public.performers WHERE active IS TRUE',
+      );
     } catch (e) {
       return {error: e};
     }

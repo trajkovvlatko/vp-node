@@ -13,7 +13,10 @@ class UserModel {
     try {
       // Must return a plain object to passport
       return await db.one(
-        'SELECT id, name, email FROM public.users WHERE email = $1 AND password = $2',
+        `SELECT id, name, email
+        FROM public.users
+        WHERE email = $1
+        AND password = $2`,
         [email, password],
       );
     } catch (e) {
@@ -25,7 +28,9 @@ class UserModel {
     try {
       // Return a user object
       const data = await db.one(
-        'SELECT id, name, email FROM public.users WHERE id = $1',
+        `SELECT id, name, email
+        FROM public.users
+        WHERE id = $1`,
         parseInt(id),
       );
       return new UserModel(data);
@@ -39,7 +44,10 @@ class UserModel {
       all: async () => {
         try {
           return await db.any(
-            'SELECT * FROM public.performers WHERE active = $1 AND user_id = $2',
+            `SELECT *
+            FROM public.performers
+            WHERE active = $1
+            AND user_id = $2`,
             [true, this.data.id],
           );
         } catch (e) {
@@ -50,11 +58,78 @@ class UserModel {
       find: async id => {
         try {
           return await db.one(
-            'SELECT * FROM public.performers WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
+            `SELECT *
+            FROM public.performers
+            WHERE active = $1
+            AND user_id = $2
+            AND id = $3 LIMIT 1`,
             [true, this.data.id, id],
           );
         } catch (e) {
           return {error: 'Performer not found.'};
+        }
+      },
+
+      create: async (params = {}) => {
+        let values = {};
+        let columns = [];
+        let keys = [];
+        ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
+          column => {
+            if (
+              typeof params[column] !== 'undefined' &&
+              params[column] !== null
+            ) {
+              columns.push(column);
+              keys.push(`\$\{${column}}`);
+              values[column] = params[column];
+            }
+          },
+        );
+
+        try {
+          return await db.one(
+            `INSERT INTO public.performers (
+              ${columns.join(', ')}, user_id, created_at, updated_at
+            )
+            VALUES (
+              ${keys}, \$\{userId\}, now(), now()
+            )
+            RETURNING *`,
+            {...values, ...{userId: this.data.id}},
+          );
+        } catch (e) {
+          return {error: 'Error creating a performer.'};
+        }
+      },
+
+      update: async (params = {}) => {
+        let columns = [];
+        let values = {};
+        ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
+          column => {
+            if (
+              typeof params[column] !== 'undefined' &&
+              params[column] !== null
+            ) {
+              columns.push(`${column} = \$\{${column}\}`);
+              values[column] = params[column];
+            }
+          },
+        );
+
+        try {
+          return await db.one(
+            `UPDATE public.performers
+            SET ${columns.join(', ')}, updated_at = now()
+            WHERE active IS TRUE
+            AND user_id = \$\{userId\}
+            AND id = $\{id\}
+            RETURNING *`,
+            {...values, ...{userId: this.data.id}, ...{id: params.id}},
+          );
+        } catch (e) {
+          return {error: 'Error updating performer.'};
         }
       },
     };
@@ -65,7 +140,10 @@ class UserModel {
       all: async () => {
         try {
           return await db.any(
-            'SELECT * FROM public.venues WHERE active = $1 AND user_id = $2',
+            `SELECT *
+            FROM public.venues
+            WHERE active = $1
+            AND user_id = $2`,
             [true, this.data.id],
           );
         } catch (e) {
@@ -76,7 +154,12 @@ class UserModel {
       find: async id => {
         try {
           return await db.one(
-            'SELECT * FROM public.venues WHERE active = $1 AND user_id = $2 AND id = $3 LIMIT 1',
+            `SELECT *
+            FROM public.venues
+            WHERE active = $1
+            AND user_id = $2
+            AND id = $3
+            LIMIT 1`,
             [true, this.data.id, id],
           );
         } catch (e) {

@@ -30,6 +30,42 @@ describe('admin/performers', () => {
         res.body.should.deep.eq({});
       });
     });
+
+    describe('PATCH /admin/performers/:id', () => {
+      it('returns 401', async () => {
+        const id = (await create('performers', {
+          userId: (await create('users')).id,
+        })).id;
+        const options = {name: 'new name'};
+        const res = await chai
+          .request(app)
+          .patch(`/admin/performers/${id}`)
+          .set('content-type', 'application/json')
+          .send(options);
+        res.should.have.status(401);
+        res.body.should.deep.eq({});
+      });
+    });
+
+    describe('POST /admin/performers', () => {
+      it('returns 401', async () => {
+        const options = {
+          name: 'new name',
+          location: 'new location',
+          phone: 'new phone',
+          details: 'new details',
+          website: 'new website',
+          active: false,
+        };
+        const res = await chai
+          .request(app)
+          .post(`/admin/performers`)
+          .set('content-type', 'application/json')
+          .send(options);
+        res.should.have.status(401);
+        res.body.should.deep.eq({});
+      });
+    });
   });
 
   context('when user is signed in', () => {
@@ -100,6 +136,78 @@ describe('admin/performers', () => {
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.id.should.eq(id);
+      });
+    });
+
+    describe('PATCH /admin/performers/:id', () => {
+      it('updates performer data', async () => {
+        const performer = await create('performers', {userId: user.id});
+        const options = {
+          name: 'new name',
+          location: 'new location',
+          phone: 'new phone',
+          details: 'new details',
+          website: 'new website',
+          active: false,
+        };
+        const res = await chai
+          .request(app)
+          .patch(`/admin/performers/${performer.id}`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options);
+        res.should.have.status(200);
+        res.body.should.include(options);
+        res.body.updated_at.should.not.eq(performer.updated_at);
+      });
+
+      it("doesn't update performer not owned by the user", async () => {
+        const performer = await create('performers', {
+          userId: (await create('users')).id,
+        });
+        const options = {name: 'new name'};
+        const res = await chai
+          .request(app)
+          .patch(`/admin/performers/${performer.id}`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options);
+        res.should.have.status(404);
+        res.body.error.should.eq('Error updating performer.');
+      });
+    });
+
+    describe('POST /admin/performers', () => {
+      it('creates a new performer', async () => {
+        const options = {
+          name: 'new name',
+          location: 'new location',
+          phone: 'new phone',
+          details: 'new details',
+          website: 'new website',
+          active: false,
+        };
+        const res = await chai
+          .request(app)
+          .post(`/admin/performers`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options);
+        res.should.have.status(200);
+        res.body.should.include(options);
+        res.body.user_id.should.eq(user.id);
+      });
+
+      it("doesn't create a performer for missing data", async () => {
+        const options = {active: false};
+        const res = await chai
+          .request(app)
+          .post(`/admin/performers`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options);
+        res.should.have.status(500);
+        res.body.error.should.eq('Error creating a performer.');
       });
     });
   });

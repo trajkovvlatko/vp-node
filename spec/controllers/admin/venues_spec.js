@@ -41,7 +41,27 @@ describe('admin/venues', () => {
           .request(app)
           .patch(`/admin/venues/${id}`)
           .set('content-type', 'application/json')
-          .send(options)
+          .send(options);
+        res.should.have.status(401);
+        res.body.should.deep.eq({});
+      });
+    });
+
+    describe('POST /admin/venues', () => {
+      it('returns 401', async () => {
+        const options = {
+          name: 'new name',
+          location: 'new location',
+          phone: 'new phone',
+          details: 'new details',
+          website: 'new website',
+          active: false,
+        };
+        const res = await chai
+          .request(app)
+          .post(`/admin/venues`)
+          .set('content-type', 'application/json')
+          .send(options);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
@@ -129,13 +149,13 @@ describe('admin/venues', () => {
           details: 'new details',
           website: 'new website',
           active: false,
-        }
+        };
         const res = await chai
           .request(app)
           .patch(`/admin/venues/${venue.id}`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
-          .send(options)
+          .send(options);
         res.should.have.status(200);
         res.body.should.include(options);
         res.body.updated_at.should.not.eq(venue.updated_at);
@@ -145,13 +165,13 @@ describe('admin/venues', () => {
         const venue = await create('venues', {
           userId: (await create('users')).id,
         });
-        const options = {name: 'new name'}
+        const options = {name: 'new name'};
         const res = await chai
           .request(app)
           .patch(`/admin/venues/${venue.id}`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
-          .send(options)
+          .send(options);
         res.should.have.status(404);
         res.body.error.should.eq('Error updating venue.');
       });
@@ -166,30 +186,29 @@ describe('admin/venues', () => {
           details: 'new details',
           website: 'new website',
           active: false,
-        }
+        };
         const res = await chai
           .request(app)
           .post(`/admin/venues`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
-          .send(options)
+          .send(options);
         res.should.have.status(200);
         res.body.should.include(options);
         res.body.user_id.should.eq(user.id);
       });
 
       it("doesn't create a venue for missing data", async () => {
-        const options = {active: false}
+        const options = {active: false};
         const res = await chai
           .request(app)
           .post(`/admin/venues`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
-          .send(options)
+          .send(options);
         res.should.have.status(500);
         res.body.error.should.eq('Error creating a venue.');
       });
     });
-
   });
 });

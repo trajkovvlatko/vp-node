@@ -26,7 +26,7 @@ describe('users', () => {
       const res = await chai
         .request(app)
         .get('/profile')
-        .set('Authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${token}`);
 
       res.should.have.status(200);
       res.body.should.be.an('object');
@@ -34,7 +34,7 @@ describe('users', () => {
         id: user.id,
         name: user.name,
         email: user.email,
-      })
+      });
     });
   });
 });
