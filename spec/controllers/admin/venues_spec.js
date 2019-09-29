@@ -157,5 +157,39 @@ describe('admin/venues', () => {
       });
     });
 
+    describe('POST /admin/venues', () => {
+      it('creates a new venue', async () => {
+        const options = {
+          name: 'new name',
+          location: 'new location',
+          phone: 'new phone',
+          details: 'new details',
+          website: 'new website',
+          active: false,
+        }
+        const res = await chai
+          .request(app)
+          .post(`/admin/venues`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options)
+        res.should.have.status(200);
+        res.body.should.include(options);
+        res.body.user_id.should.eq(user.id);
+      });
+
+      it("doesn't create a venue for missing data", async () => {
+        const options = {active: false}
+        const res = await chai
+          .request(app)
+          .post(`/admin/venues`)
+          .set('content-type', 'application/json')
+          .set('Authorization', `Bearer ${token}`)
+          .send(options)
+        res.should.have.status(500);
+        res.body.error.should.eq('Error creating a venue.');
+      });
+    });
+
   });
 });
