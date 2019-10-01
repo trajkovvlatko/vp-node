@@ -8,8 +8,6 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('users', () => {
-  beforeEach(async () => {});
-
   describe('GET /profile', () => {
     it('returns 401 error for user not signed in', async () => {
       const user = await create('users');

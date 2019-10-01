@@ -39,6 +39,41 @@ class UserModel {
     }
   }
 
+  static async findByEmail(email) {
+    try {
+      // Return a user object
+      const data = await db.one(
+        `SELECT id, name, email
+        FROM public.users
+        WHERE email = $1`,
+        email,
+      );
+      if (data) {
+        return new UserModel(data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  static async create(data) {
+    try {
+      const record = await db.one(
+        `INSERT INTO public.users
+        (name, email, password, active, created_at, updated_at)
+        VALUES($1, $2, $3, TRUE, now(), now())
+        RETURNING id, name, email`,
+        [data.name, data.email, data.password]
+      );
+      return new UserModel(record);
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+
   performers() {
     return {
       all: async () => {

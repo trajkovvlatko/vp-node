@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const fs = require('fs');
 const secret = JSON.parse(fs.readFileSync('./config/secrets.json')).JWT.secret;
+const UserModel = require('../models/user_model.js');
 
 /* POST login. */
 router.post('/login', function(req, res, next) {
@@ -23,6 +24,16 @@ router.post('/login', function(req, res, next) {
       return res.json({token});
     });
   })(req, res);
+});
+
+/* POST register. */
+router.post('/register', async function(req, res, next) {
+  const user = await UserModel.create(req.body)
+  if (!user.error) {
+    res.send(user.data);
+  } else {
+    res.status(500).send({ error: 'Error in registration.' });
+  }
 });
 
 module.exports = router;
