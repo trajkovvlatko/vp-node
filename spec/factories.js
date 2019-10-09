@@ -1,4 +1,6 @@
 const db = require('../config/database');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 async function create(table, options = {}) {
   switch (table) {
@@ -15,7 +17,9 @@ async function create(table, options = {}) {
 }
 
 async function addUser(options) {
-  return await db.one(
+  const password = options.password || rand();
+  const hash = await bcrypt.hash(password, saltRounds);
+  const user = await db.one(
     `INSERT INTO public.users
     (name, email, password, active, created_at, updated_at)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -23,7 +27,7 @@ async function addUser(options) {
     [
       options.name || rand(),
       options.email || `${rand()}@${rand()}.${rand()}`,
-      options.password || rand(),
+      hash,
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
@@ -31,6 +35,7 @@ async function addUser(options) {
       options.updated_at || new Date(),
     ],
   );
+  return {...user, password: password}
 }
 
 async function addPerformer(options) {

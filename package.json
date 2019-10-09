@@ -8,6 +8,7 @@
     "spec": "NODE_ENV=test mocha --recursive spec --exit"
   },
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cookie-parser": "~1.4.4",
