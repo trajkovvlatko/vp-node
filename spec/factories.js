@@ -10,8 +10,14 @@ async function create(table, options = {}) {
     case 'venues':
       return await addVenue(options);
       break;
+    case 'genres':
+      return await addGenres(options);
+      break;
     case 'users':
       return await addUser(options);
+      break;
+    case 'genres_performers':
+      return await addGenresPerformers(options);
       break;
   }
 }
@@ -72,6 +78,38 @@ async function addVenue(options) {
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
+}
+
+async function addGenres(options) {
+  return await db.one(
+    `INSERT INTO public.genres
+    (name, active, created_at, updated_at)
+    VALUES($1, $2, $3, $4)
+    RETURNING *`,
+    [
+      options.name || rand(),
+      typeof options.active !== 'undefined' && options.active !== null
+        ? options.active
+        : true,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
+}
+
+async function addGenresPerformers(options) {
+  return await db.one(
+    `INSERT INTO public.genres_performers
+    (genre_id, performer_id, created_at, updated_at)
+    VALUES($1, $2, $3, $4)
+    RETURNING *`,
+    [
+      options.genre_id,
+      options.performer_id,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],

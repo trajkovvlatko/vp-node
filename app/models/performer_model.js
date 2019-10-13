@@ -24,11 +24,28 @@ class PerformerModel {
 
   static async search(params) {
     try {
-      let wheres = ['location = ${location}'];
+      let selects = ['DISTINCT(public.performers.*)'];
+      let wheres = ['location = $/location/ AND performers.active IS TRUE'];
       let data = {location: params.location};
+      let joins = [];
+
+      if (params.genres && params.genres.length > 0) {
+        joins.push(`
+          INNER JOIN public.genres_performers
+            ON genres_performers.performer_id = performers.id
+            AND genres_performers.genre_id IN ($/genres:csv/)
+          INNER JOIN public.genres
+            ON genres.id = genres_performers.genre_id
+            AND genres.active IS TRUE`);
+        data.genres = params.genres;
+      }
+
+      selects = selects.join(', ');
       wheres = wheres.join(' AND ');
+      joins = joins.join(' ');
+
       return await db.any(
-        `SELECT * FROM public.performers WHERE ${wheres}`,
+        `SELECT ${selects} FROM public.performers ${joins} WHERE ${wheres}`,
         data,
       );
     } catch (e) {
@@ -36,5 +53,16 @@ class PerformerModel {
     }
   }
 }
+
+// SELECT DISTINCT(public.performers.*)
+// FROM public.performers
+// INNER JOIN public.genres_performers
+//   ON genres_performers.performer_id = performers.id
+//   AND genres_performers.genre_id IN (${genres})
+// INNER JOIN public.genres
+//   ON genres.id = genres_performers.genre_id
+//   AND genres.active IS TRUE
+// WHERE location = ${location}
+// AND performers.active IS TRUE
 
 module.exports = PerformerModel;
