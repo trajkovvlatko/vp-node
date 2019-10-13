@@ -92,9 +92,9 @@ class UserModel {
           return await db.any(
             `SELECT *
             FROM public.performers
-            WHERE active = $1
-            AND user_id = $2`,
-            [true, this.data.id],
+            WHERE active IS TRUE
+            AND user_id = $1`,
+            [this.data.id],
           );
         } catch (e) {
           return {error: e};
@@ -106,10 +106,11 @@ class UserModel {
           return await db.one(
             `SELECT *
             FROM public.performers
-            WHERE active = $1
-            AND user_id = $2
-            AND id = $3 LIMIT 1`,
-            [true, this.data.id, id],
+            WHERE active IS TRUE
+            AND user_id = $1
+            AND id = $2
+            LIMIT 1`,
+            [this.data.id, id],
           );
         } catch (e) {
           return {error: 'Performer not found.'};
@@ -188,9 +189,9 @@ class UserModel {
           return await db.any(
             `SELECT *
             FROM public.venues
-            WHERE active = $1
-            AND user_id = $2`,
-            [true, this.data.id],
+            WHERE active IS TRUE
+            AND user_id = $1`,
+            [this.data.id],
           );
         } catch (e) {
           return {error: e};
@@ -202,11 +203,11 @@ class UserModel {
           return await db.one(
             `SELECT *
             FROM public.venues
-            WHERE active = $1
-            AND user_id = $2
-            AND id = $3
+            WHERE active IS TRUE
+            AND user_id = $1
+            AND id = $2
             LIMIT 1`,
-            [true, this.data.id, id],
+            [this.data.id, id],
           );
         } catch (e) {
           return {error: 'Venue not found.'};

@@ -8,6 +8,7 @@ const admin_performers = require('../app/controllers/admin/performers');
 const venues = require('../app/controllers/venues');
 const admin_venues = require('../app/controllers/admin/venues');
 const users = require('../app/controllers/users');
+const search = require('../app/controllers/search');
 
 function authenticate() {
   return passport.authenticate('jwt', {session: false});
@@ -18,6 +19,7 @@ module.exports = function (app) {
   app.use('/auth', auth);
   app.use('/performers', performers);
   app.use('/venues', venues);
+  app.use('/search', search);
 
   // with user
   app.use('/profile', authenticate(), users);
