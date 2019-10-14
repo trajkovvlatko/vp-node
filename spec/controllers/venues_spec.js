@@ -23,8 +23,8 @@ describe('venues', () => {
 
     it('returns list of venues', async () => {
       const venueIds = [
-        (await create('venues', {userId: user.id})).id,
-        (await create('venues', {userId: user.id})).id,
+        (await create('venues', {user_id: user.id})).id,
+        (await create('venues', {user_id: user.id})).id,
       ];
       const res = await chai.request(app).get('/venues');
       res.should.have.status(200);
@@ -39,8 +39,8 @@ describe('venues', () => {
 
     beforeEach(async () => {
       const venueIds = [
-        (await create('venues', {userId: user.id})).id,
-        (await create('venues', {userId: user.id})).id,
+        (await create('venues', {user_id: user.id})).id,
+        (await create('venues', {user_id: user.id})).id,
       ];
       id = venueIds[0];
     });

@@ -19,6 +19,9 @@ async function create(table, options = {}) {
     case 'genres_performers':
       return await addGenresPerformers(options);
       break;
+    case 'bookings':
+      return await addBookings(options);
+      break;
   }
 }
 
@@ -52,7 +55,7 @@ async function addPerformer(options) {
     RETURNING *`,
     [
       options.name || rand(),
-      options.userId,
+      options.user_id,
       options.location || rand(),
       options.phone || rand(),
       typeof options.active !== 'undefined' && options.active !== null
@@ -72,7 +75,7 @@ async function addVenue(options) {
     RETURNING *`,
     [
       options.name || rand(),
-      options.userId,
+      options.user_id,
       options.location || rand(),
       options.phone || rand(),
       typeof options.active !== 'undefined' && options.active !== null
@@ -110,6 +113,31 @@ async function addGenresPerformers(options) {
     [
       options.genre_id,
       options.performer_id,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
+}
+
+async function addBookings(options) {
+  return await db.one(
+    `INSERT INTO public.bookings (
+      user_id,
+      venue_id,
+      performer_id,
+      status,
+      booking_date,
+      created_at,
+      updated_at
+    )
+    VALUES($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *`,
+    [
+      options.user_id,
+      options.venue_id,
+      options.performer_id,
+      options.status,
+      options.booking_date,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],

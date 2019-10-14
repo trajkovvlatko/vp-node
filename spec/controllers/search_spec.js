@@ -36,11 +36,11 @@ describe('search', () => {
     context('performers', () => {
       it('returns array when performers are found by location', async () => {
         const id = (await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
           location: 'sweden',
         })).id;
         await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
           location: 'denmark',
         });
         const path = `/search?type=performer&location=sweden`;
@@ -52,7 +52,7 @@ describe('search', () => {
 
       it('returns array when performers are found by genre', async () => {
         const performerId = (await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
           location: 'sweden',
         })).id;
         const genreId = (await create('genres', {name: 'genre name'})).id;
@@ -68,20 +68,52 @@ describe('search', () => {
         res.body[0].id.should.eq(performerId);
       });
 
-      it('adds results that match at least one of the requested', async () => {
+      it('returns performers that are free on requested date', async () => {
         user = await create('users');
         const performer1 = await create('performers', {
-          userId: user.id,
+          user_id: user.id,
           location: 'sweden',
         });
         const performer2 = await create('performers', {
-          userId: user.id,
+          user_id: user.id,
           location: 'sweden',
         });
-        await create('performers', {
-          userId: user.id,
+        await create('performers', {user_id: user.id, location: 'norway'});
+
+        const path = `/search?type=performer&location=sweden&date=2011-01-01`;
+
+        let res = await chai.request(app).get(path);
+        res.should.have.status(200);
+        res.body.length.should.eq(2);
+
+        await create('bookings', {
+          user_id: user.id,
+          venue_id: (await create('venues', {user_id: user.id})).id,
+          performer_id: performer1.id,
+          status: 'booked',
+          booking_date: '2011-01-01',
+        });
+        res = await chai.request(app).get(path);
+        res.should.have.status(200);
+        res.body.length.should.eq(1);
+        res.body[0].id.should.eq(performer2.id);
+      });
+
+      it('returns performers that match at least one genre', async () => {
+        user = await create('users');
+        const performer1 = await create('performers', {
+          user_id: user.id,
           location: 'sweden',
         });
+        const performer2 = await create('performers', {
+          user_id: user.id,
+          location: 'sweden',
+        });
+        const performer3 = await create('performers', {
+          user_id: user.id,
+          location: 'norway',
+        });
+        await create('performers', {user_id: user.id, location: 'sweden'});
 
         const genre1 = await create('genres', {name: 'genre1'});
         const genre2 = await create('genres', {name: 'genre2'});
@@ -99,29 +131,31 @@ describe('search', () => {
           genre_id: genre2.id,
           performer_id: performer2.id,
         });
+        await create('genres_performers', {
+          genre_id: genre2.id,
+          performer_id: performer3.id,
+        });
 
-        const path = `/search?type=performer&location=sweden&genres=${
-          genre1.id
-        },${genre2.id}`;
+        const genres = `${genre1.id},${genre2.id}`;
+        const path = `/search?type=performer&location=sweden&genres=${genres}`;
         const res = await chai.request(app).get(path);
         res.should.have.status(200);
         res.body.length.should.eq(2);
         res.body
-          .map(p => {
-            return p.id;
-          })
-          .should.deep.eq([performer1.id, performer2.id]);
+          .map(p => p.id)
+          .sort()
+          .should.deep.eq([performer1.id, performer2.id].sort());
       });
     });
 
     context('venues', () => {
       it('returns array when venues are found by location', async () => {
         const id = (await create('venues', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
           location: 'sweden',
         })).id;
         await create('venues', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
           location: 'denmark',
         });
         const path = `/search?type=venue&location=sweden`;

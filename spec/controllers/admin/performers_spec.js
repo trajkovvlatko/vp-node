@@ -12,7 +12,7 @@ describe('admin/performers', () => {
     describe('GET /admin/performers', () => {
       it('returns 401', async () => {
         await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
         });
         const res = await chai.request(app).get(`/admin/performers`);
         res.should.have.status(401);
@@ -23,7 +23,7 @@ describe('admin/performers', () => {
     describe('GET /admin/performers/:id', () => {
       it('returns 401', async () => {
         const id = (await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
         })).id;
         const res = await chai.request(app).get(`/admin/performers/${id}`);
         res.should.have.status(401);
@@ -34,7 +34,7 @@ describe('admin/performers', () => {
     describe('PATCH /admin/performers/:id', () => {
       it('returns 401', async () => {
         const id = (await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
         })).id;
         const options = {name: 'new name'};
         const res = await chai
@@ -79,7 +79,7 @@ describe('admin/performers', () => {
     describe('GET /admin/performers', () => {
       it('returns empty array for no performers found for user', async () => {
         // performer owned by another user
-        await create('performers', {userId: (await create('users')).id});
+        await create('performers', {user_id: (await create('users')).id});
         const res = await chai
           .request(app)
           .get('/admin/performers')
@@ -90,12 +90,12 @@ describe('admin/performers', () => {
 
       it('returns an array of performers owned by a user', async () => {
         // performer owned by another user
-        await create('performers', {userId: (await create('users')).id});
+        await create('performers', {user_id: (await create('users')).id});
 
         // own performers
         const ids = [
-          (await create('performers', {userId: user.id})).id,
-          (await create('performers', {userId: user.id})).id,
+          (await create('performers', {user_id: user.id})).id,
+          (await create('performers', {user_id: user.id})).id,
         ];
 
         const res = await chai
@@ -119,7 +119,7 @@ describe('admin/performers', () => {
 
       it('returns 404 for performer not owned by the user', async () => {
         const tmpUser = await create('users');
-        const id = (await create('performers', {userId: tmpUser.id})).id;
+        const id = (await create('performers', {user_id: tmpUser.id})).id;
         const res = await chai
           .request(app)
           .get(`/admin/performers/${id}`)
@@ -129,7 +129,7 @@ describe('admin/performers', () => {
       });
 
       it('returns a performer when owned by a user', async () => {
-        const id = (await create('performers', {userId: user.id})).id;
+        const id = (await create('performers', {user_id: user.id})).id;
         const res = await chai
           .request(app)
           .get(`/admin/performers/${id}`)
@@ -141,7 +141,7 @@ describe('admin/performers', () => {
 
     describe('PATCH /admin/performers/:id', () => {
       it('updates performer data', async () => {
-        const performer = await create('performers', {userId: user.id});
+        const performer = await create('performers', {user_id: user.id});
         const options = {
           name: 'new name',
           location: 'new location',
@@ -163,7 +163,7 @@ describe('admin/performers', () => {
 
       it("doesn't update performer not owned by the user", async () => {
         const performer = await create('performers', {
-          userId: (await create('users')).id,
+          user_id: (await create('users')).id,
         });
         const options = {name: 'new name'};
         const res = await chai

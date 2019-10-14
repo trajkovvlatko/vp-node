@@ -40,6 +40,16 @@ class PerformerModel {
         data.genres = params.genres;
       }
 
+      if (params.date) {
+        joins.push(`
+          LEFT JOIN public.bookings
+            ON bookings.performer_id = performers.id
+            AND bookings.booking_date = $/booking_date/
+        `);
+        data.booking_date = params.date;
+        wheres.push('bookings.id IS NULL');
+      }
+
       selects = selects.join(', ');
       wheres = wheres.join(' AND ');
       joins = joins.join(' ');

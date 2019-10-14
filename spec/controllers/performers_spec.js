@@ -23,8 +23,8 @@ describe('performers', () => {
 
     it('returns list of performers', async () => {
       const performerIds = [
-        (await create('performers', {userId: user.id})).id,
-        (await create('performers', {userId: user.id})).id,
+        (await create('performers', {user_id: user.id})).id,
+        (await create('performers', {user_id: user.id})).id,
       ];
       const res = await chai.request(app).get('/performers');
       res.should.have.status(200);
@@ -39,8 +39,8 @@ describe('performers', () => {
 
     beforeEach(async () => {
       const performerIds = [
-        (await create('performers', {userId: user.id})).id,
-        (await create('performers', {userId: user.id})).id,
+        (await create('performers', {user_id: user.id})).id,
+        (await create('performers', {user_id: user.id})).id,
       ];
       id = performerIds[0];
     });
