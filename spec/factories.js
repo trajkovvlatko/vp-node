@@ -44,7 +44,7 @@ async function addUser(options) {
       options.updated_at || new Date(),
     ],
   );
-  return {...user, password: password}
+  return {...user, password: password};
 }
 
 async function addPerformer(options) {

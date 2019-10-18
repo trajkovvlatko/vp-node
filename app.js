@@ -3,6 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const lessMiddleware = require('less-middleware');
 const logger = require('morgan');
+const cors = require('cors');
 
 const app = express();
 app.set('port', process.env.PORT || 4000);
@@ -13,6 +14,11 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  }),
+);
 
 const router = require('./config/router')(app);
 
