@@ -9,7 +9,6 @@ function randomElement(arr) {
 }
 
 async function addPerformer(user, i) {
-  console.log("addPerformer", i)
   const performer = await user.performers().create({
     name: `Performer ${i}`,
     location: randomElement(locations),
@@ -19,23 +18,52 @@ async function addPerformer(user, i) {
       dummy text ever since the 1500s, when an unknown printer took a galley
       of type and scrambled`,
     website: `http://website-${i}.asdf`,
+    rating: randomElement([1, 2, 3, 4, 5]),
     active: true,
   });
 
   await user.images().create({
     owner_id: performer.id,
     owner_type: 'Performer',
-    image: `selected-image-${i}.jpg`,
+    image: `performers/${performer.id}/selected-image-${i}.jpg`,
     selected: true,
   });
 
   await user.images().create({
     owner_id: performer.id,
     owner_type: 'Performer',
-    image: `image-${i}.jpg`,
+    image: `performers/${performer.id}/image-${i}.jpg`,
     selected: false,
   });
-  console.log('Done', i);
+}
+
+async function addVenue(user, i) {
+  const venue = await user.venues().create({
+    name: `Venue ${i}`,
+    location: randomElement(locations),
+    phone: `${i}${i}${i}${i}${i}`,
+    details: `${i} - Lorem Ipsum is simply dummy text of the printing and
+      typesetting industry. Lorem Ipsum has been the industry's standard
+      dummy text ever since the 1500s, when an unknown printer took a galley
+      of type and scrambled`,
+    website: `http://website-${i}.asdf`,
+    rating: randomElement([1, 2, 3, 4, 5]),
+    active: true,
+  });
+
+  await user.images().create({
+    owner_id: venue.id,
+    owner_type: 'Venue',
+    image: `venues/${venue.id}/selected-image-${i}.jpg`,
+    selected: true,
+  });
+
+  await user.images().create({
+    owner_id: venue.id,
+    owner_type: 'Venue',
+    image: `venues/${venue.id}/image-${i}.jpg`,
+    selected: false,
+  });
 }
 
 (async function() {
@@ -49,5 +77,9 @@ async function addPerformer(user, i) {
 
   for (let i = 1; i <= 10; i++) {
     await addPerformer(user, i);
+  }
+
+  for (let i = 1; i <= 10; i++) {
+    await addVenue(user, i);
   }
 })();

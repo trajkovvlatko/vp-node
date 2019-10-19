@@ -1,10 +1,15 @@
 const db = require('../../config/database');
 
 class PerformerModel {
-  static async all(sorting) {
+  static async all(sorting, limit) {
     try {
       const sql = [`
-        SELECT performers.id, name, 'performer' AS type, images.image
+        SELECT
+          performers.id,
+          name,
+          rating,
+          'performer' AS type,
+          images.image
         FROM public.performers
         JOIN public.images
           ON images.owner_id = performers.id
@@ -13,10 +18,15 @@ class PerformerModel {
         WHERE active IS TRUE
       `];
       if (sorting === 'latest') {
-        sql.push('ORDER BY id DESC');
+        sql.push('ORDER BY performers.id DESC');
+      }
+      if (limit) {
+        sql.push(`LIMIT ${limit}`);
       }
       return await db.any(sql.join(' '));
     } catch (e) {
+      console.log('--------------------------')
+      console.log(e)
       return {error: e};
     }
   }

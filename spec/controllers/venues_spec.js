@@ -14,6 +14,14 @@ describe('venues', () => {
     user = await create('users');
   });
 
+  async function addImage(ownerId, userId) {
+    await create('images', {
+      user_id: userId,
+      owner_id: ownerId,
+      owner_type: 'Venue',
+    });
+  }
+
   describe('GET /', () => {
     it('returns empty array for no venues present', async () => {
       const res = await chai.request(app).get('/venues');
@@ -21,11 +29,21 @@ describe('venues', () => {
       res.body.should.deep.eq([]);
     });
 
-    it('returns list of venues', async () => {
+    it.only('returns list of venues', async () => {
       const venueIds = [
         (await create('venues', {user_id: user.id})).id,
         (await create('venues', {user_id: user.id})).id,
       ];
+      const inactive = await create('venues', {
+        user_id: user.id,
+        active: false,
+      });
+      await create('venues', {user_id: user.id});
+
+      await addImage(venueIds[0], user.id);
+      await addImage(venueIds[1], user.id);
+      await addImage(inactive.id, user.id);
+
       const res = await chai.request(app).get('/venues');
       res.should.have.status(200);
       res.body.should.be.an('array');

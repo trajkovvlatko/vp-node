@@ -4,7 +4,9 @@ const PerformerModel = require('../models/performer_model.js');
 
 /* GET index */
 router.get('/', async function(req, res, next) {
-  const performers = await PerformerModel.all(req.query.sorting);
+  let limit = parseInt(req.query.limit);
+  if (isNaN(limit) || limit > 10) limit = 10;
+  const performers = await PerformerModel.all(req.query.sorting, limit);
   res.send(performers);
 });
 

@@ -151,7 +151,7 @@ class UserModel {
         let values = {};
         let columns = [];
         let keys = [];
-        ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
+        ['name', 'location', 'phone', 'details', 'website', 'rating', 'active'].forEach(
           column => {
             if (
               typeof params[column] !== 'undefined' &&
@@ -248,7 +248,7 @@ class UserModel {
         let values = {};
         let columns = [];
         let keys = [];
-        ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
+        ['name', 'location', 'phone', 'details', 'website', 'rating', 'active'].forEach(
           column => {
             if (
               typeof params[column] !== 'undefined' &&

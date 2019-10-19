@@ -4,7 +4,9 @@ const VenueModel = require('../models/venue_model.js');
 
 /* GET index */
 router.get('/', async function(req, res, next) {
-  const venues = await VenueModel.all();
+  let limit = parseInt(req.query.limit);
+  if (isNaN(limit) || limit > 10) limit = 10;
+  const venues = await VenueModel.all(req.query.sorting, limit);
   res.send(venues);
 });
 

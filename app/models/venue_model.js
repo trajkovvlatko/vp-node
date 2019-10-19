@@ -1,9 +1,24 @@
 const db = require('../../config/database');
 
 class VenueModel {
-  static async all() {
+  static async all(sorting, limit) {
     try {
-      return await db.any('SELECT * FROM public.venues WHERE active IS TRUE');
+      const sql = [`
+        SELECT venues.id, name, rating, 'venue' AS type, images.image
+        FROM public.venues
+        JOIN public.images
+          ON images.owner_id = venues.id
+          AND images.owner_type = 'Venue'
+          AND images.selected IS TRUE
+        WHERE active IS TRUE
+      `];
+      if (sorting === 'latest') {
+        sql.push('ORDER BY id DESC');
+      }
+      if (limit) {
+        sql.push(`LIMIT ${limit}`);
+      }
+      return await db.any(sql.join(' '));
     } catch (e) {
       return {error: e};
     }
