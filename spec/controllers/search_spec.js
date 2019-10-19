@@ -8,25 +8,15 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('search', () => {
-  it('returns an error for missing location parameter', async () => {
-    const res = await chai.request(app).get(`/search?type=performer`);
-    res.should.have.status(422);
-    res.body.error.should.eq('Location not provided.');
-  });
-
   context('when nothing is matched', () => {
     it('returns empty array for no performers found', async () => {
-      const res = await chai
-        .request(app)
-        .get(`/search?location=sweden&type=performer`);
+      const res = await chai.request(app).get(`/search/performers/sweden`);
       res.should.have.status(200);
       res.body.should.deep.eq([]);
     });
 
     it('returns empty array for no venues found', async () => {
-      const res = await chai
-        .request(app)
-        .get('/search?location=swedentype=venue');
+      const res = await chai.request(app).get('/search/venues/sweden');
       res.should.have.status(200);
       res.body.should.deep.eq([]);
     });
@@ -35,15 +25,26 @@ describe('search', () => {
   context('when some are matched', () => {
     context('performers', () => {
       it('returns array when performers are found by location', async () => {
+        const userId = (await create('users')).id;
         const id = (await create('performers', {
-          user_id: (await create('users')).id,
+          user_id: userId,
           location: 'sweden',
         })).id;
-        await create('performers', {
+        await create('images', {
+          user_id: userId,
+          owner_id: id,
+          owner_type: 'Performer',
+        });
+        const tmp = await create('performers', {
           user_id: (await create('users')).id,
           location: 'denmark',
         });
-        const path = `/search?type=performer&location=sweden`;
+        await create('images', {
+          user_id: userId,
+          owner_id: tmp.id,
+          owner_type: 'Performer',
+        });
+        const path = `/search/performers/sweden`;
         const res = await chai.request(app).get(path);
         res.should.have.status(200);
         res.body.length.should.eq(1);
@@ -51,17 +52,23 @@ describe('search', () => {
       });
 
       it('returns array when performers are found by genre', async () => {
+        const userId = (await create('users')).id;
         const performerId = (await create('performers', {
-          user_id: (await create('users')).id,
+          user_id: userId,
           location: 'sweden',
         })).id;
+        await create('images', {
+          user_id: userId,
+          owner_id: performerId,
+          owner_type: 'Performer',
+        });
         const genreId = (await create('genres', {name: 'genre name'})).id;
         await create('genres_performers', {
           genre_id: genreId,
           performer_id: performerId,
         });
 
-        const path = `/search?type=performer&location=sweden&genres=${genreId}`;
+        const path = `/search/performers/sweden?genres=${genreId}`;
         const res = await chai.request(app).get(path);
         res.should.have.status(200);
         res.body.length.should.eq(1);
@@ -69,26 +76,44 @@ describe('search', () => {
       });
 
       it('returns performers that are free on requested date', async () => {
-        user = await create('users');
+        const userId = (await create('users')).id;
         const performer1 = await create('performers', {
-          user_id: user.id,
+          user_id: userId,
           location: 'sweden',
+        });
+        await create('images', {
+          user_id: userId,
+          owner_id: performer1.id,
+          owner_type: 'Performer',
         });
         const performer2 = await create('performers', {
-          user_id: user.id,
+          user_id: userId,
           location: 'sweden',
         });
-        await create('performers', {user_id: user.id, location: 'norway'});
+        await create('images', {
+          user_id: userId,
+          owner_id: performer2.id,
+          owner_type: 'Performer',
+        });
+        const tmp = await create('performers', {
+          user_id: userId,
+          location: 'norway'
+        });
+        await create('images', {
+          user_id: userId,
+          owner_id: tmp.id,
+          owner_type: 'Performer',
+        });
 
-        const path = `/search?type=performer&location=sweden&date=2011-01-01`;
+        const path = `/search/performers/sweden?date=2011-01-01`;
 
         let res = await chai.request(app).get(path);
         res.should.have.status(200);
         res.body.length.should.eq(2);
 
         await create('bookings', {
-          user_id: user.id,
-          venue_id: (await create('venues', {user_id: user.id})).id,
+          user_id: userId,
+          venue_id: (await create('venues', {user_id: userId})).id,
           performer_id: performer1.id,
           status: 'booked',
           booking_date: '2011-01-01',
@@ -100,20 +125,43 @@ describe('search', () => {
       });
 
       it('returns performers that match at least one genre', async () => {
-        user = await create('users');
+        const userId = (await create('users')).id;
         const performer1 = await create('performers', {
-          user_id: user.id,
+          user_id: userId,
           location: 'sweden',
+        });
+        await create('images', {
+          user_id: userId,
+          owner_id: performer1.id,
+          owner_type: 'Performer',
         });
         const performer2 = await create('performers', {
-          user_id: user.id,
+          user_id: userId,
           location: 'sweden',
         });
+        await create('images', {
+          user_id: userId,
+          owner_id: performer2.id,
+          owner_type: 'Performer',
+        });
         const performer3 = await create('performers', {
-          user_id: user.id,
+          user_id: userId,
           location: 'norway',
         });
-        await create('performers', {user_id: user.id, location: 'sweden'});
+        await create('images', {
+          user_id: userId,
+          owner_id: performer3.id,
+          owner_type: 'Performer',
+        });
+        const tmp = await create('performers', {
+          user_id: userId,
+          location: 'sweden'
+        });
+        await create('images', {
+          user_id: userId,
+          owner_id: tmp.id,
+          owner_type: 'Performer',
+        });
 
         const genre1 = await create('genres', {name: 'genre1'});
         const genre2 = await create('genres', {name: 'genre2'});
@@ -137,7 +185,7 @@ describe('search', () => {
         });
 
         const genres = `${genre1.id},${genre2.id}`;
-        const path = `/search?type=performer&location=sweden&genres=${genres}`;
+        const path = `/search/performers/sweden?genres=${genres}`;
         const res = await chai.request(app).get(path);
         res.should.have.status(200);
         res.body.length.should.eq(2);
@@ -158,7 +206,7 @@ describe('search', () => {
           user_id: (await create('users')).id,
           location: 'denmark',
         });
-        const path = `/search?type=venue&location=sweden`;
+        const path = `/search/venues/sweden`;
         const res = await chai.request(app).get(path);
         res.should.have.status(200);
         res.body.length.should.eq(1);

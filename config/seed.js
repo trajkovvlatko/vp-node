@@ -1,4 +1,5 @@
 const UserModel = require('../app/models/user_model');
+const GenreModel = require('../app/models/genre_model');
 const PerformerModel = require('../app/models/performer_model');
 const db = require('./database');
 
@@ -35,6 +36,16 @@ async function addPerformer(user, i) {
     image: `performers/${performer.id}/image-${i}.jpg`,
     selected: false,
   });
+
+  const genres = await GenreModel.all();
+  await db.any(`
+    INSERT INTO public.genres_performers
+    (genre_id, performer_id, created_at, updated_at)
+    VALUES (${randomElement(genres).id}, ${performer.id}, now(), now())`);
+  await db.any(`
+    INSERT INTO public.genres_performers
+    (genre_id, performer_id, created_at, updated_at)
+    VALUES (${randomElement(genres).id}, ${performer.id}, now(), now())`);
 }
 
 async function addVenue(user, i) {
@@ -74,6 +85,22 @@ async function addVenue(user, i) {
     email: 'user@name.com',
     password: 'password',
   });
+
+  await db.any('TRUNCATE TABLE public.genres CASCADE;');
+  const genres = [
+    'Blues',
+    'Classical',
+    'Country',
+    'Electronic',
+    'Folk',
+    'Jazz',
+    'New age',
+    'Reggae',
+    'Rock',
+  ];
+  for (let i = 0; i < genres.length; i++) {
+    await GenreModel.create({name: genres[i], active: true});
+  }
 
   for (let i = 1; i <= 10; i++) {
     await addPerformer(user, i);

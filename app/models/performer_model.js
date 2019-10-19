@@ -3,7 +3,8 @@ const db = require('../../config/database');
 class PerformerModel {
   static async all(sorting, limit) {
     try {
-      const sql = [`
+      const sql = [
+        `
         SELECT
           performers.id,
           name,
@@ -16,7 +17,8 @@ class PerformerModel {
           AND images.owner_type = 'Performer'
           AND images.selected IS TRUE
         WHERE active IS TRUE
-      `];
+      `,
+      ];
       if (sorting === 'latest') {
         sql.push('ORDER BY performers.id DESC');
       }
@@ -25,8 +27,6 @@ class PerformerModel {
       }
       return await db.any(sql.join(' '));
     } catch (e) {
-      console.log('--------------------------')
-      console.log(e)
       return {error: e};
     }
   }
@@ -44,10 +44,18 @@ class PerformerModel {
 
   static async search(params) {
     try {
-      let selects = ['DISTINCT(public.performers.*)'];
-      let wheres = ['location = $/location/ AND performers.active IS TRUE'];
+      let selects = ['DISTINCT(public.performers.*)', 'images.image'];
+      let wheres = [
+        'LOWER(location) = LOWER($/location/) AND performers.active IS TRUE',
+      ];
       let data = {location: params.location};
-      let joins = [];
+      let joins = [
+        `
+        JOIN public.images
+          ON images.owner_id = performers.id
+          AND images.owner_type = 'Performer'
+          AND images.selected IS TRUE`,
+      ];
 
       if (params.genres && params.genres.length > 0) {
         joins.push(`
@@ -79,6 +87,7 @@ class PerformerModel {
         data,
       );
     } catch (e) {
+      console.log(e)
       return {error: e};
     }
   }

@@ -29,7 +29,7 @@ describe('venues', () => {
       res.body.should.deep.eq([]);
     });
 
-    it.only('returns list of venues', async () => {
+    it('returns list of venues', async () => {
       const venueIds = [
         (await create('venues', {user_id: user.id})).id,
         (await create('venues', {user_id: user.id})).id,

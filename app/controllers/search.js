@@ -4,21 +4,19 @@ const VenueModel = require('../models/venue_model.js');
 const PerformerModel = require('../models/performer_model.js');
 
 /* GET */
-router.get('/', async function(req, res, next) {
-  const {location, date, genres} = req.query;
-  if (!location) {
-    return res.status(422).send({error: 'Location not provided.'});
-  }
-
-  let params = {location: location};
+router.get('/:type/:location', async function(req, res, next) {
+  const {date, genres} = req.query;
+  let params = {location: req.params.location};
   if (date) params.date = date;
   if (genres) params.genres = genres.split(',');
 
   let results;
-  if (req.query.type === 'venue') {
+  if (req.params.type === 'venues') {
     results = await VenueModel.search(params);
-  } else {
+  } else if (req.params.type === 'performers') {
     results = await PerformerModel.search(params);
+  } else {
+    results = [];
   }
   res.send(results);
 });
