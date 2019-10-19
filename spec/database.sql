@@ -125,7 +125,7 @@ CREATE TABLE public.images (
     id integer NOT NULL,
     user_id integer NOT NULL,
     owner_id integer NOT NULL,
-    owner_type integer NOT NULL,
+    owner_type text NOT NULL,
     image text NOT NULL,
     selected boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -533,6 +533,27 @@ ALTER TABLE ONLY public.venues
 
 ALTER TABLE ONLY public.youtube_links
     ADD CONSTRAINT youtube_links_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: genres_name_unique_index; Type: INDEX; Schema: public; Owner: youplay; Tablespace: 
+--
+
+CREATE UNIQUE INDEX genres_name_unique_index ON public.genres USING btree (name);
+
+
+--
+-- Name: properties_name_unique_index; Type: INDEX; Schema: public; Owner: youplay; Tablespace: 
+--
+
+CREATE UNIQUE INDEX properties_name_unique_index ON public.properties USING btree (name);
+
+
+--
+-- Name: users_email_unique_index; Type: INDEX; Schema: public; Owner: youplay; Tablespace: 
+--
+
+CREATE UNIQUE INDEX users_email_unique_index ON public.users USING btree (email);
 
 
 --

@@ -7,7 +7,7 @@ exports.up = (pgm) => {
     id: { type: 'serial', primaryKey: true },
     user_id: {type: 'integer', references: 'users', notNull: true},
     owner_id: {type: 'integer', notNull: true},
-    owner_type: {type: 'integer', notNull: true},
+    owner_type: {type: 'string', notNull: true},
     image: {type: 'string', notNull: true},
     selected: {type: 'boolean', notNull: true, default: false},
     created_at: {type: 'datetime', notNull: true},

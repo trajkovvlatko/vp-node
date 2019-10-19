@@ -22,6 +22,9 @@ async function create(table, options = {}) {
     case 'bookings':
       return await addBookings(options);
       break;
+    case 'images':
+      return await addImage(options);
+      break;
   }
 }
 
@@ -45,6 +48,27 @@ async function addUser(options) {
     ],
   );
   return {...user, password: password};
+}
+
+async function addImage(options) {
+  return await db.one(
+    `INSERT INTO public.images
+    (user_id, owner_id, owner_type, image, selected, created_at, updated_at)
+    VALUES
+    ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *`,
+    [
+      options.user_id,
+      options.owner_id,
+      options.owner_type,
+      options.image || `${rand()}.${rand()}`,
+      typeof options.selected !== 'undefined' && options.selected !== null
+        ? options.selected
+        : true,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
 }
 
 async function addPerformer(options) {

@@ -4,7 +4,7 @@ const PerformerModel = require('../models/performer_model.js');
 
 /* GET index */
 router.get('/', async function(req, res, next) {
-  const performers = await PerformerModel.all();
+  const performers = await PerformerModel.all(req.query.sorting);
   res.send(performers);
 });
 

@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-
 exports.shorthands = undefined;
 
 exports.up = pgm => {
@@ -13,6 +12,7 @@ exports.up = pgm => {
     updated_at: {type: 'datetime', notNull: true},
   };
   pgm.createTable('users', columns);
+  pgm.createIndex('users', ['email'], {unique: true});
 };
 
 exports.down = pgm => {

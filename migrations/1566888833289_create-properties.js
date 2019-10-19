@@ -11,6 +11,7 @@ exports.up = (pgm) => {
     updated_at: {type: 'datetime', notNull: true},
   };
   pgm.createTable('properties', columns);
+  pgm.createIndex('properties', ['name'], {unique: true});
 };
 
 exports.down = (pgm) => {

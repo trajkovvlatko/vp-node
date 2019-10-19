@@ -1,11 +1,21 @@
 const db = require('../../config/database');
 
 class PerformerModel {
-  static async all() {
+  static async all(sorting) {
     try {
-      return await db.any(
-        'SELECT * FROM public.performers WHERE active IS TRUE',
-      );
+      const sql = [`
+        SELECT performers.id, name, 'performer' AS type, images.image
+        FROM public.performers
+        JOIN public.images
+          ON images.owner_id = performers.id
+          AND images.owner_type = 'Performer'
+          AND images.selected IS TRUE
+        WHERE active IS TRUE
+      `];
+      if (sorting === 'latest') {
+        sql.push('ORDER BY id DESC');
+      }
+      return await db.any(sql.join(' '));
     } catch (e) {
       return {error: e};
     }

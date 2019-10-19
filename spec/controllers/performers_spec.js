@@ -14,6 +14,14 @@ describe('performers', () => {
     user = await create('users');
   });
 
+  async function addImage(ownerId, userId) {
+    await create('images', {
+      user_id: userId,
+      owner_id: ownerId,
+      owner_type: 'Performer',
+    });
+  }
+
   describe('GET /', () => {
     it('returns empty array for no performers present', async () => {
       const res = await chai.request(app).get('/performers');
@@ -21,11 +29,21 @@ describe('performers', () => {
       res.body.should.deep.eq([]);
     });
 
-    it('returns list of performers', async () => {
+    it('returns list of active performers', async () => {
       const performerIds = [
         (await create('performers', {user_id: user.id})).id,
         (await create('performers', {user_id: user.id})).id,
       ];
+      const inactive = await create('performers', {
+        user_id: user.id,
+        active: false,
+      });
+      await create('performers', {user_id: user.id});
+
+      await addImage(performerIds[0], user.id);
+      await addImage(performerIds[1], user.id);
+      await addImage(inactive.id, user.id);
+
       const res = await chai.request(app).get('/performers');
       res.should.have.status(200);
       res.body.should.be.an('array');
@@ -42,6 +60,8 @@ describe('performers', () => {
         (await create('performers', {user_id: user.id})).id,
         (await create('performers', {user_id: user.id})).id,
       ];
+      await addImage(performerIds[0], user.id);
+      await addImage(performerIds[1], user.id);
       id = performerIds[0];
     });
 

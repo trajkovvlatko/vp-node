@@ -13,7 +13,6 @@ exports.up = (pgm) => {
     updated_at: {type: 'datetime', notNull: true},
   };
   pgm.createTable('youtube_links', columns)
-
 };
 
 exports.down = (pgm) => {

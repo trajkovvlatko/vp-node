@@ -84,6 +84,36 @@ class UserModel {
     }
   }
 
+  images() {
+    return {
+      create: async (params = {}) => {
+        try {
+          return await db.one(
+            `INSERT INTO public.images (
+              owner_id,
+              owner_type,
+              image,
+              selected,
+              user_id,
+              created_at,
+              updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, now(), now())
+            RETURNING *`,
+            [
+              params.owner_id,
+              params.owner_type,
+              params.image,
+              params.selected,
+              this.data.id,
+            ]
+          );
+        } catch (e) {
+          return {error: 'Error creating an image.'};
+        }
+      }
+    }
+  }
 
   performers() {
     return {
