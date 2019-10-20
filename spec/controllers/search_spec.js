@@ -163,8 +163,8 @@ describe('search', () => {
           owner_type: 'Performer',
         });
 
-        const genre1 = await create('genres', {name: 'genre1'});
-        const genre2 = await create('genres', {name: 'genre2'});
+        const genre1 = await create('genres', {});
+        const genre2 = await create('genres', {});
         await create('genres', {name: 'genre3'});
 
         await create('genres_performers', {

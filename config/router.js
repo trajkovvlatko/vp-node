@@ -10,6 +10,7 @@ const admin_venues = require('../app/controllers/admin/venues');
 const users = require('../app/controllers/users');
 const search = require('../app/controllers/search');
 const genres = require('../app/controllers/genres');
+const properties = require('../app/controllers/properties');
 
 function authenticate() {
   return passport.authenticate('jwt', {session: false});
@@ -22,6 +23,7 @@ module.exports = function (app) {
   app.use('/venues', venues);
   app.use('/search', search);
   app.use('/genres', genres);
+  app.use('/properties', properties);
 
   // with user
   app.use('/profile', authenticate(), users);

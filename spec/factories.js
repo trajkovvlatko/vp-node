@@ -25,6 +25,12 @@ async function create(table, options = {}) {
     case 'images':
       return await addImage(options);
       break;
+    case 'properties':
+      return await addProperties(options);
+      break;
+    case 'properties_venues':
+      return await addPropertiesVenues(options);
+      break;
   }
 }
 
@@ -137,6 +143,38 @@ async function addGenresPerformers(options) {
     [
       options.genre_id,
       options.performer_id,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
+}
+
+async function addProperties(options) {
+  return await db.one(
+    `INSERT INTO public.properties
+    (name, active, created_at, updated_at)
+    VALUES($1, $2, $3, $4)
+    RETURNING *`,
+    [
+      options.name || rand(),
+      typeof options.active !== 'undefined' && options.active !== null
+        ? options.active
+        : true,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
+}
+
+async function addPropertiesVenues(options) {
+  return await db.one(
+    `INSERT INTO public.properties_venues
+    (property_id, venue_id, created_at, updated_at)
+    VALUES($1, $2, $3, $4)
+    RETURNING *`,
+    [
+      options.property_id,
+      options.venue_id,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],

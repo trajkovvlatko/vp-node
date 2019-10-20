@@ -16,6 +16,8 @@ async function clearTables() {
   await db.any('TRUNCATE TABLE public.users CASCADE;');
   await db.any('TRUNCATE TABLE public.performers CASCADE;');
   await db.any('TRUNCATE TABLE public.venues CASCADE;');
+  await db.any('TRUNCATE TABLE public.genres CASCADE;');
+  await db.any('TRUNCATE TABLE public.properties CASCADE;');
 }
 
 before(async () => {

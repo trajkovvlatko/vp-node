@@ -1,5 +1,6 @@
 const UserModel = require('../app/models/user_model');
 const GenreModel = require('../app/models/genre_model');
+const PropertyModel = require('../app/models/property_model');
 const PerformerModel = require('../app/models/performer_model');
 const db = require('./database');
 
@@ -75,6 +76,16 @@ async function addVenue(user, i) {
     image: `venues/${venue.id}/image-${i}.jpg`,
     selected: false,
   });
+
+  const properties = await PropertyModel.all();
+  await db.any(`
+    INSERT INTO public.properties_venues
+    (property_id, venue_id, created_at, updated_at)
+    VALUES (${randomElement(properties).id}, ${venue.id}, now(), now())`);
+  await db.any(`
+    INSERT INTO public.properties_venues
+    (property_id, venue_id, created_at, updated_at)
+    VALUES (${randomElement(properties).id}, ${venue.id}, now(), now())`);
 }
 
 (async function() {
@@ -100,6 +111,19 @@ async function addVenue(user, i) {
   ];
   for (let i = 0; i < genres.length; i++) {
     await GenreModel.create({name: genres[i], active: true});
+  }
+
+  await db.any('TRUNCATE TABLE public.properties CASCADE;');
+  const properties = [
+    'bar',
+    'nightclub',
+    'cozy',
+    'loud',
+    'dance floor',
+    'dark',
+  ];
+  for (let i = 0; i < properties.length; i++) {
+    await PropertyModel.create({name: properties[i], active: true});
   }
 
   for (let i = 1; i <= 10; i++) {
