@@ -59,10 +59,10 @@ class PerformerModel {
 
       if (params.genres && params.genres.length > 0) {
         joins.push(`
-          INNER JOIN public.genres_performers
+          JOIN public.genres_performers
             ON genres_performers.performer_id = performers.id
             AND genres_performers.genre_id IN ($/genres:csv/)
-          INNER JOIN public.genres
+          JOIN public.genres
             ON genres.id = genres_performers.genre_id
             AND genres.active IS TRUE`);
         data.genres = params.genres;
@@ -95,10 +95,10 @@ class PerformerModel {
 
 // SELECT DISTINCT(public.performers.*)
 // FROM public.performers
-// INNER JOIN public.genres_performers
+// JOIN public.genres_performers
 //   ON genres_performers.performer_id = performers.id
 //   AND genres_performers.genre_id IN (${genres})
-// INNER JOIN public.genres
+// JOIN public.genres
 //   ON genres.id = genres_performers.genre_id
 //   AND genres.active IS TRUE
 // WHERE location = ${location}

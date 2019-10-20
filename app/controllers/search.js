@@ -5,10 +5,11 @@ const PerformerModel = require('../models/performer_model.js');
 
 /* GET */
 router.get('/:type/:location', async function(req, res, next) {
-  const {date, genres} = req.query;
+  const {date, genres, properties} = req.query;
   let params = {location: req.params.location};
   if (date) params.date = date;
   if (genres) params.genres = genres.split(',');
+  if (properties) params.properties = properties.split(',');
 
   let results;
   if (req.params.type === 'venues') {
