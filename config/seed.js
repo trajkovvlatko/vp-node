@@ -47,6 +47,17 @@ async function addPerformer(user, i) {
     INSERT INTO public.genres_performers
     (genre_id, performer_id, created_at, updated_at)
     VALUES (${randomElement(genres).id}, ${performer.id}, now(), now())`);
+
+  await user.youtubeLinks().create({
+    ownerId: performer.id,
+    ownerType: 'Performer',
+    link: `http://performer-${performer.id}-youtube-1.asdf`,
+  });
+  await user.youtubeLinks().create({
+    ownerId: performer.id,
+    ownerType: 'Performer',
+    link: `http://performer-${performer.id}-youtube-2.asdf`,
+  });
 }
 
 async function addVenue(user, i) {
@@ -86,6 +97,17 @@ async function addVenue(user, i) {
     INSERT INTO public.properties_venues
     (property_id, venue_id, created_at, updated_at)
     VALUES (${randomElement(properties).id}, ${venue.id}, now(), now())`);
+
+  await user.youtubeLinks().create({
+    ownerId: venue.id,
+    ownerType: 'Venue',
+    link: `http://venue-${venue.id}-youtube-1.asdf`,
+  });
+  await user.youtubeLinks().create({
+    ownerId: venue.id,
+    ownerType: 'Venue',
+    link: `http://venue-${venue.id}-youtube-2.asdf`,
+  });
 }
 
 (async function() {

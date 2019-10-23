@@ -21,7 +21,7 @@ class UserModel {
         [email],
       );
       if (u.length === 0) {
-        return {error: 'User not found.'}
+        return {error: 'User not found.'};
       }
       const match = await bcrypt.compare(password, u[0].password);
       if (match) {
@@ -76,7 +76,7 @@ class UserModel {
         (name, email, password, active, created_at, updated_at)
         VALUES($1, $2, $3, TRUE, now(), now())
         RETURNING id, name, email`,
-        [data.name, data.email, hash]
+        [data.name, data.email, hash],
       );
       return new UserModel(record);
     } catch (e) {
@@ -106,13 +106,13 @@ class UserModel {
               params.image,
               params.selected,
               this.data.id,
-            ]
+            ],
           );
         } catch (e) {
           return {error: 'Error creating an image.'};
         }
-      }
-    }
+      },
+    };
   }
 
   performers() {
@@ -151,18 +151,24 @@ class UserModel {
         let values = {};
         let columns = [];
         let keys = [];
-        ['name', 'location', 'phone', 'details', 'website', 'rating', 'active'].forEach(
-          column => {
-            if (
-              typeof params[column] !== 'undefined' &&
-              params[column] !== null
-            ) {
-              columns.push(column);
-              keys.push(`\$\{${column}}`);
-              values[column] = params[column];
-            }
-          },
-        );
+        [
+          'name',
+          'location',
+          'phone',
+          'details',
+          'website',
+          'rating',
+          'active',
+        ].forEach(column => {
+          if (
+            typeof params[column] !== 'undefined' &&
+            params[column] !== null
+          ) {
+            columns.push(column);
+            keys.push(`\$\{${column}}`);
+            values[column] = params[column];
+          }
+        });
 
         try {
           return await db.one(
@@ -248,18 +254,24 @@ class UserModel {
         let values = {};
         let columns = [];
         let keys = [];
-        ['name', 'location', 'phone', 'details', 'website', 'rating', 'active'].forEach(
-          column => {
-            if (
-              typeof params[column] !== 'undefined' &&
-              params[column] !== null
-            ) {
-              columns.push(column);
-              keys.push(`\$\{${column}}`);
-              values[column] = params[column];
-            }
-          },
-        );
+        [
+          'name',
+          'location',
+          'phone',
+          'details',
+          'website',
+          'rating',
+          'active',
+        ].forEach(column => {
+          if (
+            typeof params[column] !== 'undefined' &&
+            params[column] !== null
+          ) {
+            columns.push(column);
+            keys.push(`\$\{${column}}`);
+            values[column] = params[column];
+          }
+        });
 
         try {
           return await db.one(
@@ -304,6 +316,31 @@ class UserModel {
           );
         } catch (e) {
           return {error: 'Error updating venue.'};
+        }
+      },
+    };
+  }
+
+  youtubeLinks() {
+    return {
+      create: async params => {
+        try {
+          return await db.one(
+            `
+            INSERT INTO public.youtube_links (
+              user_id,
+              owner_id,
+              owner_type,
+              link,
+              created_at,
+              updated_at
+            )
+            VALUES ($1, $2, $3, $4, now(), now())
+            RETURNING *`,
+            [this.data.id, params.ownerId, params.ownerType, params.link],
+          );
+        } catch (e) {
+          return {error: 'Error creating a youtube link.'};
         }
       },
     };

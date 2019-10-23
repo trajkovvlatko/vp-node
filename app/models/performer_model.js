@@ -34,10 +34,60 @@ class PerformerModel {
   static async find(id) {
     try {
       return await db.one(
-        'SELECT * FROM public.performers WHERE active IS TRUE AND id = $1',
+        `
+        SELECT
+          performers.*,
+          COALESCE(gen.list, '[]'::json) AS genres_list,
+          COALESCE(yt.list, '[]'::json) AS youtube_links_list,
+          COALESCE(img.list, '[]'::json) AS images_list
+        FROM public.performers
+
+        JOIN LATERAL (
+          SELECT json_agg(
+            json_build_object(
+              'image'::text, images.image,
+              'selected'::text, images.selected
+            )
+          ) AS list
+          FROM public.images
+          WHERE images.owner_type = 'Performer'
+          AND images.owner_id = $1
+        ) img ON true
+
+        JOIN LATERAL (
+          SELECT json_agg(
+            json_build_object(
+              'link'::text, youtube_links.link
+            )
+          ) AS list
+          FROM public.youtube_links
+          WHERE youtube_links.owner_type = 'Performer'
+          AND youtube_links.owner_id = $1
+        ) yt ON true
+
+        JOIN LATERAL (
+          SELECT json_agg(
+            json_build_object(
+              'id'::text, genres.id,
+              'name'::text, genres.name
+            )
+          ) AS list
+          FROM public.genres
+
+          JOIN public.genres_performers
+            ON genres_performers.performer_id = performers.id
+            AND genres_performers.genre_id = genres.id
+
+          WHERE genres.id = genres_performers.genre_id
+        ) gen ON true
+
+        WHERE active IS TRUE
+        AND id = $1
+        `,
         id,
       );
     } catch (e) {
+      console.log(e)
       return {error: 'Record not found.'};
     }
   }
@@ -87,7 +137,7 @@ class PerformerModel {
         data,
       );
     } catch (e) {
-      console.log(e)
+      console.log(e);
       return {error: e};
     }
   }
