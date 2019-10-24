@@ -49,15 +49,16 @@ async function addPerformer(user, i) {
     VALUES (${randomElement(genres).id}, ${performer.id}, now(), now())`);
 
   await user.youtubeLinks().create({
-    ownerId: performer.id,
-    ownerType: 'Performer',
+    owner_id: performer.id,
+    owner_type: 'Performer',
     link: `http://performer-${performer.id}-youtube-1.asdf`,
   });
   await user.youtubeLinks().create({
-    ownerId: performer.id,
-    ownerType: 'Performer',
+    owner_id: performer.id,
+    owner_type: 'Performer',
     link: `http://performer-${performer.id}-youtube-2.asdf`,
   });
+  return performer;
 }
 
 async function addVenue(user, i) {
@@ -99,14 +100,24 @@ async function addVenue(user, i) {
     VALUES (${randomElement(properties).id}, ${venue.id}, now(), now())`);
 
   await user.youtubeLinks().create({
-    ownerId: venue.id,
-    ownerType: 'Venue',
+    owner_id: venue.id,
+    owner_type: 'Venue',
     link: `http://venue-${venue.id}-youtube-1.asdf`,
   });
   await user.youtubeLinks().create({
-    ownerId: venue.id,
-    ownerType: 'Venue',
+    owner_id: venue.id,
+    owner_type: 'Venue',
     link: `http://venue-${venue.id}-youtube-2.asdf`,
+  });
+  return venue;
+}
+
+async function addBooking(user, performer, venue) {
+  const booking = await user.bookings().create({
+    performer_id: performer.id,
+    venue_id: venue.id,
+    booking_date: randomElement(['2012-01-01', '2012-01-02', '2012-01-03']),
+    status: randomElement(['requested', 'agreed', 'completed']),
   });
 }
 
@@ -148,11 +159,10 @@ async function addVenue(user, i) {
     await PropertyModel.create({name: properties[i], active: true});
   }
 
+  let performer, venue;
   for (let i = 1; i <= 10; i++) {
-    await addPerformer(user, i);
-  }
-
-  for (let i = 1; i <= 10; i++) {
-    await addVenue(user, i);
+    performer = await addPerformer(user, i);
+    venue = await addVenue(user, i);
+    await addBooking(user, performer, venue);
   }
 })();

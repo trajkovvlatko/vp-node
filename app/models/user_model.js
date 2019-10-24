@@ -337,10 +337,43 @@ class UserModel {
             )
             VALUES ($1, $2, $3, $4, now(), now())
             RETURNING *`,
-            [this.data.id, params.ownerId, params.ownerType, params.link],
+            [this.data.id, params.owner_id, params.owner_type, params.link],
           );
         } catch (e) {
           return {error: 'Error creating a youtube link.'};
+        }
+      },
+    };
+  }
+
+  bookings() {
+    return {
+      create: async params => {
+        try {
+          return await db.one(
+            `
+            INSERT INTO public.bookings (
+              user_id,
+              performer_id,
+              venue_id,
+              booking_date,
+              status,
+              created_at,
+              updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, now(), now())
+            RETURNING *`,
+            [
+              this.data.id,
+              params.performer_id,
+              params.venue_id,
+              params.booking_date,
+              params.status,
+            ],
+          );
+        } catch (e) {
+          console.log(e);
+          return {error: 'Error creating a booking.'};
         }
       },
     };

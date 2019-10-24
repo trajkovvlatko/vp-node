@@ -62,6 +62,16 @@ describe('performers', () => {
       ];
       await addImage(performerIds[0], user.id);
       await addImage(performerIds[1], user.id);
+      await create('youtube_links', {
+        user_id: user.id,
+        owner_id: performerIds[0],
+        owner_type: 'Performer',
+      });
+      await create('youtube_links', {
+        user_id: user.id,
+        owner_id: performerIds[1],
+        owner_type: 'Performer',
+      });
       id = performerIds[0];
     });
 

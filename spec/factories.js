@@ -31,6 +31,9 @@ async function create(table, options = {}) {
     case 'properties_venues':
       return await addPropertiesVenues(options);
       break;
+    case 'youtube_links':
+      return await addYoutubeLinks(options);
+      break;
   }
 }
 
@@ -175,6 +178,23 @@ async function addPropertiesVenues(options) {
     [
       options.property_id,
       options.venue_id,
+      options.created_at || new Date(),
+      options.updated_at || new Date(),
+    ],
+  );
+}
+
+async function addYoutubeLinks(options) {
+  return await db.one(
+    `INSERT INTO public.youtube_links
+    (owner_id, owner_type, link, user_id, created_at, updated_at)
+    VALUES($1, $2, $3, $4, $5, $6)
+    RETURNING *`,
+    [
+      options.owner_id,
+      options.owner_type,
+      options.link || `http://${rand()}.${rand()}`,
+      options.user_id,
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],

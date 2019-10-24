@@ -370,7 +370,7 @@ CREATE TABLE public.youtube_links (
     id integer NOT NULL,
     user_id integer NOT NULL,
     owner_id integer NOT NULL,
-    owner_type integer NOT NULL,
+    owner_type text NOT NULL,
     link text NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL

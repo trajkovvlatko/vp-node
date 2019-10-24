@@ -39,7 +39,8 @@ class PerformerModel {
           performers.*,
           COALESCE(gen.list, '[]'::json) AS genres_list,
           COALESCE(yt.list, '[]'::json) AS youtube_links_list,
-          COALESCE(img.list, '[]'::json) AS images_list
+          COALESCE(img.list, '[]'::json) AS images_list,
+          COALESCE(booking.list, '[]'::json) AS bookings_list
         FROM public.performers
 
         JOIN LATERAL (
@@ -79,7 +80,24 @@ class PerformerModel {
             AND genres_performers.genre_id = genres.id
 
           WHERE genres.id = genres_performers.genre_id
+          AND genres.active IS TRUE
         ) gen ON true
+
+        JOIN LATERAL (
+          SELECT json_agg(
+            json_build_object(
+              'date'::text, bookings.booking_date,
+              'venue_id'::text, venues.id,
+              'venue_name'::text, venues.name
+            )
+          ) AS list
+          FROM public.bookings
+
+          JOIN public.venues
+            ON bookings.venue_id = venues.id
+
+          WHERE bookings.performer_id = $1
+        ) booking ON true
 
         WHERE active IS TRUE
         AND id = $1
