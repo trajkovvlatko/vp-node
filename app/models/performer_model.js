@@ -105,7 +105,6 @@ class PerformerModel {
         id,
       );
     } catch (e) {
-      console.log(e)
       return {error: 'Record not found.'};
     }
   }
@@ -155,7 +154,6 @@ class PerformerModel {
         data,
       );
     } catch (e) {
-      console.log(e);
       return {error: e};
     }
   }

@@ -83,14 +83,18 @@ async function addImage(options) {
 async function addPerformer(options) {
   return await db.one(
     `INSERT INTO public.performers
-    (name, user_id, location, phone, active, created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6, $7)
+    (name, user_id, location, phone, details, website, rating, active,
+      created_at, updated_at)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     RETURNING *`,
     [
       options.name || rand(),
       options.user_id,
       options.location || rand(),
       options.phone || rand(),
+      options.details || rand(),
+      options.website || rand(),
+      options.rating || 2,
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
@@ -219,7 +223,7 @@ async function addBookings(options) {
       options.venue_id,
       options.performer_id,
       options.status,
-      options.booking_date,
+      options.booking_date || new Date(),
       options.created_at || new Date(),
       options.updated_at || new Date(),
     ],

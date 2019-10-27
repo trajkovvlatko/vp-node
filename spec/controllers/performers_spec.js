@@ -15,7 +15,7 @@ describe('performers', () => {
   });
 
   async function addImage(ownerId, userId) {
-    await create('images', {
+    return await create('images', {
       user_id: userId,
       owner_id: ownerId,
       owner_type: 'Performer',
@@ -53,33 +53,89 @@ describe('performers', () => {
   });
 
   describe('GET /:id', () => {
-    let id;
+    let id, performers, genre1, genre2, venue, yt, img, booking1, booking2;
 
     beforeEach(async () => {
-      const performerIds = [
-        (await create('performers', {user_id: user.id})).id,
-        (await create('performers', {user_id: user.id})).id,
+      performers = [
+        await create('performers', {user_id: user.id}),
+        await create('performers', {user_id: user.id}),
       ];
-      await addImage(performerIds[0], user.id);
-      await addImage(performerIds[1], user.id);
-      await create('youtube_links', {
+      id = performers[0].id;
+      venue = await create('venues', {user_id: user.id});
+      img = await addImage(id, user.id);
+      await addImage(performers[1].id, user.id);
+      yt = await create('youtube_links', {
         user_id: user.id,
-        owner_id: performerIds[0],
+        owner_id: id,
         owner_type: 'Performer',
       });
       await create('youtube_links', {
         user_id: user.id,
-        owner_id: performerIds[1],
+        owner_id: performers[1].id,
         owner_type: 'Performer',
       });
-      id = performerIds[0];
+      genre1 = await create('genres', {});
+      genre2 = await create('genres', {});
+      await create('genres', {});
+      await create('genres_performers', {
+        genre_id: genre1.id,
+        performer_id: id,
+      });
+      await create('genres_performers', {
+        genre_id: genre2.id,
+        performer_id: id,
+      });
+      await create('genres_performers', {
+        genre_id: genre1.id,
+        performer_id: performers[1].id,
+      });
+      booking1 = await create('bookings', {
+        user_id: user.id,
+        performer_id: id,
+        venue_id: venue.id,
+        status: 'pending',
+        booking_date: '2012-01-01',
+      });
+      booking2 = await create('bookings', {
+        user_id: user.id,
+        performer_id: performers[1].id,
+        venue_id: venue.id,
+        status: 'pending',
+        booking_date: '2013-03-04',
+      });
     });
 
     it('returns an object with a performer', async () => {
       const res = await chai.request(app).get(`/performers/${id}`);
+      const expected = performers[0];
       res.should.have.status(200);
       res.body.should.be.an('object');
-      res.body.id.should.eq(id);
+      res.body.should.deep.eq({
+        id: expected.id,
+        user_id: expected.user_id,
+        name: expected.name,
+        location: expected.location,
+        phone: expected.phone,
+        details: expected.details,
+        website: expected.website,
+        rating: expected.rating,
+        active: expected.active,
+        created_at: expected.created_at.toISOString(),
+        updated_at: expected.updated_at.toISOString(),
+        genres_list: [
+          {id: genre1.id, name: genre1.name},
+          {id: genre2.id, name: genre2.name},
+        ],
+        youtube_links_list: [{link: yt.link}],
+        images_list: [{image: img.image, selected: img.selected}],
+        bookings_list: [
+          {
+            date: '2012-01-01',
+            venue_id: venue.id,
+            venue_name: venue.name,
+          },
+        ],
+      });
     });
 
     it('returns an error if performer is not found', async () => {

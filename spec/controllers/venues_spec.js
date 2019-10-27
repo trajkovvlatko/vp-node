@@ -15,7 +15,7 @@ describe('venues', () => {
   });
 
   async function addImage(ownerId, userId) {
-    await create('images', {
+    return await create('images', {
       user_id: userId,
       owner_id: ownerId,
       owner_type: 'Venue',
@@ -53,21 +53,88 @@ describe('venues', () => {
   });
 
   describe('GET /:id', () => {
-    let id;
+    let venues, prop1, prop2, performer, yt, img, booking1, booking2;
 
     beforeEach(async () => {
-      const venueIds = [
-        (await create('venues', {user_id: user.id})).id,
-        (await create('venues', {user_id: user.id})).id,
+      venues = [
+        await create('venues', {user_id: user.id}),
+        await create('venues', {user_id: user.id}),
       ];
-      id = venueIds[0];
+      performer = await create('performers', {user_id: user.id});
+      img = await addImage(venues[0].id, user.id);
+      await addImage(venues[1].id, user.id);
+      yt = await create('youtube_links', {
+        user_id: user.id,
+        owner_id: venues[0].id,
+        owner_type: 'Venue',
+      });
+      await create('youtube_links', {
+        user_id: user.id,
+        owner_id: venues[1].id,
+        owner_type: 'Venue',
+      });
+      prop1 = await create('properties', {});
+      prop2 = await create('properties', {});
+      await create('properties', {});
+      await create('properties_venues', {
+        property_id: prop1.id,
+        venue_id: venues[0].id,
+      });
+      await create('properties_venues', {
+        property_id: prop2.id,
+        venue_id: venues[0].id,
+      });
+      await create('properties_venues', {
+        property_id: prop1.id,
+        venue_id: venues[1].id,
+      });
+      booking1 = await create('bookings', {
+        user_id: user.id,
+        performer_id: performer.id,
+        venue_id: venues[0].id,
+        status: 'pending',
+        booking_date: '2012-01-01',
+      });
+      booking2 = await create('bookings', {
+        user_id: user.id,
+        performer_id: performer.id,
+        venue_id: venues[1].id,
+        status: 'pending',
+        booking_date: '2013-03-04',
+      });
     });
 
     it('returns an object with a venue', async () => {
-      const res = await chai.request(app).get(`/venues/${id}`);
+      const res = await chai.request(app).get(`/venues/${venues[0].id}`);
+      const expected = venues[0];
       res.should.have.status(200);
       res.body.should.be.an('object');
-      res.body.id.should.eq(id);
+      res.body.should.deep.eq({
+        id: expected.id,
+        user_id: expected.user_id,
+        name: expected.name,
+        location: expected.location,
+        phone: expected.phone,
+        details: expected.details,
+        website: expected.website,
+        rating: expected.rating,
+        active: expected.active,
+        created_at: expected.created_at.toISOString(),
+        updated_at: expected.updated_at.toISOString(),
+        properties_list: [
+          {id: prop1.id, name: prop1.name},
+          {id: prop2.id, name: prop2.name},
+        ],
+        youtube_links_list: [{link: yt.link}],
+        images_list: [{image: img.image, selected: img.selected}],
+        bookings_list: [
+          {
+            date: '2012-01-01',
+            performer_id: performer.id,
+            performer_name: performer.name,
+          },
+        ],
+      });
     });
 
     it('returns an error if venue is not found', async () => {
