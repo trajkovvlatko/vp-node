@@ -11,14 +11,14 @@ router.post('/login', function(req, res, next) {
   passport.authenticate('local', {session: false}, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({
-        message: 'Something is not right',
+        error: info.message,
         user: user,
       });
     }
 
     req.login(user, {session: false}, err => {
       if (err) {
-        res.send(err);
+        return res.send(err);
       }
       const token = jwt.sign(user, secret);
       return res.json({token});
@@ -32,7 +32,7 @@ router.post('/register', async function(req, res, next) {
   if (!user.error) {
     res.send(user.data);
   } else {
-    res.status(500).send({ error: 'Error in registration.' });
+    res.status(500).send({ error: user.error.detail });
   }
 });
 

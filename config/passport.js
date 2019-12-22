@@ -22,7 +22,7 @@ passport.use(
       // and ready for storing in JWT
       return await UserModel.findByCredentials(email, password)
         .then(resp => {
-          if (!resp) {
+          if (!resp || resp.error) {
             return cb(null, false, {message: 'Incorrect email or password.'});
           }
           return cb(null, resp, {message: 'Logged In Successfully'});

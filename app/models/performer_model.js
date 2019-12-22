@@ -97,6 +97,7 @@ class PerformerModel {
             ON bookings.venue_id = venues.id
 
           WHERE bookings.performer_id = $1
+          LIMIT 5
         ) booking ON true
 
         WHERE active IS TRUE
