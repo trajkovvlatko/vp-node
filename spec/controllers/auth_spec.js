@@ -37,7 +37,8 @@ describe('auth', () => {
         .post('/auth/register')
         .send(options);
       res.should.have.status(500);
-      res.body.error.should.eq('Error in registration.');
+      res.body.error.should.include('Failing row contains');
+      res.body.error.should.include(', null, some@email.com');
     });
   });
 });

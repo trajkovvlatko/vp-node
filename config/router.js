@@ -4,9 +4,9 @@ require('./passport');
 const auth = require('../app/controllers/auth');
 const indexRouter = require('../app/controllers/index');
 const performers = require('../app/controllers/performers');
-const admin_performers = require('../app/controllers/admin/performers');
+const adminPerformers = require('../app/controllers/admin/performers');
 const venues = require('../app/controllers/venues');
-const admin_venues = require('../app/controllers/admin/venues');
+const adminVenues = require('../app/controllers/admin/venues');
 const users = require('../app/controllers/users');
 const search = require('../app/controllers/search');
 const genres = require('../app/controllers/genres');
@@ -27,8 +27,8 @@ module.exports = function (app) {
 
   // with user
   app.use('/profile', authenticate(), users);
-  app.use('/admin/performers', authenticate(), admin_performers);
-  app.use('/admin/venues', authenticate(), admin_venues);
+  app.use('/admin/performers', authenticate(), adminPerformers);
+  app.use('/admin/venues', authenticate(), adminVenues);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
