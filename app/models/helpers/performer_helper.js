@@ -11,6 +11,7 @@ function sqlGetPerformer() {
     JOIN LATERAL (
       SELECT json_agg(
         json_build_object(
+          'id'::text, images.id,
           'image'::text, images.image,
           'selected'::text, images.selected
         )
@@ -23,6 +24,7 @@ function sqlGetPerformer() {
     JOIN LATERAL (
       SELECT json_agg(
         json_build_object(
+          'id'::text, youtube_links.id,
           'link'::text, youtube_links.link
         )
       ) AS list

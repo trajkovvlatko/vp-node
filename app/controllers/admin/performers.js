@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const UserModel = require('../../models/user_model.js');
+const path = require('path');
+const multer = require('multer');
 
 /* GET index */
 router.get('/', async function(req, res, next) {
@@ -34,6 +36,38 @@ router.post('/', async function(req, res, next) {
   } else {
     res.status(500).send(performer);
   }
+});
+
+/* POST :id/images */
+router.post('/:id/images', async function(req, res, next) {
+
+  const storage = multer.diskStorage({
+    destination: './public/uploads/',
+    filename: function(req, file, cb) {
+      cb(null, 'IMAGE-' +Math.random() + path.extname(file.originalname));
+    },
+  });
+
+  const upload = multer({
+    storage: storage,
+    limits: {fileSize: 1000000},
+  }).any(); //.array('images[]');
+
+  upload(req, res, err => {
+    if (!err) {
+      let removeImageIds = req.body.remove_image_ids;
+      if (removeImageIds && removeImageIds.length > 0) {
+        removeImageIds = removeImageIds.split(',').map((i) => parseInt(i));
+        console.log('--------------------');
+        console.log(removeImageIds);
+        console.log('--------------------');
+      }
+      return res.send(200).end();
+    }
+  });
+
+  // const performer = await req.user.performers().find(req.params.id);
+  // res.status(performer.error ? 404 : 200).send(performer);
 });
 
 module.exports = router;
