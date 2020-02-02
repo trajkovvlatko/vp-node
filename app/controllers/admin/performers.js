@@ -40,34 +40,49 @@ router.post('/', async function(req, res, next) {
 
 /* POST :id/images */
 router.post('/:id/images', async function(req, res, next) {
+  const FILE_SIZE = 10000000;
+  const DESTINATION = './public/uploads/';
 
+  const newImages = [];
   const storage = multer.diskStorage({
-    destination: './public/uploads/',
+    destination: DESTINATION,
     filename: function(req, file, cb) {
-      cb(null, 'IMAGE-' +Math.random() + path.extname(file.originalname));
+      const name = 'IMAGE-' + Math.random() + path.extname(file.originalname);
+      newImages.push(name);
+      cb(null, name);
     },
   });
 
   const upload = multer({
     storage: storage,
-    limits: {fileSize: 1000000},
-  }).any(); //.array('images[]');
+    limits: {fileSize: FILE_SIZE},
+  }).array('images[]');
 
-  upload(req, res, err => {
+  upload(req, res, async err => {
     if (!err) {
       let removeImageIds = req.body.remove_image_ids;
       if (removeImageIds && removeImageIds.length > 0) {
-        removeImageIds = removeImageIds.split(',').map((i) => parseInt(i));
-        console.log('--------------------');
-        console.log(removeImageIds);
-        console.log('--------------------');
+        removeImageIds = removeImageIds.split(',').map(i => parseInt(i));
       }
-      return res.send(200).end();
+
+      const save = async name => {
+        return req.user.images().create({
+          owner_id: req.params.id,
+          owner_type: 'Performer',
+          image: name,
+          selected: false,
+        });
+      };
+
+      const promises = newImages.map(name => save(name));
+      await req.user.images().delete(removeImageIds);
+      const saved = await Promise.all(promises);
+
+      return res.send(saved).end();
+    } else {
+      res.status(500).send({error: 'Upload failed.'});
     }
   });
-
-  // const performer = await req.user.performers().find(req.params.id);
-  // res.status(performer.error ? 404 : 200).send(performer);
 });
 
 module.exports = router;

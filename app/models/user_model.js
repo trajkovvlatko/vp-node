@@ -101,7 +101,7 @@ class UserModel {
               updated_at
             )
             VALUES ($1, $2, $3, $4, $5, now(), now())
-            RETURNING *`,
+            RETURNING id, image, selected`,
             [
               params.owner_id,
               params.owner_type,
@@ -112,6 +112,18 @@ class UserModel {
           );
         } catch (e) {
           return {error: 'Error creating an image.'};
+        }
+      },
+
+      delete: async (ids = {}) => {
+        try {
+          return await db.one(
+            `DELETE FROM public.images
+            WHERE user_id = $/user_id/ AND id IN ($/ids:csv/)`,
+            {user_id: this.data.id, ids: ids},
+          );
+        } catch (e) {
+          return {error: 'Error deleting images.'};
         }
       },
     };
