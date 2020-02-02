@@ -2,6 +2,7 @@ const db = require('../../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const {sqlGetPerformer} = require('./helpers/performer_helper');
+const {sqlGetVenue} = require('./helpers/venue_helper');
 
 class UserModel {
   constructor(data = {}) {
@@ -234,13 +235,9 @@ class UserModel {
       find: async id => {
         try {
           return await db.one(
-            `SELECT *
-            FROM public.venues
-            WHERE active IS TRUE
-            AND user_id = $1
-            AND id = $2
-            LIMIT 1`,
-            [this.data.id, id],
+            `${sqlGetVenue()}
+             WHERE id = $1 AND user_id = $2`,
+            [id, this.data.id],
           );
         } catch (e) {
           return {error: 'Venue not found.'};
