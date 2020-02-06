@@ -172,7 +172,7 @@ describe('admin/venues', () => {
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
-        res.should.have.status(404);
+        res.should.have.status(500);
         res.body.error.should.eq('Error updating venue.');
       });
     });

@@ -125,8 +125,8 @@ describe('venues', () => {
           {id: prop1.id, name: prop1.name},
           {id: prop2.id, name: prop2.name},
         ],
-        youtube_links_list: [{link: yt.link}],
-        images_list: [{image: img.image, selected: img.selected}],
+        youtube_links_list: [{id: yt.id, link: yt.link}],
+        images_list: [{id: img.id, image: img.image, selected: img.selected}],
         bookings_list: [
           {
             date: '2012-01-01',

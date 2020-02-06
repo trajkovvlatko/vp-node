@@ -22,9 +22,11 @@ describe('admin/performers', () => {
 
     describe('GET /admin/performers/:id', () => {
       it('returns 401', async () => {
-        const id = (await create('performers', {
-          user_id: (await create('users')).id,
-        })).id;
+        const id = (
+          await create('performers', {
+            user_id: (await create('users')).id,
+          })
+        ).id;
         const res = await chai.request(app).get(`/admin/performers/${id}`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
@@ -33,9 +35,11 @@ describe('admin/performers', () => {
 
     describe('PATCH /admin/performers/:id', () => {
       it('returns 401', async () => {
-        const id = (await create('performers', {
-          user_id: (await create('users')).id,
-        })).id;
+        const id = (
+          await create('performers', {
+            user_id: (await create('users')).id,
+          })
+        ).id;
         const options = {name: 'new name'};
         const res = await chai
           .request(app)
@@ -172,7 +176,7 @@ describe('admin/performers', () => {
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
-        res.should.have.status(404);
+        res.should.have.status(500);
         res.body.error.should.eq('Error updating performer.');
       });
     });

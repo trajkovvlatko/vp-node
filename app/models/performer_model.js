@@ -93,17 +93,114 @@ class PerformerModel {
       return {error: e};
     }
   }
-}
 
-// SELECT DISTINCT(public.performers.*)
-// FROM public.performers
-// JOIN public.genres_performers
-//   ON genres_performers.performer_id = performers.id
-//   AND genres_performers.genre_id IN (${genres})
-// JOIN public.genres
-//   ON genres.id = genres_performers.genre_id
-//   AND genres.active IS TRUE
-// WHERE location = ${location}
-// AND performers.active IS TRUE
+  static async allForUser(userId) {
+    try {
+      return await db.any(
+        `SELECT *
+        FROM public.performers
+        WHERE active IS TRUE
+        AND user_id = $1`,
+        [userId],
+      );
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  static async existsForUser(userId, id) {
+    try {
+      return await db.one(`
+        SELECT 1
+        FROM performers
+        WHERE id = $1 AND user_id = $2`,
+        [id, userId],
+      );
+    } catch (e) {
+      return {error: 'Performer not found.'};
+    }
+  }
+
+  static async findForUser(userId, id) {
+    try {
+      return await db.one(
+        `${sqlGetPerformer()}
+         WHERE id = $1 AND user_id = $2`,
+        [id, userId],
+      );
+    } catch (e) {
+      return {error: 'Performer not found.'};
+    }
+  }
+
+  static async createForUser(userId, params = {}) {
+    let values = {};
+    let columns = [];
+    let keys = [];
+    [
+      'name',
+      'location',
+      'phone',
+      'details',
+      'website',
+      'rating',
+      'active',
+    ].forEach(column => {
+      if (
+        typeof params[column] !== 'undefined' &&
+        params[column] !== null
+      ) {
+        columns.push(column);
+        keys.push(`\$\{${column}}`);
+        values[column] = params[column];
+      }
+    });
+
+    try {
+      return await db.one(
+        `INSERT INTO public.performers (
+          ${columns.join(', ')}, user_id, created_at, updated_at
+        )
+        VALUES (
+          ${keys}, \$\{userId\}, now(), now()
+        )
+        RETURNING *`,
+        {...values, ...{userId: userId}},
+      );
+    } catch (e) {
+      return {error: 'Error creating a performer.'};
+    }
+  }
+
+  static async updateForUser(userId, params = {}) {
+    let columns = [];
+    let values = {};
+    ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
+      column => {
+        if (
+          typeof params[column] !== 'undefined' &&
+          params[column] !== null
+        ) {
+          columns.push(`${column} = \$\{${column}\}`);
+          values[column] = params[column];
+        }
+      },
+    );
+
+    try {
+      return await db.one(
+        `UPDATE public.performers
+        SET ${columns.join(', ')}, updated_at = now()
+        WHERE active IS TRUE
+        AND user_id = \$\{userId\}
+        AND id = $\{id\}
+        RETURNING *`,
+        {...values, ...{userId: userId}, ...{id: params.id}},
+      );
+    } catch (e) {
+      return {error: 'Error updating performer.'};
+    }
+  }
+}
 
 module.exports = PerformerModel;

@@ -25,6 +25,32 @@ class PropertyModel {
       return {error: 'Error creating a property.'};
     }
   }
+
+  static async saveForVenue(venueId, propertyId) {
+    try {
+      return await db.one(`
+        INSERT INTO public.properties_venues
+          (property_id, venue_id, created_at, updated_at)
+        VALUES ($1, $2, now(), now())
+        RETURNING *`,
+        [propertyId, venueId],
+      );
+    } catch (e) {
+      return {error: 'Error saving property to venue.'};
+    }
+  }
+
+  static async deleteForVenue(venueId) {
+    try {
+      return await db.none(`
+        DELETE FROM public.properties_venues
+        WHERE venue_id = $1`,
+        [venueId],
+      );
+    } catch (e) {
+      return {error: 'Error deleting properties from venue.'};
+    }
+  }
 }
 
 module.exports = PropertyModel;

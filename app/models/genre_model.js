@@ -25,6 +25,32 @@ class GenreModel {
       return {error: 'Error creating a genre.'};
     }
   }
+
+  static async saveForPerformer(performerId, genreId) {
+    try {
+      return await db.one(`
+        INSERT INTO public.genres_performers
+          (genre_id, performer_id, created_at, updated_at)
+        VALUES ($1, $2, now(), now())
+        RETURNING *`,
+        [genreId, performerId],
+      );
+    } catch (e) {
+      return {error: 'Error saving genre to performer.'};
+    }
+  }
+
+  static async deleteForPerformer(performerId) {
+    try {
+      return await db.none(`
+        DELETE FROM public.genres_performers
+        WHERE performer_id = $1`,
+        [performerId],
+      );
+    } catch (e) {
+      return {error: 'Error deleting genres from performer.'};
+    }
+  }
 }
 
 module.exports = GenreModel;
