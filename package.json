@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=development ./node_modules/nodemon/bin/nodemon.js DEBUG=vp-node:* node ./bin/www",
+    "start": "NODE_ENV=development node ./bin/www",
+    "watch": "NODE_ENV=development ./node_modules/nodemon/bin/nodemon.js DEBUG=vp-node:* node ./bin/www",
     "migrate": "NODE_ENV=development ./node_modules/node-pg-migrate/bin/node-pg-migrate",
     "spec": "NODE_ENV=test mocha --recursive spec --exit",
     "seed": "NODE_ENV=development node ./config/seed.js"
