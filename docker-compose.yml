@@ -8,6 +8,7 @@ services:
       - "4000:4000"
     env_file:
       - .env
+    command: sh -c "./scripts/wait && ./scripts/docker-entrypoint.sh"
 
   postgres:
     image: postgres:11.6-alpine
