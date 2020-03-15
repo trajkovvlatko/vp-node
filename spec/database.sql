@@ -2,34 +2,26 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 11.6
+-- Dumped by pg_dump version 11.6
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
+SET row_security = off;
 
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: bookings; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: bookings; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.bookings (
@@ -51,6 +43,7 @@ ALTER TABLE public.bookings OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.bookings_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -68,7 +61,7 @@ ALTER SEQUENCE public.bookings_id_seq OWNED BY public.bookings.id;
 
 
 --
--- Name: genres; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: genres; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.genres (
@@ -87,6 +80,7 @@ ALTER TABLE public.genres OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.genres_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -104,7 +98,7 @@ ALTER SEQUENCE public.genres_id_seq OWNED BY public.genres.id;
 
 
 --
--- Name: genres_performers; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: genres_performers; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.genres_performers (
@@ -118,7 +112,7 @@ CREATE TABLE public.genres_performers (
 ALTER TABLE public.genres_performers OWNER TO youplay;
 
 --
--- Name: images; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: images; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.images (
@@ -140,6 +134,7 @@ ALTER TABLE public.images OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.images_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -157,7 +152,7 @@ ALTER SEQUENCE public.images_id_seq OWNED BY public.images.id;
 
 
 --
--- Name: performers; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: performers; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.performers (
@@ -182,6 +177,7 @@ ALTER TABLE public.performers OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.performers_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -199,7 +195,7 @@ ALTER SEQUENCE public.performers_id_seq OWNED BY public.performers.id;
 
 
 --
--- Name: pgmigrations; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: pgmigrations; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.pgmigrations (
@@ -216,6 +212,7 @@ ALTER TABLE public.pgmigrations OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.pgmigrations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -233,7 +230,7 @@ ALTER SEQUENCE public.pgmigrations_id_seq OWNED BY public.pgmigrations.id;
 
 
 --
--- Name: properties; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: properties; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.properties (
@@ -252,6 +249,7 @@ ALTER TABLE public.properties OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.properties_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -269,7 +267,7 @@ ALTER SEQUENCE public.properties_id_seq OWNED BY public.properties.id;
 
 
 --
--- Name: properties_venues; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: properties_venues; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.properties_venues (
@@ -283,7 +281,7 @@ CREATE TABLE public.properties_venues (
 ALTER TABLE public.properties_venues OWNER TO youplay;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.users (
@@ -304,6 +302,7 @@ ALTER TABLE public.users OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -321,7 +320,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: venues; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: venues; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.venues (
@@ -346,6 +345,7 @@ ALTER TABLE public.venues OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.venues_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -363,7 +363,7 @@ ALTER SEQUENCE public.venues_id_seq OWNED BY public.venues.id;
 
 
 --
--- Name: youtube_links; Type: TABLE; Schema: public; Owner: youplay; Tablespace: 
+-- Name: youtube_links; Type: TABLE; Schema: public; Owner: youplay
 --
 
 CREATE TABLE public.youtube_links (
@@ -384,6 +384,7 @@ ALTER TABLE public.youtube_links OWNER TO youplay;
 --
 
 CREATE SEQUENCE public.youtube_links_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -401,70 +402,70 @@ ALTER SEQUENCE public.youtube_links_id_seq OWNED BY public.youtube_links.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: bookings id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings ALTER COLUMN id SET DEFAULT nextval('public.bookings_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: genres id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.genres ALTER COLUMN id SET DEFAULT nextval('public.genres_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: images id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.images ALTER COLUMN id SET DEFAULT nextval('public.images_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: performers id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.performers ALTER COLUMN id SET DEFAULT nextval('public.performers_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: pgmigrations id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.pgmigrations ALTER COLUMN id SET DEFAULT nextval('public.pgmigrations_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: properties id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.properties ALTER COLUMN id SET DEFAULT nextval('public.properties_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: venues id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.venues ALTER COLUMN id SET DEFAULT nextval('public.venues_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: youtube_links id; Type: DEFAULT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.youtube_links ALTER COLUMN id SET DEFAULT nextval('public.youtube_links_id_seq'::regclass);
 
 
 --
--- Name: bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: bookings bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
@@ -472,7 +473,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: genres_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.genres
@@ -480,7 +481,7 @@ ALTER TABLE ONLY public.genres
 
 
 --
--- Name: images_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: images images_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.images
@@ -488,7 +489,7 @@ ALTER TABLE ONLY public.images
 
 
 --
--- Name: performers_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: performers performers_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.performers
@@ -496,7 +497,7 @@ ALTER TABLE ONLY public.performers
 
 
 --
--- Name: pgmigrations_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: pgmigrations pgmigrations_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.pgmigrations
@@ -504,7 +505,7 @@ ALTER TABLE ONLY public.pgmigrations
 
 
 --
--- Name: properties_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: properties properties_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.properties
@@ -512,7 +513,7 @@ ALTER TABLE ONLY public.properties
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.users
@@ -520,7 +521,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: venues_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: venues venues_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.venues
@@ -528,7 +529,7 @@ ALTER TABLE ONLY public.venues
 
 
 --
--- Name: youtube_links_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay; Tablespace: 
+-- Name: youtube_links youtube_links_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.youtube_links
@@ -536,28 +537,28 @@ ALTER TABLE ONLY public.youtube_links
 
 
 --
--- Name: genres_name_unique_index; Type: INDEX; Schema: public; Owner: youplay; Tablespace: 
+-- Name: genres_name_unique_index; Type: INDEX; Schema: public; Owner: youplay
 --
 
 CREATE UNIQUE INDEX genres_name_unique_index ON public.genres USING btree (name);
 
 
 --
--- Name: properties_name_unique_index; Type: INDEX; Schema: public; Owner: youplay; Tablespace: 
+-- Name: properties_name_unique_index; Type: INDEX; Schema: public; Owner: youplay
 --
 
 CREATE UNIQUE INDEX properties_name_unique_index ON public.properties USING btree (name);
 
 
 --
--- Name: users_email_unique_index; Type: INDEX; Schema: public; Owner: youplay; Tablespace: 
+-- Name: users_email_unique_index; Type: INDEX; Schema: public; Owner: youplay
 --
 
 CREATE UNIQUE INDEX users_email_unique_index ON public.users USING btree (email);
 
 
 --
--- Name: bookings_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
@@ -565,7 +566,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: bookings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
@@ -573,7 +574,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: bookings_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
@@ -581,7 +582,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: genres_performers_genre_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres_performers genres_performers_genre_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.genres_performers
@@ -589,7 +590,7 @@ ALTER TABLE ONLY public.genres_performers
 
 
 --
--- Name: genres_performers_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres_performers genres_performers_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.genres_performers
@@ -597,7 +598,7 @@ ALTER TABLE ONLY public.genres_performers
 
 
 --
--- Name: images_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: images images_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.images
@@ -605,7 +606,7 @@ ALTER TABLE ONLY public.images
 
 
 --
--- Name: performers_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: performers performers_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.performers
@@ -613,7 +614,7 @@ ALTER TABLE ONLY public.performers
 
 
 --
--- Name: properties_venues_property_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties_venues properties_venues_property_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.properties_venues
@@ -621,7 +622,7 @@ ALTER TABLE ONLY public.properties_venues
 
 
 --
--- Name: properties_venues_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties_venues properties_venues_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.properties_venues
@@ -629,7 +630,7 @@ ALTER TABLE ONLY public.properties_venues
 
 
 --
--- Name: venues_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: venues venues_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.venues
@@ -637,21 +638,11 @@ ALTER TABLE ONLY public.venues
 
 
 --
--- Name: youtube_links_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: youtube_links youtube_links_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.youtube_links
     ADD CONSTRAINT youtube_links_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --

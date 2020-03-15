@@ -15,7 +15,7 @@ describe('index', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.state.should.eq('active');
+          res.body.success.should.equal(true);
           done();
         });
     });
