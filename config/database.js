@@ -4,7 +4,7 @@ const data = fs.readFileSync('./config/default.json');
 const config = JSON.parse(data).db[env];
 const pgOptions = {
   query(e) {
-    console.log(e.query);
+    // console.log(e.query);
   },
 };
 const pgp = require('pg-promise')(pgOptions);

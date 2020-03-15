@@ -16,4 +16,8 @@ COPY . .
 
 EXPOSE 4000 9229
 
-CMD ["npm", "start"]
+COPY ./scripts/*.sh ./scripts
+
+RUN chmod +x ./scripts/*.sh
+
+CMD "scripts/docker-entrypoint.sh"
