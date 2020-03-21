@@ -32,13 +32,28 @@ class PerformerModel {
     }
   }
 
+  static async basicFind(id) {
+    try {
+      return await db.one(
+        `SELECT *
+         FROM performers
+         WHERE active IS TRUE
+         AND id = $1
+        `,
+        id
+      );
+    } catch (e) {
+      return {error: 'Record not found.'};
+    }
+  }
+
   static async find(id) {
     try {
       return await db.one(
         `${sqlGetPerformer()}
          WHERE active IS TRUE AND id = $1
         `,
-        id,
+        id
       );
     } catch (e) {
       return {error: 'Record not found.'};
@@ -87,7 +102,7 @@ class PerformerModel {
 
       return await db.any(
         `SELECT ${selects} FROM public.performers ${joins} WHERE ${wheres}`,
-        data,
+        data
       );
     } catch (e) {
       return {error: e};
@@ -99,22 +114,35 @@ class PerformerModel {
       return await db.any(
         `SELECT *
         FROM public.performers
-        WHERE active IS TRUE
-        AND user_id = $1`,
-        [userId],
+        WHERE user_id = $1`,
+        [userId]
       );
     } catch (e) {
       return {error: e};
     }
   }
 
+  static async activeForUser(userId) {
+    try {
+      return await db.any(
+        `SELECT *
+        FROM public.performers
+        WHERE active IS TRUE
+        AND user_id = $1`,
+        [userId]
+      );
+    } catch (e) {
+      return {error: e};
+    }
+  }
   static async existsForUser(userId, id) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         SELECT 1
         FROM performers
         WHERE id = $1 AND user_id = $2`,
-        [id, userId],
+        [id, userId]
       );
     } catch (e) {
       return {error: 'Performer not found.'};
@@ -126,7 +154,7 @@ class PerformerModel {
       return await db.one(
         `${sqlGetPerformer()}
          WHERE id = $1 AND user_id = $2`,
-        [id, userId],
+        [id, userId]
       );
     } catch (e) {
       return {error: 'Performer not found.'};
@@ -146,10 +174,7 @@ class PerformerModel {
       'rating',
       'active',
     ].forEach(column => {
-      if (
-        typeof params[column] !== 'undefined' &&
-        params[column] !== null
-      ) {
+      if (typeof params[column] !== 'undefined' && params[column] !== null) {
         columns.push(column);
         keys.push(`\$\{${column}}`);
         values[column] = params[column];
@@ -165,7 +190,7 @@ class PerformerModel {
           ${keys}, \$\{userId\}, now(), now()
         )
         RETURNING *`,
-        {...values, ...{userId: userId}},
+        {...values, ...{userId: userId}}
       );
     } catch (e) {
       return {error: 'Error creating a performer.'};
@@ -177,14 +202,11 @@ class PerformerModel {
     let values = {};
     ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
       column => {
-        if (
-          typeof params[column] !== 'undefined' &&
-          params[column] !== null
-        ) {
+        if (typeof params[column] !== 'undefined' && params[column] !== null) {
           columns.push(`${column} = \$\{${column}\}`);
           values[column] = params[column];
         }
-      },
+      }
     );
 
     try {
@@ -195,7 +217,7 @@ class PerformerModel {
         AND user_id = \$\{userId\}
         AND id = $\{id\}
         RETURNING *`,
-        {...values, ...{userId: userId}, ...{id: params.id}},
+        {...values, ...{userId: userId}, ...{id: params.id}}
       );
     } catch (e) {
       return {error: 'Error updating performer.'};

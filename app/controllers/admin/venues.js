@@ -12,6 +12,12 @@ router.get('/', async function(req, res, next) {
   res.send(venues);
 });
 
+/* GET active */
+router.get('/active', async function(req, res, next) {
+  const venues = await VenueModel.activeForUser(req.user.data.id);
+  res.send(venues);
+});
+
 /* GET show */
 router.get('/:id', async function(req, res, next) {
   const venue = await VenueModel.findForUser(req.user.data.id, req.params.id);
@@ -94,7 +100,7 @@ router.patch('/:id/youtube_links', async function(req, res, next) {
       venueId,
       'Venue',
       link,
-      req.user.data.id, // not needed, remove later
+      req.user.data.id // not needed, remove later
     );
   };
 
@@ -107,6 +113,5 @@ router.patch('/:id/youtube_links', async function(req, res, next) {
   const all = await YoutubeLinkModel.allForOwner(venueId, 'Venue');
   res.status(200).send(all);
 });
-
 
 module.exports = router;

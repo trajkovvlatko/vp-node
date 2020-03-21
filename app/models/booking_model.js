@@ -6,23 +6,29 @@ class BookingModel {
       return await db.one(
         `
         INSERT INTO public.bookings (
-          user_id,
-          performer_id,
-          venue_id,
+          from_user_id,
+          to_user_id,
+          requester_id,
+          requester_type,
+          requested_id,
+          requested_type,
           booking_date,
           status,
           created_at,
           updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, now(), now())
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, now(), now())
         RETURNING *`,
         [
           userId,
-          params.performer_id,
-          params.venue_id,
-          params.booking_date,
+          params.toUserId,
+          params.requesterId,
+          params.requesterType,
+          params.requestedId,
+          params.requestedType,
+          params.bookingDate,
           params.status,
-        ],
+        ]
       );
     } catch (e) {
       return {error: 'Error creating a booking.'};

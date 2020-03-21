@@ -27,13 +27,28 @@ class VenueModel {
     }
   }
 
+  static async basicFind(id) {
+    try {
+      return await db.one(
+        `SELECT *
+         FROM venues
+         WHERE active IS TRUE
+         AND id = $1
+        `,
+        id
+      );
+    } catch (e) {
+      return {error: 'Record not found.'};
+    }
+  }
+
   static async find(id) {
     try {
       return await db.one(
         `${sqlGetVenue()}
          WHERE active IS TRUE AND id = $1
         `,
-        id,
+        id
       );
     } catch (e) {
       return {error: 'Record not found.'};
@@ -82,7 +97,7 @@ class VenueModel {
 
       return await db.any(
         `SELECT ${selects} FROM public.venues ${joins} WHERE ${wheres}`,
-        data,
+        data
       );
     } catch (e) {
       return {error: e};
@@ -94,9 +109,22 @@ class VenueModel {
       return await db.any(
         `SELECT *
         FROM public.venues
+        WHERE user_id = $1`,
+        [userId]
+      );
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  static async activeForUser(userId) {
+    try {
+      return await db.any(
+        `SELECT *
+        FROM public.venues
         WHERE active IS TRUE
         AND user_id = $1`,
-        [userId],
+        [userId]
       );
     } catch (e) {
       return {error: e};
@@ -105,11 +133,12 @@ class VenueModel {
 
   static async existsForUser(userId, id) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         SELECT 1
         FROM venues
         WHERE id = $1 AND user_id = $2`,
-        [id, userId],
+        [id, userId]
       );
     } catch (e) {
       return {error: 'Venue not found.'};
@@ -121,7 +150,7 @@ class VenueModel {
       return await db.one(
         `${sqlGetVenue()}
          WHERE id = $1 AND user_id = $2`,
-        [id, userId],
+        [id, userId]
       );
     } catch (e) {
       return {error: 'Venue not found.'};
@@ -141,10 +170,7 @@ class VenueModel {
       'rating',
       'active',
     ].forEach(column => {
-      if (
-        typeof params[column] !== 'undefined' &&
-        params[column] !== null
-      ) {
+      if (typeof params[column] !== 'undefined' && params[column] !== null) {
         columns.push(column);
         keys.push(`\$\{${column}}`);
         values[column] = params[column];
@@ -160,7 +186,7 @@ class VenueModel {
           ${keys}, \$\{userId\}, now(), now()
         )
         RETURNING *`,
-        {...values, ...{userId: userId}},
+        {...values, ...{userId: userId}}
       );
     } catch (e) {
       return {error: 'Error creating a venue.'};
@@ -172,14 +198,11 @@ class VenueModel {
     let values = {};
     ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
       column => {
-        if (
-          typeof params[column] !== 'undefined' &&
-          params[column] !== null
-        ) {
+        if (typeof params[column] !== 'undefined' && params[column] !== null) {
           columns.push(`${column} = \$\{${column}\}`);
           values[column] = params[column];
         }
-      },
+      }
     );
 
     try {
@@ -190,7 +213,7 @@ class VenueModel {
         AND user_id = \$\{userId\}
         AND id = $\{id\}
         RETURNING *`,
-        {...values, ...{userId: userId}, ...{id: params.id}},
+        {...values, ...{userId: userId}, ...{id: params.id}}
       );
     } catch (e) {
       return {error: 'Error updating venue.'};
