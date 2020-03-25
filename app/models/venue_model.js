@@ -1,5 +1,5 @@
 const db = require('../../config/database');
-const {sqlGetVenue} = require('./helpers/venue_helper');
+const { sqlGetVenue } = require('./helpers/venue_helper');
 
 class VenueModel {
   static async all(sorting, limit) {
@@ -23,7 +23,7 @@ class VenueModel {
       }
       return await db.any(sql.join(' '));
     } catch (e) {
-      return {error: e};
+      return { error: e };
     }
   }
 
@@ -38,7 +38,7 @@ class VenueModel {
         id
       );
     } catch (e) {
-      return {error: 'Record not found.'};
+      return { error: 'Record not found.' };
     }
   }
 
@@ -51,7 +51,7 @@ class VenueModel {
         id
       );
     } catch (e) {
-      return {error: 'Record not found.'};
+      return { error: 'Record not found.' };
     }
   }
 
@@ -61,7 +61,7 @@ class VenueModel {
       let wheres = [
         'LOWER(location) = LOWER($/location/) AND venues.active IS TRUE',
       ];
-      let data = {location: params.location};
+      let data = { location: params.location };
       let joins = [
         `
         JOIN public.images
@@ -100,7 +100,7 @@ class VenueModel {
         data
       );
     } catch (e) {
-      return {error: e};
+      return { error: e };
     }
   }
 
@@ -113,7 +113,7 @@ class VenueModel {
         [userId]
       );
     } catch (e) {
-      return {error: e};
+      return { error: e };
     }
   }
 
@@ -127,7 +127,7 @@ class VenueModel {
         [userId]
       );
     } catch (e) {
-      return {error: e};
+      return { error: e };
     }
   }
 
@@ -141,7 +141,7 @@ class VenueModel {
         [id, userId]
       );
     } catch (e) {
-      return {error: 'Venue not found.'};
+      return { error: 'Venue not found.' };
     }
   }
 
@@ -153,7 +153,7 @@ class VenueModel {
         [id, userId]
       );
     } catch (e) {
-      return {error: 'Venue not found.'};
+      return { error: 'Venue not found.' };
     }
   }
 
@@ -186,10 +186,10 @@ class VenueModel {
           ${keys}, \$\{userId\}, now(), now()
         )
         RETURNING *`,
-        {...values, ...{userId: userId}}
+        { ...values, ...{ userId: userId } }
       );
     } catch (e) {
-      return {error: 'Error creating a venue.'};
+      return { error: 'Error creating a venue.' };
     }
   }
 
@@ -213,10 +213,10 @@ class VenueModel {
         AND user_id = \$\{userId\}
         AND id = $\{id\}
         RETURNING *`,
-        {...values, ...{userId: userId}, ...{id: params.id}}
+        { ...values, ...{ userId: userId }, ...{ id: params.id } }
       );
     } catch (e) {
-      return {error: 'Error updating venue.'};
+      return { error: 'Error updating venue.' };
     }
   }
 }

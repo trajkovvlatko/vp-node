@@ -61,11 +61,25 @@ function sqlGetVenue() {
       FROM public.bookings
 
       JOIN public.performers
-        ON bookings.performer_id = performers.id
+        ON (
+          bookings.requester_id = performers.id
+          AND bookings.requester_type = 'performer'
+        )
+        OR (
+          bookings.requested_id = performers.id
+          AND bookings.requested_type = 'performer'
+        )
 
-      WHERE bookings.venue_id = $1
+      WHERE (
+        bookings.requester_id = $1
+        AND bookings.requester_type = 'venue'
+      )
+      OR (
+        bookings.requested_id = $1
+        AND bookings.requested_type = 'venue'
+      )
     ) booking ON true
     `;
 }
 
-module.exports = {sqlGetVenue};
+module.exports = { sqlGetVenue };

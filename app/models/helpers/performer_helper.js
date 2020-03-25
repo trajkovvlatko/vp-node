@@ -61,12 +61,27 @@ function sqlGetPerformer() {
       FROM public.bookings
 
       JOIN public.venues
-        ON bookings.venue_id = venues.id
+        ON (
+          bookings.requester_id = venues.id
+          AND bookings.requester_type = 'venue'
+        )
+        OR (
+          bookings.requested_id = venues.id
+          AND bookings.requested_type = 'venue'
+        )
 
-      WHERE bookings.performer_id = $1
-      LIMIT 5
+      WHERE (
+        bookings.requester_id = $1
+        AND bookings.requester_type = 'performer'
+      )
+      OR (
+        bookings.requested_id = $1
+        AND bookings.requested_type = 'performer'
+      )
     ) booking ON true
+
+
     `;
 }
 
-module.exports = {sqlGetPerformer};
+module.exports = { sqlGetPerformer };

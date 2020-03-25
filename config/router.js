@@ -12,12 +12,13 @@ const search = require('../app/controllers/search');
 const genres = require('../app/controllers/genres');
 const properties = require('../app/controllers/properties');
 const adminBookings = require('../app/controllers/admin/bookings');
+const adminNotifications = require('../app/controllers/admin/notifications');
 
 function authenticate() {
-  return passport.authenticate('jwt', {session: false});
+  return passport.authenticate('jwt', { session: false });
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use('/', indexRouter);
   app.use('/auth', auth);
   app.use('/performers', performers);
@@ -31,9 +32,10 @@ module.exports = function(app) {
   app.use('/admin/performers', authenticate(), adminPerformers);
   app.use('/admin/venues', authenticate(), adminVenues);
   app.use('/admin/bookings', authenticate(), adminBookings);
+  app.use('/admin/notifications', authenticate(), adminNotifications);
 
   // catch 404 and forward to error handler
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     next(createError(404));
   });
 };
