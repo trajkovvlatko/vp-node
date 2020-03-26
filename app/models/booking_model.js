@@ -65,15 +65,49 @@ class BookingModel {
     try {
       return await db.one(
         `
-        SELECT *
+        SELECT 
+          bookings.id,
+          requester_type,
+          requested_type,
+          performers.id AS performer_id,
+          performers.name AS performer_name,
+          venues.id AS venue_id,
+          venues.name AS venue_name
         FROM public.bookings
+        JOIN performers
+          ON (performers.id = requester_id AND requester_type = 'performer')
+          OR (performers.id = requested_id AND requested_type = 'performer')
+        JOIN venues
+          ON (venues.id = requester_id AND requester_type = 'venue')
+          OR (venues.id = requested_id AND requested_type = 'venue')
         WHERE to_user_id = $1
-        AND id = $2
+        AND bookings.id = $2
       `,
         [userId, id],
       );
     } catch (e) {
       return {error: 'Error fetching booking.'};
+    }
+  }
+
+  static async updateForUser(userId, id, options = {}) {
+    try {
+      return await db.one(
+        `
+        UPDATE public.bookings
+        SET status = $1
+        WHERE
+        id = $2
+        AND (
+          from_user_id = $3
+          OR to_user_id = $3
+        ) 
+        RETURNING *
+      `,
+        [options.status, id, userId],
+      );
+    } catch (e) {
+      return {error: 'Error updating booking.'};
     }
   }
 }

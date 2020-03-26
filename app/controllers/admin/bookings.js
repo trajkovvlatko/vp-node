@@ -37,4 +37,19 @@ router.post(
   },
 );
 
+/* PATCH id */
+router.patch('/:id', async function(req, res, next) {
+  const result = await BookingModel.updateForUser(
+    req.user.data.id,
+    req.params.id,
+    {status: req.body.status},
+  );
+
+  if (result.error) {
+    return res.status(500).send(result);
+  } else {
+    res.send(result);
+  }
+});
+
 module.exports = router;
