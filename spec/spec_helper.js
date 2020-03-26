@@ -9,7 +9,7 @@ async function loadDb() {
   await db.any('CREATE SCHEMA public;');
   const fullPath = path.join(__dirname, 'database.sql');
   await db.any(new QueryFile(fullPath, {minify: true}), []);
-  console.log('------------ Database loaded -----------')
+  console.log('------------ Database loaded -----------');
 }
 
 async function clearTables() {

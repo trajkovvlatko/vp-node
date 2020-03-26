@@ -22,7 +22,7 @@ router.get('/active', async function(req, res, next) {
 router.get('/:id', async function(req, res, next) {
   const performer = await PerformerModel.findForUser(
     req.user.data.id,
-    req.params.id
+    req.params.id,
   );
   res.status(performer.error ? 404 : 200).send(performer);
 });
@@ -40,7 +40,7 @@ router.patch('/:id', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
   const performer = await PerformerModel.createForUser(
     req.user.data.id,
-    req.body
+    req.body,
   );
   res.status(performer.error ? 500 : 200).send(performer);
 });
@@ -71,7 +71,7 @@ router.post('/:id/images', async function(req, res, next) {
     },
     function() {
       res.status(500).send({error: 'Upload failed.'});
-    }
+    },
   );
 });
 
@@ -107,7 +107,7 @@ router.patch('/:id/youtube_links', async function(req, res, next) {
       performerId,
       'Performer',
       link,
-      req.user.data.id // not needed, remove later
+      req.user.data.id, // not needed, remove later
     );
   };
 

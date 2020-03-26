@@ -26,10 +26,12 @@ describe('search', () => {
     context('performers', () => {
       it('returns array when performers are found by location', async () => {
         const userId = (await create('users')).id;
-        const id = (await create('performers', {
-          user_id: userId,
-          location: 'sweden',
-        })).id;
+        const id = (
+          await create('performers', {
+            user_id: userId,
+            location: 'sweden',
+          })
+        ).id;
         await create('images', {
           user_id: userId,
           owner_id: id,
@@ -53,10 +55,12 @@ describe('search', () => {
 
       it('returns array when performers are found by genre', async () => {
         const userId = (await create('users')).id;
-        const performerId = (await create('performers', {
-          user_id: userId,
-          location: 'sweden',
-        })).id;
+        const performerId = (
+          await create('performers', {
+            user_id: userId,
+            location: 'sweden',
+          })
+        ).id;
         await create('images', {
           user_id: userId,
           owner_id: performerId,
@@ -199,10 +203,12 @@ describe('search', () => {
     context('venues', () => {
       it('returns array when venues are found by location', async () => {
         const userId = (await create('users')).id;
-        const id = (await create('venues', {
-          user_id: userId,
-          location: 'sweden',
-        })).id;
+        const id = (
+          await create('venues', {
+            user_id: userId,
+            location: 'sweden',
+          })
+        ).id;
         await create('images', {
           user_id: userId,
           owner_id: id,
@@ -226,10 +232,12 @@ describe('search', () => {
 
       it('returns array when venues are found by genre', async () => {
         const userId = (await create('users')).id;
-        const venueId = (await create('venues', {
-          user_id: userId,
-          location: 'sweden',
-        })).id;
+        const venueId = (
+          await create('venues', {
+            user_id: userId,
+            location: 'sweden',
+          })
+        ).id;
         await create('images', {
           user_id: userId,
           owner_id: venueId,

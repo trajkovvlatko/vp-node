@@ -15,7 +15,8 @@ class PropertyModel {
 
   static async create(params) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         INSERT INTO public.properties (name, active, created_at, updated_at)
         VALUES ($1, $2, now(), now())
         RETURNING *`,
@@ -28,7 +29,8 @@ class PropertyModel {
 
   static async saveForVenue(venueId, propertyId) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         INSERT INTO public.properties_venues
           (property_id, venue_id, created_at, updated_at)
         VALUES ($1, $2, now(), now())
@@ -42,7 +44,8 @@ class PropertyModel {
 
   static async deleteForVenue(venueId) {
     try {
-      return await db.none(`
+      return await db.none(
+        `
         DELETE FROM public.properties_venues
         WHERE venue_id = $1`,
         [venueId],

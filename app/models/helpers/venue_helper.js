@@ -82,4 +82,4 @@ function sqlGetVenue() {
     `;
 }
 
-module.exports = { sqlGetVenue };
+module.exports = {sqlGetVenue};

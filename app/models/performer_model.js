@@ -40,7 +40,7 @@ class PerformerModel {
          WHERE active IS TRUE
          AND id = $1
         `,
-        id
+        id,
       );
     } catch (e) {
       return {error: 'Record not found.'};
@@ -53,7 +53,7 @@ class PerformerModel {
         `${sqlGetPerformer()}
          WHERE active IS TRUE AND id = $1
         `,
-        id
+        id,
       );
     } catch (e) {
       return {error: 'Record not found.'};
@@ -102,7 +102,7 @@ class PerformerModel {
 
       return await db.any(
         `SELECT ${selects} FROM public.performers ${joins} WHERE ${wheres}`,
-        data
+        data,
       );
     } catch (e) {
       return {error: e};
@@ -115,7 +115,7 @@ class PerformerModel {
         `SELECT *
         FROM public.performers
         WHERE user_id = $1`,
-        [userId]
+        [userId],
       );
     } catch (e) {
       return {error: e};
@@ -129,7 +129,7 @@ class PerformerModel {
         FROM public.performers
         WHERE active IS TRUE
         AND user_id = $1`,
-        [userId]
+        [userId],
       );
     } catch (e) {
       return {error: e};
@@ -142,7 +142,7 @@ class PerformerModel {
         SELECT 1
         FROM performers
         WHERE id = $1 AND user_id = $2`,
-        [id, userId]
+        [id, userId],
       );
     } catch (e) {
       return {error: 'Performer not found.'};
@@ -154,7 +154,7 @@ class PerformerModel {
       return await db.one(
         `${sqlGetPerformer()}
          WHERE id = $1 AND user_id = $2`,
-        [id, userId]
+        [id, userId],
       );
     } catch (e) {
       return {error: 'Performer not found.'};
@@ -190,7 +190,7 @@ class PerformerModel {
           ${keys}, \$\{userId\}, now(), now()
         )
         RETURNING *`,
-        {...values, ...{userId: userId}}
+        {...values, ...{userId: userId}},
       );
     } catch (e) {
       return {error: 'Error creating a performer.'};
@@ -206,7 +206,7 @@ class PerformerModel {
           columns.push(`${column} = \$\{${column}\}`);
           values[column] = params[column];
         }
-      }
+      },
     );
 
     try {
@@ -217,7 +217,7 @@ class PerformerModel {
         AND user_id = \$\{userId\}
         AND id = $\{id\}
         RETURNING *`,
-        {...values, ...{userId: userId}, ...{id: params.id}}
+        {...values, ...{userId: userId}, ...{id: params.id}},
       );
     } catch (e) {
       return {error: 'Error updating performer.'};

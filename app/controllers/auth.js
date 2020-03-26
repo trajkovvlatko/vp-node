@@ -28,11 +28,11 @@ router.post('/login', function(req, res, next) {
 
 /* POST register. */
 router.post('/register', async function(req, res, next) {
-  const user = await UserModel.create(req.body)
+  const user = await UserModel.create(req.body);
   if (!user.error) {
     res.send(user.data);
   } else {
-    res.status(500).send({ error: user.error.detail });
+    res.status(500).send({error: user.error.detail});
   }
 });
 

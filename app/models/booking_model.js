@@ -28,16 +28,17 @@ class BookingModel {
           params.requestedId,
           params.bookingDate,
           params.status,
-        ]
+        ],
       );
     } catch (e) {
-      return { error: 'Error creating a booking.' };
+      return {error: 'Error creating a booking.'};
     }
   }
 
   static async requestedForUser(userId) {
     try {
-      return await db.any(`
+      return await db.any(
+        `
         SELECT
           bookings.id,
           requester_type,
@@ -52,22 +53,27 @@ class BookingModel {
           ON (venues.id = requester_id AND requester_type = 'venue')
           OR (venues.id = requested_id AND requested_type = 'venue')
         WHERE to_user_id = $1
-      `, [userId]);
+      `,
+        [userId],
+      );
     } catch (e) {
-      return { error: 'Error fetching bookings.' };
+      return {error: 'Error fetching bookings.'};
     }
   }
 
   static async findForUser(userId, id) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         SELECT *
         FROM public.bookings
         WHERE to_user_id = $1
         AND id = $2
-      `, [userId, id]);
+      `,
+        [userId, id],
+      );
     } catch (e) {
-      return { error: 'Error fetching booking.' };
+      return {error: 'Error fetching booking.'};
     }
   }
 }

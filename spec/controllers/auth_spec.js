@@ -13,7 +13,7 @@ describe('auth', () => {
         name: 'Some name',
         email: 'some@email.com',
         password: 'some-password',
-      }
+      };
       const res = await chai
         .request(app)
         .post('/auth/register')
@@ -31,7 +31,7 @@ describe('auth', () => {
       const options = {
         email: 'some@email.com',
         password: 'some-password',
-      }
+      };
       const res = await chai
         .request(app)
         .post('/auth/register')

@@ -15,7 +15,8 @@ class GenreModel {
 
   static async create(params) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         INSERT INTO public.genres (name, active, created_at, updated_at)
         VALUES ($1, $2, now(), now())
         RETURNING *`,
@@ -28,7 +29,8 @@ class GenreModel {
 
   static async saveForPerformer(performerId, genreId) {
     try {
-      return await db.one(`
+      return await db.one(
+        `
         INSERT INTO public.genres_performers
           (genre_id, performer_id, created_at, updated_at)
         VALUES ($1, $2, now(), now())
@@ -42,7 +44,8 @@ class GenreModel {
 
   static async deleteForPerformer(performerId) {
     try {
-      return await db.none(`
+      return await db.none(
+        `
         DELETE FROM public.genres_performers
         WHERE performer_id = $1`,
         [performerId],

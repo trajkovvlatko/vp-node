@@ -64,7 +64,7 @@ router.post('/:id/images', async function(req, res, next) {
     },
     function() {
       res.status(500).send({error: 'Upload failed.'});
-    }
+    },
   );
 });
 
@@ -100,7 +100,7 @@ router.patch('/:id/youtube_links', async function(req, res, next) {
       venueId,
       'Venue',
       link,
-      req.user.data.id // not needed, remove later
+      req.user.data.id, // not needed, remove later
     );
   };
 

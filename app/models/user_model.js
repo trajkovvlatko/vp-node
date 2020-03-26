@@ -20,7 +20,7 @@ class UserModel {
         `SELECT id, name, email, password
         FROM public.users
         WHERE email = $1`,
-        [email]
+        [email],
       );
       if (u.length === 0) {
         return {error: 'User not found.'};
@@ -43,7 +43,7 @@ class UserModel {
         `SELECT id, name, email
         FROM public.users
         WHERE id = $1`,
-        parseInt(id)
+        parseInt(id),
       );
       return new UserModel(data);
     } catch (e) {
@@ -58,7 +58,7 @@ class UserModel {
         `SELECT id, name, email
         FROM public.users
         WHERE email = $1`,
-        email
+        email,
       );
       if (data) {
         return new UserModel(data);
@@ -78,7 +78,7 @@ class UserModel {
         (name, email, password, active, created_at, updated_at)
         VALUES($1, $2, $3, TRUE, now(), now())
         RETURNING id, name, email`,
-        [data.name, data.email, hash]
+        [data.name, data.email, hash],
       );
       return new UserModel(record);
     } catch (e) {

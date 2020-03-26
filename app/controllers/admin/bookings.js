@@ -34,7 +34,7 @@ router.post(
     } else {
       res.send({state: result.status});
     }
-  }
+  },
 );
 
 module.exports = router;

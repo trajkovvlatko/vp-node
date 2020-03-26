@@ -84,4 +84,4 @@ function sqlGetPerformer() {
     `;
 }
 
-module.exports = { sqlGetPerformer };
+module.exports = {sqlGetPerformer};

@@ -2,7 +2,7 @@
 
 exports.shorthands = undefined;
 
-exports.up = (pgm) => {
+exports.up = pgm => {
   const columns = {
     property_id: {type: 'integer', references: 'properties', notNull: true},
     venue_id: {type: 'integer', references: 'venues', notNull: true},
@@ -12,6 +12,6 @@ exports.up = (pgm) => {
   pgm.createTable('properties_venues', columns);
 };
 
-exports.down = (pgm) => {
+exports.down = pgm => {
   pgm.dropTable('properties_venues');
 };

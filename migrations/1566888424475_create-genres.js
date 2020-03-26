@@ -15,5 +15,5 @@ exports.up = pgm => {
 };
 
 exports.down = pgm => {
-  pgm.dropTable('genres')
+  pgm.dropTable('genres');
 };

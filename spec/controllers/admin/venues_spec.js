@@ -22,9 +22,11 @@ describe('admin/venues', () => {
 
     describe('GET /admin/venues/:id', () => {
       it('returns 401', async () => {
-        const id = (await create('venues', {
-          user_id: (await create('users')).id,
-        })).id;
+        const id = (
+          await create('venues', {
+            user_id: (await create('users')).id,
+          })
+        ).id;
         const res = await chai.request(app).get(`/admin/venues/${id}`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
@@ -33,9 +35,11 @@ describe('admin/venues', () => {
 
     describe('PATCH /admin/venues/:id', () => {
       it('returns 401', async () => {
-        const id = (await create('venues', {
-          user_id: (await create('users')).id,
-        })).id;
+        const id = (
+          await create('venues', {
+            user_id: (await create('users')).id,
+          })
+        ).id;
         const options = {name: 'new name'};
         const res = await chai
           .request(app)

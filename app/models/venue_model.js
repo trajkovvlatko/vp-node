@@ -1,5 +1,5 @@
 const db = require('../../config/database');
-const { sqlGetVenue } = require('./helpers/venue_helper');
+const {sqlGetVenue} = require('./helpers/venue_helper');
 
 class VenueModel {
   static async all(sorting, limit) {
@@ -23,7 +23,7 @@ class VenueModel {
       }
       return await db.any(sql.join(' '));
     } catch (e) {
-      return { error: e };
+      return {error: e};
     }
   }
 
@@ -35,10 +35,10 @@ class VenueModel {
          WHERE active IS TRUE
          AND id = $1
         `,
-        id
+        id,
       );
     } catch (e) {
-      return { error: 'Record not found.' };
+      return {error: 'Record not found.'};
     }
   }
 
@@ -48,10 +48,10 @@ class VenueModel {
         `${sqlGetVenue()}
          WHERE active IS TRUE AND id = $1
         `,
-        id
+        id,
       );
     } catch (e) {
-      return { error: 'Record not found.' };
+      return {error: 'Record not found.'};
     }
   }
 
@@ -61,7 +61,7 @@ class VenueModel {
       let wheres = [
         'LOWER(location) = LOWER($/location/) AND venues.active IS TRUE',
       ];
-      let data = { location: params.location };
+      let data = {location: params.location};
       let joins = [
         `
         JOIN public.images
@@ -97,10 +97,10 @@ class VenueModel {
 
       return await db.any(
         `SELECT ${selects} FROM public.venues ${joins} WHERE ${wheres}`,
-        data
+        data,
       );
     } catch (e) {
-      return { error: e };
+      return {error: e};
     }
   }
 
@@ -110,10 +110,10 @@ class VenueModel {
         `SELECT *
         FROM public.venues
         WHERE user_id = $1`,
-        [userId]
+        [userId],
       );
     } catch (e) {
-      return { error: e };
+      return {error: e};
     }
   }
 
@@ -124,10 +124,10 @@ class VenueModel {
         FROM public.venues
         WHERE active IS TRUE
         AND user_id = $1`,
-        [userId]
+        [userId],
       );
     } catch (e) {
-      return { error: e };
+      return {error: e};
     }
   }
 
@@ -138,10 +138,10 @@ class VenueModel {
         SELECT 1
         FROM venues
         WHERE id = $1 AND user_id = $2`,
-        [id, userId]
+        [id, userId],
       );
     } catch (e) {
-      return { error: 'Venue not found.' };
+      return {error: 'Venue not found.'};
     }
   }
 
@@ -150,10 +150,10 @@ class VenueModel {
       return await db.one(
         `${sqlGetVenue()}
          WHERE id = $1 AND user_id = $2`,
-        [id, userId]
+        [id, userId],
       );
     } catch (e) {
-      return { error: 'Venue not found.' };
+      return {error: 'Venue not found.'};
     }
   }
 
@@ -186,10 +186,10 @@ class VenueModel {
           ${keys}, \$\{userId\}, now(), now()
         )
         RETURNING *`,
-        { ...values, ...{ userId: userId } }
+        {...values, ...{userId: userId}},
       );
     } catch (e) {
-      return { error: 'Error creating a venue.' };
+      return {error: 'Error creating a venue.'};
     }
   }
 
@@ -202,7 +202,7 @@ class VenueModel {
           columns.push(`${column} = \$\{${column}\}`);
           values[column] = params[column];
         }
-      }
+      },
     );
 
     try {
@@ -213,10 +213,10 @@ class VenueModel {
         AND user_id = \$\{userId\}
         AND id = $\{id\}
         RETURNING *`,
-        { ...values, ...{ userId: userId }, ...{ id: params.id } }
+        {...values, ...{userId: userId}, ...{id: params.id}},
       );
     } catch (e) {
-      return { error: 'Error updating venue.' };
+      return {error: 'Error updating venue.'};
     }
   }
 }

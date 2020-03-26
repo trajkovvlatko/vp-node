@@ -10,7 +10,7 @@ class YoutubeLinkModel {
         WHERE owner_id = $1
         AND owner_type = $2
         ORDER BY link`,
-        [ownerId, ownerType]
+        [ownerId, ownerType],
       );
     } catch (e) {
       return {error: e};
