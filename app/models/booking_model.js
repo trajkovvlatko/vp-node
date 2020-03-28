@@ -1,4 +1,5 @@
 const db = require('../../config/database');
+const {sqlSelectBooking} = require('./helpers/booking_helper');
 
 class BookingModel {
   static async createForUser(userId, params) {
@@ -39,21 +40,24 @@ class BookingModel {
     try {
       return await db.any(
         `
-        SELECT
-          bookings.*,
-          performers.id AS performer_id,
-          performers.name AS performer_name,
-          venues.id AS venue_id,
-          venues.name AS venue_name
-        FROM public.bookings
-        JOIN performers
-          ON (performers.id = requester_id AND requester_type = 'performer')
-          OR (performers.id = requested_id AND requested_type = 'performer')
-        JOIN venues
-          ON (venues.id = requester_id AND requester_type = 'venue')
-          OR (venues.id = requested_id AND requested_type = 'venue')
+        ${sqlSelectBooking()}
         WHERE to_user_id = $1
         AND status = 'requested'
+      `,
+        [userId],
+      );
+    } catch (e) {
+      return {error: 'Error fetching bookings.'};
+    }
+  }
+
+  static async upcoming(userId) {
+    try {
+      return await db.any(
+        `
+        ${sqlSelectBooking()}
+        WHERE (status = 'accepted' OR status = 'canceled')
+        AND (from_user_id = $1 OR to_user_id = $1)
       `,
         [userId],
       );
@@ -66,21 +70,7 @@ class BookingModel {
     try {
       return await db.one(
         `
-        SELECT 
-          bookings.id,
-          requester_type,
-          requested_type,
-          performers.id AS performer_id,
-          performers.name AS performer_name,
-          venues.id AS venue_id,
-          venues.name AS venue_name
-        FROM public.bookings
-        JOIN performers
-          ON (performers.id = requester_id AND requester_type = 'performer')
-          OR (performers.id = requested_id AND requested_type = 'performer')
-        JOIN venues
-          ON (venues.id = requester_id AND requester_type = 'venue')
-          OR (venues.id = requested_id AND requested_type = 'venue')
+        ${sqlSelectBooking()}
         WHERE to_user_id = $1
         AND bookings.id = $2
       `,

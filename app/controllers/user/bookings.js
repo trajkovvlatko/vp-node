@@ -4,9 +4,19 @@ const BookingModel = require('../../models/booking_model.js');
 const VenueModel = require('../../models/venue_model.js');
 const PerformerModel = require('../../models/performer_model.js');
 
-/* GET list */
-router.get('/', async function(req, res, next) {
+/* GET requested list */
+router.get('/requested', async function(req, res, next) {
   const results = await BookingModel.requestedForUser(req.user.data.id);
+  if (results.error) {
+    return res.status(500).send(results);
+  } else {
+    res.send(results);
+  }
+});
+
+/* GET upcoming list */
+router.get('/upcoming', async function(req, res, next) {
+  const results = await BookingModel.upcoming(req.user.data.id);
   if (results.error) {
     return res.status(500).send(results);
   } else {
@@ -62,6 +72,7 @@ router.post(
 
 /* PATCH id */
 router.patch('/:id', async function(req, res, next) {
+  // TODO: Should limit which user can approve, reject and cancel
   const result = await BookingModel.updateForUser(
     req.user.data.id,
     req.params.id,
