@@ -4,15 +4,15 @@ require('./passport');
 const auth = require('../app/controllers/auth');
 const indexRouter = require('../app/controllers/index');
 const performers = require('../app/controllers/performers');
-const adminPerformers = require('../app/controllers/admin/performers');
+const userPerformers = require('../app/controllers/user/performers');
 const venues = require('../app/controllers/venues');
-const adminVenues = require('../app/controllers/admin/venues');
+const userVenues = require('../app/controllers/user/venues');
 const users = require('../app/controllers/users');
 const search = require('../app/controllers/search');
 const genres = require('../app/controllers/genres');
 const properties = require('../app/controllers/properties');
-const adminBookings = require('../app/controllers/admin/bookings');
-const adminNotifications = require('../app/controllers/admin/notifications');
+const userBookings = require('../app/controllers/user/bookings');
+const userNotifications = require('../app/controllers/user/notifications');
 
 function authenticate() {
   return passport.authenticate('jwt', {session: false});
@@ -29,10 +29,10 @@ module.exports = function(app) {
 
   // with user
   app.use('/profile', authenticate(), users);
-  app.use('/admin/performers', authenticate(), adminPerformers);
-  app.use('/admin/venues', authenticate(), adminVenues);
-  app.use('/admin/bookings', authenticate(), adminBookings);
-  app.use('/admin/notifications', authenticate(), adminNotifications);
+  app.use('/user/performers', authenticate(), userPerformers);
+  app.use('/user/venues', authenticate(), userVenues);
+  app.use('/user/bookings', authenticate(), userBookings);
+  app.use('/user/notifications', authenticate(), userNotifications);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

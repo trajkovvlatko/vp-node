@@ -7,33 +7,33 @@ const {authUser} = require('../../spec_helper');
 chai.use(chaiHttp);
 chai.should();
 
-describe('admin/venues', () => {
+describe('user/venues', () => {
   context('when user is not signed in', () => {
-    describe('GET /admin/venues', () => {
+    describe('GET /user/venues', () => {
       it('returns 401', async () => {
         await create('venues', {
           user_id: (await create('users')).id,
         });
-        const res = await chai.request(app).get(`/admin/venues`);
+        const res = await chai.request(app).get(`/user/venues`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
     });
 
-    describe('GET /admin/venues/:id', () => {
+    describe('GET /user/venues/:id', () => {
       it('returns 401', async () => {
         const id = (
           await create('venues', {
             user_id: (await create('users')).id,
           })
         ).id;
-        const res = await chai.request(app).get(`/admin/venues/${id}`);
+        const res = await chai.request(app).get(`/user/venues/${id}`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
     });
 
-    describe('PATCH /admin/venues/:id', () => {
+    describe('PATCH /user/venues/:id', () => {
       it('returns 401', async () => {
         const id = (
           await create('venues', {
@@ -43,7 +43,7 @@ describe('admin/venues', () => {
         const options = {name: 'new name'};
         const res = await chai
           .request(app)
-          .patch(`/admin/venues/${id}`)
+          .patch(`/user/venues/${id}`)
           .set('content-type', 'application/json')
           .send(options);
         res.should.have.status(401);
@@ -51,7 +51,7 @@ describe('admin/venues', () => {
       });
     });
 
-    describe('POST /admin/venues', () => {
+    describe('POST /user/venues', () => {
       it('returns 401', async () => {
         const options = {
           name: 'new name',
@@ -63,7 +63,7 @@ describe('admin/venues', () => {
         };
         const res = await chai
           .request(app)
-          .post(`/admin/venues`)
+          .post(`/user/venues`)
           .set('content-type', 'application/json')
           .send(options);
         res.should.have.status(401);
@@ -80,13 +80,13 @@ describe('admin/venues', () => {
       token = await authUser(user);
     });
 
-    describe('GET /admin/venues', () => {
+    describe('GET /user/venues', () => {
       it('returns empty array for no venues found for user', async () => {
         // venues owned by another user
         await create('venues', {user_id: (await create('users')).id});
         const res = await chai
           .request(app)
-          .get('/admin/venues')
+          .get('/user/venues')
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.should.deep.eq([]);
@@ -104,18 +104,18 @@ describe('admin/venues', () => {
 
         const res = await chai
           .request(app)
-          .get('/admin/venues')
+          .get('/user/venues')
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.map(p => p.id).should.deep.eq(ids);
       });
     });
 
-    describe('GET /admin/venues/:id', () => {
+    describe('GET /user/venues/:id', () => {
       it('returns 404 for venue not found', async () => {
         const res = await chai
           .request(app)
-          .get(`/admin/venues/-1`)
+          .get(`/user/venues/-1`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(404);
         res.body.error.should.eq('Venue not found.');
@@ -126,7 +126,7 @@ describe('admin/venues', () => {
         const id = (await create('venues', {user_id: tmpUser.id})).id;
         const res = await chai
           .request(app)
-          .get(`/admin/venues/${id}`)
+          .get(`/user/venues/${id}`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(404);
         res.body.error.should.eq('Venue not found.');
@@ -136,14 +136,14 @@ describe('admin/venues', () => {
         const id = (await create('venues', {user_id: user.id})).id;
         const res = await chai
           .request(app)
-          .get(`/admin/venues/${id}`)
+          .get(`/user/venues/${id}`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.id.should.eq(id);
       });
     });
 
-    describe('PATCH /admin/venues/:id', () => {
+    describe('PATCH /user/venues/:id', () => {
       it('updates venue data', async () => {
         const venue = await create('venues', {user_id: user.id});
         const options = {
@@ -156,7 +156,7 @@ describe('admin/venues', () => {
         };
         const res = await chai
           .request(app)
-          .patch(`/admin/venues/${venue.id}`)
+          .patch(`/user/venues/${venue.id}`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
@@ -172,7 +172,7 @@ describe('admin/venues', () => {
         const options = {name: 'new name'};
         const res = await chai
           .request(app)
-          .patch(`/admin/venues/${venue.id}`)
+          .patch(`/user/venues/${venue.id}`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
@@ -181,7 +181,7 @@ describe('admin/venues', () => {
       });
     });
 
-    describe('POST /admin/venues', () => {
+    describe('POST /user/venues', () => {
       it('creates a new venue', async () => {
         const options = {
           name: 'new name',
@@ -193,7 +193,7 @@ describe('admin/venues', () => {
         };
         const res = await chai
           .request(app)
-          .post(`/admin/venues`)
+          .post(`/user/venues`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
@@ -206,7 +206,7 @@ describe('admin/venues', () => {
         const options = {active: false};
         const res = await chai
           .request(app)
-          .post(`/admin/venues`)
+          .post(`/user/venues`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);

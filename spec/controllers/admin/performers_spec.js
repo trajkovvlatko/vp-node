@@ -7,33 +7,33 @@ const {authUser} = require('../../spec_helper');
 chai.use(chaiHttp);
 chai.should();
 
-describe('admin/performers', () => {
+describe('user/performers', () => {
   context('when user is not signed in', () => {
-    describe('GET /admin/performers', () => {
+    describe('GET /user/performers', () => {
       it('returns 401', async () => {
         await create('performers', {
           user_id: (await create('users')).id,
         });
-        const res = await chai.request(app).get(`/admin/performers`);
+        const res = await chai.request(app).get(`/user/performers`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
     });
 
-    describe('GET /admin/performers/:id', () => {
+    describe('GET /user/performers/:id', () => {
       it('returns 401', async () => {
         const id = (
           await create('performers', {
             user_id: (await create('users')).id,
           })
         ).id;
-        const res = await chai.request(app).get(`/admin/performers/${id}`);
+        const res = await chai.request(app).get(`/user/performers/${id}`);
         res.should.have.status(401);
         res.body.should.deep.eq({});
       });
     });
 
-    describe('PATCH /admin/performers/:id', () => {
+    describe('PATCH /user/performers/:id', () => {
       it('returns 401', async () => {
         const id = (
           await create('performers', {
@@ -43,7 +43,7 @@ describe('admin/performers', () => {
         const options = {name: 'new name'};
         const res = await chai
           .request(app)
-          .patch(`/admin/performers/${id}`)
+          .patch(`/user/performers/${id}`)
           .set('content-type', 'application/json')
           .send(options);
         res.should.have.status(401);
@@ -51,7 +51,7 @@ describe('admin/performers', () => {
       });
     });
 
-    describe('POST /admin/performers', () => {
+    describe('POST /user/performers', () => {
       it('returns 401', async () => {
         const options = {
           name: 'new name',
@@ -63,7 +63,7 @@ describe('admin/performers', () => {
         };
         const res = await chai
           .request(app)
-          .post(`/admin/performers`)
+          .post(`/user/performers`)
           .set('content-type', 'application/json')
           .send(options);
         res.should.have.status(401);
@@ -80,13 +80,13 @@ describe('admin/performers', () => {
       token = await authUser(user);
     });
 
-    describe('GET /admin/performers', () => {
+    describe('GET /user/performers', () => {
       it('returns empty array for no performers found for user', async () => {
         // performer owned by another user
         await create('performers', {user_id: (await create('users')).id});
         const res = await chai
           .request(app)
-          .get('/admin/performers')
+          .get('/user/performers')
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.should.deep.eq([]);
@@ -104,18 +104,18 @@ describe('admin/performers', () => {
 
         const res = await chai
           .request(app)
-          .get('/admin/performers')
+          .get('/user/performers')
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.map(p => p.id).should.deep.eq(ids);
       });
     });
 
-    describe('GET /admin/performers/:id', () => {
+    describe('GET /user/performers/:id', () => {
       it('returns 404 for performer not found', async () => {
         const res = await chai
           .request(app)
-          .get(`/admin/performers/-1`)
+          .get(`/user/performers/-1`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(404);
         res.body.error.should.eq('Performer not found.');
@@ -126,7 +126,7 @@ describe('admin/performers', () => {
         const id = (await create('performers', {user_id: tmpUser.id})).id;
         const res = await chai
           .request(app)
-          .get(`/admin/performers/${id}`)
+          .get(`/user/performers/${id}`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(404);
         res.body.error.should.eq('Performer not found.');
@@ -136,14 +136,14 @@ describe('admin/performers', () => {
         const id = (await create('performers', {user_id: user.id})).id;
         const res = await chai
           .request(app)
-          .get(`/admin/performers/${id}`)
+          .get(`/user/performers/${id}`)
           .set('Authorization', `Bearer ${token}`);
         res.should.have.status(200);
         res.body.id.should.eq(id);
       });
     });
 
-    describe('PATCH /admin/performers/:id', () => {
+    describe('PATCH /user/performers/:id', () => {
       it('updates performer data', async () => {
         const performer = await create('performers', {user_id: user.id});
         const options = {
@@ -156,7 +156,7 @@ describe('admin/performers', () => {
         };
         const res = await chai
           .request(app)
-          .patch(`/admin/performers/${performer.id}`)
+          .patch(`/user/performers/${performer.id}`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
@@ -172,7 +172,7 @@ describe('admin/performers', () => {
         const options = {name: 'new name'};
         const res = await chai
           .request(app)
-          .patch(`/admin/performers/${performer.id}`)
+          .patch(`/user/performers/${performer.id}`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
@@ -181,7 +181,7 @@ describe('admin/performers', () => {
       });
     });
 
-    describe('POST /admin/performers', () => {
+    describe('POST /user/performers', () => {
       it('creates a new performer', async () => {
         const options = {
           name: 'new name',
@@ -193,7 +193,7 @@ describe('admin/performers', () => {
         };
         const res = await chai
           .request(app)
-          .post(`/admin/performers`)
+          .post(`/user/performers`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
@@ -206,7 +206,7 @@ describe('admin/performers', () => {
         const options = {active: false};
         const res = await chai
           .request(app)
-          .post(`/admin/performers`)
+          .post(`/user/performers`)
           .set('content-type', 'application/json')
           .set('Authorization', `Bearer ${token}`)
           .send(options);
