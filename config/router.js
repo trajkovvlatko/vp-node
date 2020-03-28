@@ -12,7 +12,6 @@ const search = require('../app/controllers/search');
 const genres = require('../app/controllers/genres');
 const properties = require('../app/controllers/properties');
 const userBookings = require('../app/controllers/user/bookings');
-const userNotifications = require('../app/controllers/user/notifications');
 
 function authenticate() {
   return passport.authenticate('jwt', {session: false});
@@ -32,7 +31,6 @@ module.exports = function(app) {
   app.use('/user/performers', authenticate(), userPerformers);
   app.use('/user/venues', authenticate(), userVenues);
   app.use('/user/bookings', authenticate(), userBookings);
-  app.use('/user/notifications', authenticate(), userNotifications);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
