@@ -40,10 +40,10 @@ class BookingModel {
       return await db.any(
         `
         SELECT
-          bookings.id,
-          requester_type,
-          requested_type,
+          bookings.*,
+          performers.id AS performer_id,
           performers.name AS performer_name,
+          venues.id AS venue_id,
           venues.name AS venue_name
         FROM public.bookings
         JOIN performers
@@ -53,6 +53,7 @@ class BookingModel {
           ON (venues.id = requester_id AND requester_type = 'venue')
           OR (venues.id = requested_id AND requested_type = 'venue')
         WHERE to_user_id = $1
+        AND status = 'requested'
       `,
         [userId],
       );
