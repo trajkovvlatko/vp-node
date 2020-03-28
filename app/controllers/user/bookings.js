@@ -10,16 +10,7 @@ router.get('/', async function(req, res, next) {
   if (results.error) {
     return res.status(500).send(results);
   } else {
-    const list = results.map(row => {
-      let message;
-      if (row.requester_type === 'performer') {
-        message = `Performer ${row.performer_name} requested to perform on venue ${row.venue_name}`;
-      } else {
-        message = `Venue ${row.venue_name} invites ${row.performer_name} to perform`;
-      }
-      return {id: row.id, message};
-    });
-    res.send(list);
+    res.send(results);
   }
 });
 

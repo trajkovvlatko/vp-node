@@ -120,23 +120,20 @@ async function addVenue(userId, i) {
   return venue;
 }
 
-async function addBooking(userId, performer, venue) {
-  const booking = await BookingModel.createForUser(userId, {
-    performer_id: performer.id,
-    venue_id: venue.id,
-    booking_date: randomElement(['2012-01-01', '2012-01-02', '2012-01-03']),
-    status: randomElement(['requested', 'agreed', 'completed']),
+async function addBooking(userId, toUserId, performer, venue) {
+  await BookingModel.createForUser(userId, {
+    toUserId: toUserId,
+    requesterType: 'performer',
+    requesterId: performer.id,
+    requestedType: 'venue',
+    requestedId: venue.id,
+    bookingDate: randomElement(['2012-01-01', '2012-01-02', '2012-01-03']),
+    status: 'requested', //randomElement(['requested', 'agreed', 'completed']),
   });
 }
 
 (async function() {
   await db.any('TRUNCATE TABLE public.users CASCADE;');
-
-  const user = await UserModel.create({
-    name: 'User name',
-    email: 'user@name.com',
-    password: 'password',
-  });
 
   await db.any('TRUNCATE TABLE public.genres CASCADE;');
   const genres = [
@@ -167,11 +164,27 @@ async function addBooking(userId, performer, venue) {
     await PropertyModel.create({name: properties[i], active: true});
   }
 
-  let performer, venue;
+  for (let i = 1; i <= 5; i++) {
+    const fromUser = await UserModel.create({
+      name: `User name ${i}`,
+      email: `user-${i}@name.com`,
+      password: 'password',
+    });
 
-  for (let i = 1; i <= 10; i++) {
-    performer = await addPerformer(user.data.id, i);
-    venue = await addVenue(user.data.id, i);
-    await addBooking(user, performer, venue);
+    const toUser = await UserModel.create({
+      name: `Other user ${i}`,
+      email: `other-${i}@name.com`,
+      password: 'password',
+    });
+
+    const performer = await addPerformer(fromUser.data.id, i);
+    await addPerformer(fromUser.data.id, i);
+    await addVenue(fromUser.data.id, i);
+
+    const venue = await addVenue(toUser.data.id, i);
+    await addVenue(toUser.data.id, i);
+    await addPerformer(toUser.data.id, i);
+
+    await addBooking(fromUser.data.id, toUser.data.id, performer, venue);
   }
 })();
