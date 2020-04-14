@@ -90,16 +90,22 @@ describe('performers', () => {
         performer_id: performers[1].id,
       });
       booking1 = await create('bookings', {
-        user_id: user.id,
-        performer_id: id,
-        venue_id: venue.id,
+        from_user_id: user.id,
+        to_user_id: user.id,
+        requester_type: 'performer',
+        requester_id: id,
+        requested_type: 'venue',
+        requested_id: venue.id,
         status: 'pending',
         booking_date: '2012-01-01',
       });
       booking2 = await create('bookings', {
-        user_id: user.id,
-        performer_id: performers[1].id,
-        venue_id: venue.id,
+        from_user_id: user.id,
+        to_user_id: user.id,
+        requester_type: 'performer',
+        requester_id: performers[1].id,
+        requested_type: 'venue',
+        requested_id: venue.id,
         status: 'pending',
         booking_date: '2013-03-04',
       });
@@ -130,7 +136,7 @@ describe('performers', () => {
         images_list: [{id: img.id, image: img.image, selected: img.selected}],
         bookings_list: [
           {
-            date: '2012-01-01',
+            date: '2012-01-01T00:00:00',
             venue_id: venue.id,
             venue_name: venue.name,
           },

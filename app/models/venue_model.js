@@ -84,8 +84,16 @@ class VenueModel {
       if (params.date) {
         joins.push(`
           LEFT JOIN public.bookings
-            ON bookings.venue_id = venues.id
-            AND bookings.booking_date = $/booking_date/
+           ON (
+             (
+               bookings.requested_type = 'venue'
+               AND bookings.requested_id = venues.id
+             ) OR (
+               bookings.requester_type = 'venue'
+               AND bookings.requester_id = venues.id
+             )
+             AND bookings.booking_date = $/booking_date/
+           )
         `);
         data.booking_date = params.date;
         wheres.push('bookings.id IS NULL');

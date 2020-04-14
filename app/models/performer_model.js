@@ -89,8 +89,16 @@ class PerformerModel {
       if (params.date) {
         joins.push(`
           LEFT JOIN public.bookings
-            ON bookings.performer_id = performers.id
-            AND bookings.booking_date = $/booking_date/
+           ON (
+             (
+               bookings.requested_type = 'performer'
+               AND bookings.requested_id = performers.id
+             ) OR (
+               bookings.requester_type = 'performer'
+               AND bookings.requester_id = performers.id
+             )
+             AND bookings.booking_date = $/booking_date/
+           )
         `);
         data.booking_date = params.date;
         wheres.push('bookings.id IS NULL');

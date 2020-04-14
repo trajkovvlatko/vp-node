@@ -116,9 +116,12 @@ describe('search', () => {
         res.body.length.should.eq(2);
 
         await create('bookings', {
-          user_id: userId,
-          venue_id: (await create('venues', {user_id: userId})).id,
-          performer_id: performer1.id,
+          from_user_id: userId,
+          to_user_id: userId,
+          requester_id: (await create('venues', {user_id: userId})).id,
+          requester_type: 'venue',
+          requested_id: performer1.id,
+          requested_type: 'performer',
           status: 'booked',
           booking_date: '2011-01-01',
         });
@@ -293,9 +296,12 @@ describe('search', () => {
         res.body.length.should.eq(2);
 
         await create('bookings', {
-          user_id: userId,
-          venue_id: venue1.id,
-          performer_id: (await create('performers', {user_id: userId})).id,
+          from_user_id: userId,
+          to_user_id: userId,
+          requester_id: venue1.id,
+          requester_type: 'venue',
+          requested_id: (await create('performers', {user_id: userId})).id,
+          requested_type: 'performer',
           status: 'booked',
           booking_date: '2011-01-01',
         });

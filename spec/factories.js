@@ -208,21 +208,27 @@ async function addYoutubeLinks(options) {
 async function addBookings(options) {
   return await db.one(
     `INSERT INTO public.bookings (
-      user_id,
-      venue_id,
-      performer_id,
+      from_user_id,
+      to_user_id,
+      requester_type,
+      requester_id,
+      requested_type,
+      requested_id,
       status,
       booking_date,
       created_at,
       updated_at
     )
-    VALUES($1, $2, $3, $4, $5, $6, $7)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     RETURNING *`,
     [
-      options.user_id,
-      options.venue_id,
-      options.performer_id,
-      options.status,
+      options.from_user_id,
+      options.to_user_id,
+      options.requested_type,
+      options.requested_id,
+      options.requester_type,
+      options.requester_id,
+      options.status || 'pending',
       options.booking_date || new Date(),
       options.created_at || new Date(),
       options.updated_at || new Date(),

@@ -26,11 +26,14 @@ SET default_with_oids = false;
 
 CREATE TABLE public.bookings (
     id integer NOT NULL,
-    user_id integer NOT NULL,
-    venue_id integer NOT NULL,
-    performer_id integer NOT NULL,
+    from_user_id integer NOT NULL,
+    to_user_id integer NOT NULL,
+    requester_type text NOT NULL,
+    requester_id integer NOT NULL,
+    requested_type text NOT NULL,
+    requested_id integer NOT NULL,
     status text NOT NULL,
-    booking_date date NOT NULL,
+    booking_date timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -558,27 +561,19 @@ CREATE UNIQUE INDEX users_email_unique_index ON public.users USING btree (email)
 
 
 --
--- Name: bookings bookings_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_from_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_performer_id_fkey FOREIGN KEY (performer_id) REFERENCES public.performers(id);
+    ADD CONSTRAINT bookings_from_user_id_fkey FOREIGN KEY (from_user_id) REFERENCES public.users(id);
 
 
 --
--- Name: bookings bookings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
---
-
-ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: bookings bookings_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_to_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_venue_id_fkey FOREIGN KEY (venue_id) REFERENCES public.venues(id);
+    ADD CONSTRAINT bookings_to_user_id_fkey FOREIGN KEY (to_user_id) REFERENCES public.users(id);
 
 
 --
