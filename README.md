@@ -18,9 +18,9 @@ Run specs:
 npm run spec
 ```
 
-Run migrations (with whole DATABASE_URL=... for now), for ex.:
+Run migrations:
 ```
-DATABASE_URL=postgres://user:password@localhost:5432/vp_development NODE_ENV=development ./node_modules/node-pg-migrate/bin/node-pg-migrate up/down
+npm run migrate up/down
 ```
 
 Export database schema:

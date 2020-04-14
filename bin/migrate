@@ -1,0 +1,24 @@
+const fs = require('fs');
+const env = process.env.NODE_ENV;
+const data = fs.readFileSync('./config/default.json');
+const config = JSON.parse(data).db[env];
+const {user, password, host, port, database} = config;
+
+const {exec, spawn} = require('child_process');
+const dbUrl = `postgres://${user}:${password}@${host}:${port}/${database}`;
+const migratePath = `./node_modules/node-pg-migrate/bin/node-pg-migrate`;
+const direction = process.argv[2];
+
+if (['up', 'down'].indexOf(direction) === -1) {
+  console.log("Invalid command, must be npm run migrate 'up/down'");
+  return;
+}
+
+const command = `NODE_ENV=development DATABASE_URL=${dbUrl} ${migratePath} ${direction}`
+exec(command, (err, stdout, stderr) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log(stdout);
+});

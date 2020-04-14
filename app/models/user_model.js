@@ -1,8 +1,6 @@
 const db = require('../../config/database');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const {sqlGetPerformer} = require('./helpers/performer_helper');
-const {sqlGetVenue} = require('./helpers/venue_helper');
 
 class UserModel {
   constructor(data = {}) {
