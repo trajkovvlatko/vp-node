@@ -116,7 +116,7 @@ class Performer extends Model {
           },
           {
             model: Image,
-            attributes: ['id', 'image', 'selected'],
+            attributes: ['id', 'image', 'imageUrl', 'selected'],
             required: false,
           },
           {
@@ -138,7 +138,7 @@ class Performer extends Model {
   }
 
   async updateImages({removeIds, newImages, userId}) {
-    return await db.transaction(async (t) => {
+    return await db.transaction(async () => {
       if (removeIds && removeIds.length > 0) {
         await Image.destroy({
           where: {

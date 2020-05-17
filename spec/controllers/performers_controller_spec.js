@@ -2,6 +2,9 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../app.js');
 const create = require('../factories');
+const fs = require('fs');
+const data = fs.readFileSync('./config/default.json');
+const {host, dir} = JSON.parse(data).upload.test;
 require('../spec_helper');
 
 chai.use(chaiHttp);
@@ -49,20 +52,20 @@ describe('performers', () => {
       res.body.map((p) => p.id).should.deep.eq([performer2.id, performer1.id]);
       Object.keys(res.body[0])
         .sort()
-        .should.deep.eq(['id', 'type', 'name', 'rating', 'image'].sort());
+        .should.deep.eq(['id', 'type', 'name', 'rating', 'imageUrl'].sort());
       res.body[0].should.deep.eq({
         id: performer2.id,
         name: performer2.name,
         type: 'performer',
         rating: performer2.rating,
-        image: img2.image,
+        imageUrl: `${host}/${dir}/${img2.image}`,
       });
       res.body[1].should.deep.eq({
         id: performer1.id,
         name: performer1.name,
         type: 'performer',
         rating: performer1.rating,
-        image: img1.image,
+        imageUrl: `${host}/${dir}/${img1.image}`,
       });
     });
   });
@@ -145,7 +148,14 @@ describe('performers', () => {
           {id: genre2.id, name: genre2.name},
         ],
         YoutubeLinks: [{id: yt.id, link: yt.link}],
-        Images: [{id: img.id, image: img.image, selected: img.selected}],
+        Images: [
+          {
+            id: img.id,
+            image: img.image,
+            imageUrl: `${host}/${dir}/${img.image}`,
+            selected: img.selected,
+          },
+        ],
         Bookings: [
           {
             id: booking1.id,

@@ -23,7 +23,7 @@ router.get('/', async function (req, res) {
           name: v.name,
           type: 'venue',
           rating: v.rating,
-          image: venue.Images[0].dataValues.image,
+          imageUrl: venue.Images[0].get('imageUrl'),
         };
       }),
     );

@@ -116,7 +116,7 @@ class Venue extends Model {
           },
           {
             model: Image,
-            attributes: ['id', 'image', 'selected'],
+            attributes: ['id', 'image', 'imageUrl', 'selected'],
             required: false,
           },
           {

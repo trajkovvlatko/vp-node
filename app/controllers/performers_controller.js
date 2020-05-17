@@ -23,7 +23,7 @@ router.get('/', async function (req, res) {
           name: p.name,
           type: 'performer',
           rating: p.rating,
-          image: performer.Images[0].dataValues.image,
+          imageUrl: performer.Images[0].get('imageUrl'),
         };
       }),
     );

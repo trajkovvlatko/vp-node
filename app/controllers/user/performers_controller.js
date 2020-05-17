@@ -68,7 +68,11 @@ router.post('/:id/images', async function (req, res) {
   }
 
   try {
-    const newImages = await Image.upload(req, res);
+    const newImages = await Image.upload(
+      req,
+      res,
+      `performers/${performer.id}`,
+    );
     let removeIds = req.body.remove_image_ids;
     if (removeIds && removeIds.length > 0) {
       removeIds = removeIds.split(',').map((i) => parseInt(i));

@@ -2,30 +2,30 @@ const {DataTypes, Model} = require('sequelize');
 const sequelize = require('../../config/database');
 const path = require('path');
 const multer = require('multer');
+const fs = require('fs');
+const data = fs.readFileSync('./config/default.json');
+const env = process.env.NODE_ENV || 'development';
+const {host, dir} = JSON.parse(data).upload[env];
 
 class Image extends Model {
-  static upload(req, res) {
+  static upload(req, res, imagePath) {
     return new Promise((resolve, reject) => {
-      if (typeof req.files === 'undefined' || req.files.length === 0) {
-        resolve([]);
-      }
-
-      const FILE_SIZE = 10000000;
-      const DESTINATION = './public/uploads/';
+      const fileSize = 10000000;
+      const destination = `./${dir}/${imagePath}/`;
       const newImages = [];
       const storage = multer.diskStorage({
-        destination: DESTINATION,
+        destination,
         filename: function (_, file, cb) {
-          const name =
-            'IMAGE-' + Math.random() + path.extname(file.originalname);
-          newImages.push(name);
+          const ext = path.extname(file.originalname);
+          const name = `/image-${Math.random()}${ext}`;
+          newImages.push(`${imagePath}${name}`);
           cb(null, name);
         },
       });
 
       const upload = multer({
         storage: storage,
-        limits: {fileSize: FILE_SIZE},
+        limits: {fileSize},
       }).array('images[]');
 
       upload(req, res, async (err) => {
@@ -61,6 +61,12 @@ Image.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    imageUrl: {
+      type: new DataTypes.VIRTUAL(DataTypes.STRING, ['image']),
+      get() {
+        return `${host}/${dir}/${this.get('image')}`;
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
