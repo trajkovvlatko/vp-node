@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const VenueModel = require('../models/venue_model.js');
-const PerformerModel = require('../models/performer_model.js');
+const Venue = require('../models/venue_model.js');
+const Performer = require('../models/performer_model.js');
 
 /* GET */
 router.get('/:type/:location', async function(req, res, next) {
@@ -13,9 +13,9 @@ router.get('/:type/:location', async function(req, res, next) {
 
   let results;
   if (req.params.type === 'venues') {
-    results = await VenueModel.search(params);
+    results = await Venue.search(params);
   } else if (req.params.type === 'performers') {
-    results = await PerformerModel.search(params);
+    results = await Performer.search(params);
   } else {
     results = [];
   }

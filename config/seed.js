@@ -1,21 +1,20 @@
-const UserModel = require('../app/models/user_model');
-const GenreModel = require('../app/models/genre_model');
-const PropertyModel = require('../app/models/property_model');
-const PerformerModel = require('../app/models/performer_model');
-const VenueModel = require('../app/models/venue_model');
-const YoutubeLinkModel = require('../app/models/youtube_link_model');
-const BookingModel = require('../app/models/booking_model');
-const ImageModel = require('../app/models/image_model');
 const db = require('./database');
-
+const models = require('../app/models');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const locations = ['Sweden', 'Denmark', 'Norway', 'Finland'];
 
 function randomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function addPerformer(userId, i) {
-  const performer = await PerformerModel.createForUser(userId, {
+function rand() {
+  return Math.round(Math.random() * 1000000);
+}
+
+async function addPerformer(user) {
+  const i = rand();
+  const performer = await user.createPerformer({
     name: `Performer ${i}`,
     location: randomElement(locations),
     phone: `${i}${i}${i}${i}${i}`,
@@ -28,47 +27,46 @@ async function addPerformer(userId, i) {
     active: true,
   });
 
-  await ImageModel.createForUser(userId, {
-    owner_id: performer.id,
-    owner_type: 'Performer',
+  await user.createImage({
+    ownerId: performer.id,
+    ownerType: 'Performer',
     image: `performers/${performer.id}/selected-image-${i}.jpg`,
     selected: true,
   });
 
-  await ImageModel.createForUser(userId, {
-    owner_id: performer.id,
-    owner_type: 'Performer',
+  await user.createImage({
+    ownerId: performer.id,
+    ownerType: 'Performer',
     image: `performers/${performer.id}/image-${i}.jpg`,
     selected: false,
   });
 
-  const genres = await GenreModel.all();
-  await db.any(`
+  const genres = await models.Genre.findAll();
+  await db.query(`
     INSERT INTO public.genres_performers
-    (genre_id, performer_id, created_at, updated_at)
+    ("genreId", "performerId", "createdAt", "updatedAt")
     VALUES (${randomElement(genres).id}, ${performer.id}, now(), now())`);
-  await db.any(`
+  await db.query(`
     INSERT INTO public.genres_performers
-    (genre_id, performer_id, created_at, updated_at)
+    ("genreId", "performerId", "createdAt", "updatedAt")
     VALUES (${randomElement(genres).id}, ${performer.id}, now(), now())`);
 
-  await YoutubeLinkModel.createForOwner(
-    performer.id,
-    'Performer',
-    `http://performer-${performer.id}-youtube-1.asdf`,
-    userId,
-  );
-  await YoutubeLinkModel.createForOwner(
-    performer.id,
-    'Performer',
-    `http://performer-${performer.id}-youtube-2.asdf`,
-    userId,
-  );
+  await user.createYoutubeLink({
+    ownerId: performer.id,
+    ownerType: 'Performer',
+    link: `http://performer-${performer.id}-youtube-1.asdf`,
+  });
+  await user.createYoutubeLink({
+    ownerId: performer.id,
+    ownerType: 'Performer',
+    link: `http://performer-${performer.id}-youtube-2.asdf`,
+  });
   return performer;
 }
 
-async function addVenue(userId, i) {
-  const venue = await VenueModel.createForUser(userId, {
+async function addVenue(user) {
+  const i = rand();
+  const venue = await user.createVenue({
     name: `Venue ${i}`,
     location: randomElement(locations),
     phone: `${i}${i}${i}${i}${i}`,
@@ -81,61 +79,60 @@ async function addVenue(userId, i) {
     active: true,
   });
 
-  await ImageModel.createForUser(userId, {
-    owner_id: venue.id,
-    owner_type: 'Venue',
+  await user.createImage({
+    ownerId: venue.id,
+    ownerType: 'Venue',
     image: `venues/${venue.id}/selected-image-${i}.jpg`,
     selected: true,
   });
 
-  await ImageModel.createForUser(userId, {
-    owner_id: venue.id,
-    owner_type: 'Venue',
+  await user.createImage({
+    ownerId: venue.id,
+    ownerType: 'Venue',
     image: `venues/${venue.id}/image-${i}.jpg`,
     selected: false,
   });
 
-  const properties = await PropertyModel.all();
-  await db.any(`
+  const properties = await models.Property.findAll();
+  await db.query(`
     INSERT INTO public.properties_venues
-    (property_id, venue_id, created_at, updated_at)
+    ("propertyId", "venueId", "createdAt", "updatedAt")
     VALUES (${randomElement(properties).id}, ${venue.id}, now(), now())`);
-  await db.any(`
+  await db.query(`
     INSERT INTO public.properties_venues
-    (property_id, venue_id, created_at, updated_at)
+    ("propertyId", "venueId", "createdAt", "updatedAt")
     VALUES (${randomElement(properties).id}, ${venue.id}, now(), now())`);
 
-  await YoutubeLinkModel.createForOwner(
-    venue.id,
-    'Venue',
-    `http://venue-${venue.id}-youtube-1.asdf`,
-    userId,
-  );
-  await YoutubeLinkModel.createForOwner(
-    venue.id,
-    'Venue',
-    `http://venue-${venue.id}-youtube-2.asdf`,
-    userId,
-  );
+  await user.createYoutubeLink({
+    ownerId: venue.id,
+    ownerType: 'Venue',
+    link: `http://venue-${venue.id}-youtube-1.asdf`,
+  });
+  await user.createYoutubeLink({
+    ownerId: venue.id,
+    ownerType: 'Venue',
+    link: `http://venue-${venue.id}-youtube-2.asdf`,
+  });
   return venue;
 }
 
-async function addBooking(userId, toUserId, performer, venue) {
-  await BookingModel.createForUser(userId, {
-    toUserId: toUserId,
-    requesterType: 'performer',
+async function addBooking(fromUser, toUser, performer, venue) {
+  await models.Booking.create({
+    fromUserId: fromUser.id,
+    toUserId: toUser.id,
+    requesterType: 'Performer',
     requesterId: performer.id,
-    requestedType: 'venue',
+    requestedType: 'Venue',
     requestedId: venue.id,
     bookingDate: randomElement(['2012-01-01', '2012-01-02', '2012-01-03']),
     status: 'requested', //randomElement(['requested', 'agreed', 'completed']),
   });
 }
 
-(async function() {
-  await db.any('TRUNCATE TABLE public.users CASCADE;');
+(async function () {
+  await db.query('TRUNCATE TABLE public.users CASCADE;');
 
-  await db.any('TRUNCATE TABLE public.genres CASCADE;');
+  await db.query('TRUNCATE TABLE public.genres CASCADE;');
   const genres = [
     'Blues',
     'Classical',
@@ -148,10 +145,10 @@ async function addBooking(userId, toUserId, performer, venue) {
     'Rock',
   ];
   for (let i = 0; i < genres.length; i++) {
-    await GenreModel.create({name: genres[i], active: true});
+    await models.Genre.create({name: genres[i], active: true});
   }
 
-  await db.any('TRUNCATE TABLE public.properties CASCADE;');
+  await db.query('TRUNCATE TABLE public.properties CASCADE;');
   const properties = [
     'bar',
     'nightclub',
@@ -161,30 +158,34 @@ async function addBooking(userId, toUserId, performer, venue) {
     'dark',
   ];
   for (let i = 0; i < properties.length; i++) {
-    await PropertyModel.create({name: properties[i], active: true});
+    await models.Property.create({name: properties[i], active: true});
   }
 
   for (let i = 1; i <= 5; i++) {
-    const fromUser = await UserModel.create({
+    const fromUserHash = await bcrypt.hash('password', saltRounds);
+    const fromUser = models.User.build({
       name: `User name ${i}`,
       email: `user-${i}@name.com`,
-      password: 'password',
+      password: fromUserHash,
     });
+    await fromUser.save();
 
-    const toUser = await UserModel.create({
+    const toUserHash = await bcrypt.hash('password', saltRounds);
+    const toUser = await models.User.build({
       name: `Other user ${i}`,
       email: `other-${i}@name.com`,
-      password: 'password',
+      password: toUserHash,
     });
+    await toUser.save();
 
-    const performer = await addPerformer(fromUser.data.id, i);
-    await addPerformer(fromUser.data.id, i);
-    await addVenue(fromUser.data.id, i);
+    const performer = await addPerformer(fromUser);
+    await addPerformer(fromUser);
+    await addVenue(fromUser);
 
-    const venue = await addVenue(toUser.data.id, i);
-    await addVenue(toUser.data.id, i);
-    await addPerformer(toUser.data.id, i);
+    const venue = await addVenue(toUser);
+    await addVenue(toUser);
+    await addPerformer(toUser);
 
-    await addBooking(fromUser.data.id, toUser.data.id, performer, venue);
+    await addBooking(fromUser, toUser, performer, venue);
   }
 })();

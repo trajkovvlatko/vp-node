@@ -1,7 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../app.js');
-const create = require('../factories');
 
 chai.use(chaiHttp);
 chai.should();
@@ -14,14 +13,11 @@ describe('auth', () => {
         email: 'some@email.com',
         password: 'some-password',
       };
-      const res = await chai
-        .request(app)
-        .post('/auth/register')
-        .send(options);
+      const res = await chai.request(app).post('/auth/register').send(options);
 
       res.should.have.status(200);
       res.body.should.be.an('object');
-      res.body.should.include({
+      res.body.should.deep.equal({
         name: options.name,
         email: options.email,
       });
@@ -32,13 +28,9 @@ describe('auth', () => {
         email: 'some@email.com',
         password: 'some-password',
       };
-      const res = await chai
-        .request(app)
-        .post('/auth/register')
-        .send(options);
-      res.should.have.status(500);
-      res.body.error.should.include('Failing row contains');
-      res.body.error.should.include(', null, some@email.com');
+      const res = await chai.request(app).post('/auth/register').send(options);
+      res.should.have.status(422);
+      res.body.should.deep.eq({error: 'Unprocessable entry.'});
     });
   });
 });

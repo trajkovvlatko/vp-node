@@ -1,23 +1,26 @@
 const chai = require('chai');
-const db = require('../config/database');
+const sequelize = require('../config/database');
 const app = require('../app.js');
-const QueryFile = require('pg-promise').QueryFile;
+const fs = require('fs').promises;
 const path = require('path');
 
 async function loadDb() {
-  await db.any('DROP SCHEMA IF EXISTS public CASCADE;');
-  await db.any('CREATE SCHEMA public;');
+  await sequelize.query('DROP SCHEMA IF EXISTS public CASCADE;');
+  await sequelize.query('CREATE SCHEMA public;');
   const fullPath = path.join(__dirname, 'database.sql');
-  await db.any(new QueryFile(fullPath, {minify: true}), []);
+  await fs.readFile(fullPath).then((sql) => sequelize.query(sql.toString()));
   console.log('------------ Database loaded -----------');
 }
 
 async function clearTables() {
-  await db.any('TRUNCATE TABLE public.users CASCADE;');
-  await db.any('TRUNCATE TABLE public.performers CASCADE;');
-  await db.any('TRUNCATE TABLE public.venues CASCADE;');
-  await db.any('TRUNCATE TABLE public.genres CASCADE;');
-  await db.any('TRUNCATE TABLE public.properties CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.users CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.performers CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.venues CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.genres CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.properties CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.youtube_links CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.images CASCADE;');
+  await sequelize.query('TRUNCATE TABLE public.bookings CASCADE;');
 }
 
 before(async () => {
@@ -29,9 +32,8 @@ beforeEach(async () => {
 });
 
 async function authUser(user) {
-  const auth = await chai
-    .request(app)
-    .post(`/auth/login?email=${user.email}&password=${user.password}`);
+  const url = `/auth/login?email=${user.email}&password=${user.password}`;
+  const auth = await chai.request(app).post(url);
   return auth.body.token;
 }
 

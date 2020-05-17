@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 /* GET user profile. */
-router.get('/', function(req, res, next) {
-  res.send(req.user.data);
+router.get('/', function (req, res) {
+  res.send(req.user);
 });
 
 module.exports = router;

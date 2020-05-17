@@ -3,8 +3,8 @@ const router = express.Router();
 const PropertyModel = require('../models/property_model.js');
 
 /* GET index */
-router.get('/', async function(req, res, next) {
-  const properties = await PropertyModel.all();
+router.get('/', async function (req, res, next) {
+  const properties = await PropertyModel.allActive();
   res.send(properties);
 });
 

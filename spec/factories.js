@@ -1,6 +1,7 @@
-const db = require('../config/database');
+const models = require('../app/models');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const sequelize = require('../config/database');
 
 async function create(table, options = {}) {
   switch (table) {
@@ -11,13 +12,13 @@ async function create(table, options = {}) {
       return await addVenue(options);
       break;
     case 'genres':
-      return await addGenres(options);
+      return await addGenre(options);
+      break;
+    case 'genres_performers':
+      return await addGenrePerformer(options);
       break;
     case 'users':
       return await addUser(options);
-      break;
-    case 'genres_performers':
-      return await addGenresPerformers(options);
       break;
     case 'bookings':
       return await addBookings(options);
@@ -28,218 +29,168 @@ async function create(table, options = {}) {
     case 'properties':
       return await addProperties(options);
       break;
-    case 'properties_venues':
-      return await addPropertiesVenues(options);
-      break;
     case 'youtube_links':
       return await addYoutubeLinks(options);
       break;
+    case 'properties_venues':
+      return await addPropertyVenue(options);
+      break;
+    default:
+      throw `No factory for table '${table}'`;
   }
+}
+
+async function addGenrePerformer(options) {
+  return await sequelize.query(`
+    INSERT INTO public.genres_performers
+      ("genreId", "performerId", "createdAt", "updatedAt")
+    VALUES (${options.genreId}, ${options.performerId}, now(), now())
+    RETURNING *;`);
+}
+
+async function addPropertyVenue(options) {
+  return await sequelize.query(`
+    INSERT INTO public.properties_venues
+      ("venueId", "propertyId", "createdAt", "updatedAt")
+    VALUES (${options.venueId}, ${options.propertyId}, now(), now())
+    RETURNING *;`);
 }
 
 async function addUser(options) {
   const password = options.password || rand();
   const hash = await bcrypt.hash(password, saltRounds);
-  const user = await db.one(
-    `INSERT INTO public.users
-    (name, email, password, active, created_at, updated_at)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING *`,
-    [
-      options.name || rand(),
-      options.email || `${rand()}@${rand()}.${rand()}`,
-      hash,
+  const user = models.User.build({
+    name: options.name || rand(),
+    email: options.email || `${rand()}@${rand()}.${rand()}`,
+    password: hash,
+    active:
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
-  return {...user, password: password};
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
+  await user.save();
+  return {...user.dataValues, password: password};
 }
 
 async function addImage(options) {
-  return await db.one(
-    `INSERT INTO public.images
-    (user_id, owner_id, owner_type, image, selected, created_at, updated_at)
-    VALUES
-    ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING *`,
-    [
-      options.user_id,
-      options.owner_id,
-      options.owner_type,
-      options.image || `${rand()}.${rand()}`,
+  const image = models.Image.build({
+    userId: options.userId,
+    ownerId: options.ownerId,
+    ownerType: options.ownerType,
+    image: options.image || `${rand()}.${rand()}`,
+    selected:
       typeof options.selected !== 'undefined' && options.selected !== null
         ? options.selected
         : true,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
+  await image.save();
+  return image;
 }
 
 async function addPerformer(options) {
-  return await db.one(
-    `INSERT INTO public.performers
-    (name, user_id, location, phone, details, website, rating, active,
-      created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    RETURNING *`,
-    [
-      options.name || rand(),
-      options.user_id,
-      options.location || rand(),
-      options.phone || rand(),
-      options.details || rand(),
-      options.website || rand(),
-      options.rating || 2,
+  const performer = models.Performer.build({
+    name: options.name || rand(),
+    userId: options.userId,
+    location: options.location || rand(),
+    phone: options.phone || rand(),
+    details: options.details || rand(),
+    website: options.website || rand(),
+    rating: options.rating || 2,
+    active:
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
+  await performer.save();
+  return performer;
 }
 
 async function addVenue(options) {
-  return await db.one(
-    `INSERT INTO public.venues
-    (name, user_id, location, phone, active, created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6, $7)
-    RETURNING *`,
-    [
-      options.name || rand(),
-      options.user_id,
-      options.location || rand(),
-      options.phone || rand(),
+  return await models.Venue.create({
+    name: options.name || rand(),
+    userId: options.userId,
+    location: options.location || rand(),
+    phone: options.phone || rand(),
+    rating: options.rating || 2,
+    active:
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
 }
 
-async function addGenres(options) {
-  return await db.one(
-    `INSERT INTO public.genres
-    (name, active, created_at, updated_at)
-    VALUES($1, $2, $3, $4)
-    RETURNING *`,
-    [
-      options.name || rand(),
+async function addGenre(options) {
+  return await models.Genre.create({
+    name: options.name || rand(),
+    active:
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
 }
 
-async function addGenresPerformers(options) {
-  return await db.one(
-    `INSERT INTO public.genres_performers
-    (genre_id, performer_id, created_at, updated_at)
-    VALUES($1, $2, $3, $4)
-    RETURNING *`,
-    [
-      options.genre_id,
-      options.performer_id,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+async function addGenre(options) {
+  return await models.Genre.create({
+    name: options.name || rand(),
+    active:
+      typeof options.active !== 'undefined' && options.active !== null
+        ? options.active
+        : true,
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
 }
 
 async function addProperties(options) {
-  return await db.one(
-    `INSERT INTO public.properties
-    (name, active, created_at, updated_at)
-    VALUES($1, $2, $3, $4)
-    RETURNING *`,
-    [
-      options.name || rand(),
+  return await models.Property.create({
+    name: options.name || rand(),
+    active:
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active
         : true,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
-}
-
-async function addPropertiesVenues(options) {
-  return await db.one(
-    `INSERT INTO public.properties_venues
-    (property_id, venue_id, created_at, updated_at)
-    VALUES($1, $2, $3, $4)
-    RETURNING *`,
-    [
-      options.property_id,
-      options.venue_id,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
 }
 
 async function addYoutubeLinks(options) {
-  return await db.one(
-    `INSERT INTO public.youtube_links
-    (owner_id, owner_type, link, user_id, created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6)
-    RETURNING *`,
-    [
-      options.owner_id,
-      options.owner_type,
-      options.link || `http://${rand()}.${rand()}`,
-      options.user_id,
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+  return await models.YoutubeLink.create({
+    ownerId: options.ownerId,
+    ownerType: options.ownerType,
+    link: options.link || `http://${rand()}.${rand()}`,
+    userId: options.userId,
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
 }
 
 async function addBookings(options) {
-  return await db.one(
-    `INSERT INTO public.bookings (
-      from_user_id,
-      to_user_id,
-      requester_type,
-      requester_id,
-      requested_type,
-      requested_id,
-      status,
-      booking_date,
-      created_at,
-      updated_at
-    )
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    RETURNING *`,
-    [
-      options.from_user_id,
-      options.to_user_id,
-      options.requested_type,
-      options.requested_id,
-      options.requester_type,
-      options.requester_id,
-      options.status || 'pending',
-      options.booking_date || new Date(),
-      options.created_at || new Date(),
-      options.updated_at || new Date(),
-    ],
-  );
+  return await models.Booking.create({
+    fromUserId: options.fromUserId,
+    toUserId: options.toUserId,
+    requestedType: options.requestedType,
+    requestedId: options.requestedId,
+    requesterType: options.requesterType,
+    requesterId: options.requesterId,
+    status: options.status || 'pending',
+    bookingDate: options.bookingDate || new Date(),
+    createdAt: options.createdAt || new Date(),
+    updatedAt: options.updatedAt || new Date(),
+  });
 }
 
 function rand() {
-  return Math.random()
-    .toString(36)
-    .substring(7);
+  return Math.random().toString(36).substring(7);
 }
 
 module.exports = create;

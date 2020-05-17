@@ -26,16 +26,16 @@ SET default_with_oids = false;
 
 CREATE TABLE public.bookings (
     id integer NOT NULL,
-    from_user_id integer NOT NULL,
-    to_user_id integer NOT NULL,
-    requester_type text NOT NULL,
-    requester_id integer NOT NULL,
-    requested_type text NOT NULL,
-    requested_id integer NOT NULL,
+    "fromUserId" integer NOT NULL,
+    "toUserId" integer NOT NULL,
+    "requesterType" text NOT NULL,
+    "requesterId" integer NOT NULL,
+    "requestedType" text NOT NULL,
+    "requestedId" integer NOT NULL,
     status text NOT NULL,
-    booking_date timestamp without time zone NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "bookingDate" date NOT NULL,
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -71,8 +71,8 @@ CREATE TABLE public.genres (
     id integer NOT NULL,
     name text NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -105,10 +105,10 @@ ALTER SEQUENCE public.genres_id_seq OWNED BY public.genres.id;
 --
 
 CREATE TABLE public.genres_performers (
-    genre_id integer NOT NULL,
-    performer_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "genreId" integer NOT NULL,
+    "performerId" integer NOT NULL,
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -120,13 +120,13 @@ ALTER TABLE public.genres_performers OWNER TO youplay;
 
 CREATE TABLE public.images (
     id integer NOT NULL,
-    user_id integer NOT NULL,
-    owner_id integer NOT NULL,
-    owner_type text NOT NULL,
+    "userId" integer NOT NULL,
+    "ownerId" integer NOT NULL,
+    "ownerType" text NOT NULL,
     image text NOT NULL,
     selected boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -160,7 +160,7 @@ ALTER SEQUENCE public.images_id_seq OWNED BY public.images.id;
 
 CREATE TABLE public.performers (
     id integer NOT NULL,
-    user_id integer NOT NULL,
+    "userId" integer NOT NULL,
     name text NOT NULL,
     location text NOT NULL,
     phone text NOT NULL,
@@ -168,8 +168,8 @@ CREATE TABLE public.performers (
     website text,
     rating integer,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -240,8 +240,8 @@ CREATE TABLE public.properties (
     id integer NOT NULL,
     name text NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -274,10 +274,10 @@ ALTER SEQUENCE public.properties_id_seq OWNED BY public.properties.id;
 --
 
 CREATE TABLE public.properties_venues (
-    property_id integer NOT NULL,
-    venue_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "propertyId" integer NOT NULL,
+    "venueId" integer NOT NULL,
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -293,8 +293,8 @@ CREATE TABLE public.users (
     email text NOT NULL,
     password text NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -328,7 +328,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 CREATE TABLE public.venues (
     id integer NOT NULL,
-    user_id integer NOT NULL,
+    "userId" integer NOT NULL,
     name text NOT NULL,
     location text NOT NULL,
     phone text NOT NULL,
@@ -336,8 +336,8 @@ CREATE TABLE public.venues (
     website text,
     rating integer,
     active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -371,12 +371,12 @@ ALTER SEQUENCE public.venues_id_seq OWNED BY public.venues.id;
 
 CREATE TABLE public.youtube_links (
     id integer NOT NULL,
-    user_id integer NOT NULL,
-    owner_id integer NOT NULL,
-    owner_type text NOT NULL,
+    "userId" integer NOT NULL,
+    "ownerId" integer NOT NULL,
+    "ownerType" text NOT NULL,
     link text NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    "createdAt" timestamp without time zone NOT NULL,
+    "updatedAt" timestamp without time zone NOT NULL
 );
 
 
@@ -561,83 +561,83 @@ CREATE UNIQUE INDEX users_email_unique_index ON public.users USING btree (email)
 
 
 --
--- Name: bookings bookings_from_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_fromUserId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_from_user_id_fkey FOREIGN KEY (from_user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT "bookings_fromUserId_fkey" FOREIGN KEY ("fromUserId") REFERENCES public.users(id);
 
 
 --
--- Name: bookings bookings_to_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_toUserId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_to_user_id_fkey FOREIGN KEY (to_user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT "bookings_toUserId_fkey" FOREIGN KEY ("toUserId") REFERENCES public.users(id);
 
 
 --
--- Name: genres_performers genres_performers_genre_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
---
-
-ALTER TABLE ONLY public.genres_performers
-    ADD CONSTRAINT genres_performers_genre_id_fkey FOREIGN KEY (genre_id) REFERENCES public.genres(id);
-
-
---
--- Name: genres_performers genres_performers_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres_performers genres_performers_genreId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.genres_performers
-    ADD CONSTRAINT genres_performers_performer_id_fkey FOREIGN KEY (performer_id) REFERENCES public.performers(id);
+    ADD CONSTRAINT "genres_performers_genreId_fkey" FOREIGN KEY ("genreId") REFERENCES public.genres(id);
 
 
 --
--- Name: images images_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres_performers genres_performers_performerId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+--
+
+ALTER TABLE ONLY public.genres_performers
+    ADD CONSTRAINT "genres_performers_performerId_fkey" FOREIGN KEY ("performerId") REFERENCES public.performers(id);
+
+
+--
+-- Name: images images_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.images
-    ADD CONSTRAINT images_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT "images_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id);
 
 
 --
--- Name: performers performers_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: performers performers_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.performers
-    ADD CONSTRAINT performers_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT "performers_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id);
 
 
 --
--- Name: properties_venues properties_venues_property_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
---
-
-ALTER TABLE ONLY public.properties_venues
-    ADD CONSTRAINT properties_venues_property_id_fkey FOREIGN KEY (property_id) REFERENCES public.properties(id);
-
-
---
--- Name: properties_venues properties_venues_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties_venues properties_venues_propertyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.properties_venues
-    ADD CONSTRAINT properties_venues_venue_id_fkey FOREIGN KEY (venue_id) REFERENCES public.venues(id);
+    ADD CONSTRAINT "properties_venues_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES public.properties(id);
 
 
 --
--- Name: venues venues_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties_venues properties_venues_venueId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+--
+
+ALTER TABLE ONLY public.properties_venues
+    ADD CONSTRAINT "properties_venues_venueId_fkey" FOREIGN KEY ("venueId") REFERENCES public.venues(id);
+
+
+--
+-- Name: venues venues_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.venues
-    ADD CONSTRAINT venues_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT "venues_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id);
 
 
 --
--- Name: youtube_links youtube_links_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: youtube_links youtube_links_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
 --
 
 ALTER TABLE ONLY public.youtube_links
-    ADD CONSTRAINT youtube_links_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT "youtube_links_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id);
 
 
 --

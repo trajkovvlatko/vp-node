@@ -14,11 +14,12 @@ describe('performers', () => {
     user = await create('users');
   });
 
-  async function addImage(ownerId, userId) {
+  async function addImage(ownerId, userId, selected = true) {
     return await create('images', {
-      user_id: userId,
-      owner_id: ownerId,
-      owner_type: 'Performer',
+      userId,
+      ownerId,
+      ownerType: 'Performer',
+      selected,
     });
   }
 
@@ -30,25 +31,39 @@ describe('performers', () => {
     });
 
     it('returns list of active performers', async () => {
-      const performerIds = [
-        (await create('performers', {user_id: user.id})).id,
-        (await create('performers', {user_id: user.id})).id,
-      ];
+      const performer1 = await create('performers', {userId: user.id});
+      const performer2 = await create('performers', {userId: user.id});
       const inactive = await create('performers', {
-        user_id: user.id,
+        userId: user.id,
         active: false,
       });
-      await create('performers', {user_id: user.id});
-
-      await addImage(performerIds[0], user.id);
-      await addImage(performerIds[1], user.id);
+      const img1 = await addImage(performer1.id, user.id);
+      await addImage(performer1.id, user.id, false);
+      const img2 = await addImage(performer2.id, user.id);
       await addImage(inactive.id, user.id);
 
       const res = await chai.request(app).get('/performers');
       res.should.have.status(200);
       res.body.should.be.an('array');
       res.body.length.should.eq(2);
-      res.body.map(p => p.id).should.deep.eq(performerIds);
+      res.body.map((p) => p.id).should.deep.eq([performer2.id, performer1.id]);
+      Object.keys(res.body[0])
+        .sort()
+        .should.deep.eq(['id', 'type', 'name', 'rating', 'image'].sort());
+      res.body[0].should.deep.eq({
+        id: performer2.id,
+        name: performer2.name,
+        type: 'performer',
+        rating: performer2.rating,
+        image: img2.image,
+      });
+      res.body[1].should.deep.eq({
+        id: performer1.id,
+        name: performer1.name,
+        type: 'performer',
+        rating: performer1.rating,
+        image: img1.image,
+      });
     });
   });
 
@@ -57,57 +72,57 @@ describe('performers', () => {
 
     beforeEach(async () => {
       performers = [
-        await create('performers', {user_id: user.id}),
-        await create('performers', {user_id: user.id}),
+        await create('performers', {userId: user.id}),
+        await create('performers', {userId: user.id}),
       ];
       id = performers[0].id;
-      venue = await create('venues', {user_id: user.id});
+      venue = await create('venues', {userId: user.id});
       img = await addImage(id, user.id);
       await addImage(performers[1].id, user.id);
       yt = await create('youtube_links', {
-        user_id: user.id,
-        owner_id: id,
-        owner_type: 'Performer',
+        userId: user.id,
+        ownerId: id,
+        ownerType: 'Performer',
       });
       await create('youtube_links', {
-        user_id: user.id,
-        owner_id: performers[1].id,
-        owner_type: 'Performer',
+        userId: user.id,
+        ownerId: performers[1].id,
+        ownerType: 'Performer',
       });
       genre1 = await create('genres', {});
       genre2 = await create('genres', {});
       await create('genres', {});
       await create('genres_performers', {
-        genre_id: genre1.id,
-        performer_id: id,
+        genreId: genre1.id,
+        performerId: id,
       });
       await create('genres_performers', {
-        genre_id: genre2.id,
-        performer_id: id,
+        genreId: genre2.id,
+        performerId: id,
       });
       await create('genres_performers', {
-        genre_id: genre1.id,
-        performer_id: performers[1].id,
+        genreId: genre1.id,
+        performerId: performers[1].id,
       });
       booking1 = await create('bookings', {
-        from_user_id: user.id,
-        to_user_id: user.id,
-        requester_type: 'performer',
-        requester_id: id,
-        requested_type: 'venue',
-        requested_id: venue.id,
+        fromUserId: user.id,
+        toUserId: user.id,
+        requesterType: 'Performer',
+        requesterId: id,
+        requestedType: 'Venue',
+        requestedId: venue.id,
         status: 'pending',
-        booking_date: '2012-01-01',
+        bookingDate: '2012-01-01',
       });
       booking2 = await create('bookings', {
-        from_user_id: user.id,
-        to_user_id: user.id,
-        requester_type: 'performer',
-        requester_id: performers[1].id,
-        requested_type: 'venue',
-        requested_id: venue.id,
+        fromUserId: user.id,
+        toUserId: user.id,
+        requesterType: 'Performer',
+        requesterId: performers[1].id,
+        requestedType: 'Venue',
+        requestedId: venue.id,
         status: 'pending',
-        booking_date: '2013-03-04',
+        bookingDate: '2013-03-04',
       });
     });
 
@@ -118,7 +133,6 @@ describe('performers', () => {
       res.body.should.be.an('object');
       res.body.should.deep.eq({
         id: expected.id,
-        user_id: expected.user_id,
         name: expected.name,
         location: expected.location,
         phone: expected.phone,
@@ -126,19 +140,16 @@ describe('performers', () => {
         website: expected.website,
         rating: expected.rating,
         active: expected.active,
-        created_at: expected.created_at.toISOString(),
-        updated_at: expected.updated_at.toISOString(),
-        genres_list: [
+        Genres: [
           {id: genre1.id, name: genre1.name},
           {id: genre2.id, name: genre2.name},
         ],
-        youtube_links_list: [{id: yt.id, link: yt.link}],
-        images_list: [{id: img.id, image: img.image, selected: img.selected}],
-        bookings_list: [
+        YoutubeLinks: [{id: yt.id, link: yt.link}],
+        Images: [{id: img.id, image: img.image, selected: img.selected}],
+        Bookings: [
           {
-            date: '2012-01-01T00:00:00',
-            venue_id: venue.id,
-            venue_name: venue.name,
+            id: booking1.id,
+            date: booking1.bookingDate,
           },
         ],
       });

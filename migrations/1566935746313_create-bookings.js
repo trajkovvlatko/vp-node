@@ -2,23 +2,23 @@
 
 exports.shorthands = undefined;
 
-exports.up = pgm => {
+exports.up = (pgm) => {
   const columns = {
     id: {type: 'serial', primaryKey: true},
-    from_user_id: {type: 'integer', references: 'users', notNull: true},
-    to_user_id: {type: 'integer', references: 'users', notNull: true},
-    requester_type: {type: 'string', notNull: true},
-    requester_id: {type: 'integer', notNull: true},
-    requested_type: {type: 'string', notNull: true},
-    requested_id: {type: 'integer', notNull: true},
+    fromUserId: {type: 'integer', references: 'users', notNull: true},
+    toUserId: {type: 'integer', references: 'users', notNull: true},
+    requesterType: {type: 'string', notNull: true},
+    requesterId: {type: 'integer', notNull: true},
+    requestedType: {type: 'string', notNull: true},
+    requestedId: {type: 'integer', notNull: true},
     status: {type: 'string', notNull: true},
-    booking_date: {type: 'datetime', notNull: true},
-    created_at: {type: 'datetime', notNull: true},
-    updated_at: {type: 'datetime', notNull: true},
+    bookingDate: {type: 'date', notNull: true},
+    createdAt: {type: 'datetime', notNull: true},
+    updatedAt: {type: 'datetime', notNull: true},
   };
   pgm.createTable('bookings', columns);
 };
 
-exports.down = pgm => {
+exports.down = (pgm) => {
   pgm.dropTable('bookings');
 };

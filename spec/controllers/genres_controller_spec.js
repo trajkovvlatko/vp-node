@@ -28,7 +28,7 @@ describe('genres', () => {
       res.should.have.status(200);
       res.body.should.be.an('array');
       res.body.length.should.eq(2);
-      res.body.map(p => p.id).should.deep.eq(genreIds);
+      res.body.map((p) => p.id).should.deep.eq(genreIds);
     });
   });
 });

@@ -1,236 +1,314 @@
+const {Op, DataTypes, Model, col} = require('sequelize');
 const db = require('../../config/database');
-const {sqlGetPerformer} = require('./helpers/performer_helper');
+const Genre = require('./genre_model');
+const Booking = require('./booking_model');
+const YoutubeLink = require('./youtube_link_model');
+const Image = require('./image_model');
 
-class PerformerModel {
-  static async all(sorting, limit) {
-    try {
-      const sql = [
-        `
-        SELECT
-          performers.id,
-          name,
-          rating,
-          'performer' AS type,
-          images.image
-        FROM public.performers
-        JOIN public.images
-          ON images.owner_id = performers.id
-          AND images.owner_type = 'Performer'
-          AND images.selected IS TRUE
-        WHERE active IS TRUE
-      `,
-      ];
-      if (sorting === 'latest') {
-        sql.push('ORDER BY performers.id DESC');
-      }
-      if (limit) {
-        sql.push(`LIMIT ${limit}`);
-      }
-      return await db.any(sql.join(' '));
-    } catch (e) {
-      return {error: e};
-    }
-  }
+const BookingJoin = {
+  [Op.or]: [
+    {
+      requesterId: {[Op.eq]: col('Performer.id')},
+      requesterType: 'Performer',
+    },
+    {
+      requestedId: {[Op.eq]: col('Performer.id')},
+      requestedType: 'Performer',
+    },
+  ],
+};
 
-  static async basicFind(id) {
-    try {
-      return await db.one(
-        `SELECT *
-         FROM performers
-         WHERE active IS TRUE
-         AND id = $1
-        `,
-        id,
-      );
-    } catch (e) {
-      return {error: 'Record not found.'};
-    }
-  }
-
-  static async find(id) {
-    try {
-      return await db.one(
-        `${sqlGetPerformer()}
-         WHERE active IS TRUE AND id = $1
-        `,
-        id,
-      );
-    } catch (e) {
-      return {error: 'Record not found.'};
-    }
-  }
-
-  static async search(params) {
-    try {
-      let selects = ['DISTINCT(public.performers.*)', 'images.image'];
-      let wheres = [
-        'LOWER(location) = LOWER($/location/) AND performers.active IS TRUE',
-      ];
-      let data = {location: params.location};
-      let joins = [
-        `
-        JOIN public.images
-          ON images.owner_id = performers.id
-          AND images.owner_type = 'Performer'
-          AND images.selected IS TRUE`,
-      ];
-
-      if (params.genres && params.genres.length > 0) {
-        joins.push(`
-          JOIN public.genres_performers
-            ON genres_performers.performer_id = performers.id
-            AND genres_performers.genre_id IN ($/genres:csv/)
-          JOIN public.genres
-            ON genres.id = genres_performers.genre_id
-            AND genres.active IS TRUE`);
-        data.genres = params.genres;
-      }
-
-      if (params.date) {
-        joins.push(`
-          LEFT JOIN public.bookings
-           ON (
-             (
-               bookings.requested_type = 'performer'
-               AND bookings.requested_id = performers.id
-             ) OR (
-               bookings.requester_type = 'performer'
-               AND bookings.requester_id = performers.id
-             )
-             AND bookings.booking_date = $/booking_date/
-           )
-        `);
-        data.booking_date = params.date;
-        wheres.push('bookings.id IS NULL');
-      }
-
-      selects = selects.join(', ');
-      wheres = wheres.join(' AND ');
-      joins = joins.join(' ');
-
-      return await db.any(
-        `SELECT ${selects} FROM public.performers ${joins} WHERE ${wheres}`,
-        data,
-      );
-    } catch (e) {
-      return {error: e};
-    }
-  }
-
-  static async allForUser(userId) {
-    try {
-      return await db.any(
-        `SELECT *
-        FROM public.performers
-        WHERE user_id = $1`,
-        [userId],
-      );
-    } catch (e) {
-      return {error: e};
-    }
-  }
-
-  static async activeForUser(userId) {
-    try {
-      return await db.any(
-        `SELECT *
-        FROM public.performers
-        WHERE active IS TRUE
-        AND user_id = $1`,
-        [userId],
-      );
-    } catch (e) {
-      return {error: e};
-    }
-  }
-  static async existsForUser(userId, id) {
-    try {
-      return await db.one(
-        `
-        SELECT 1
-        FROM performers
-        WHERE id = $1 AND user_id = $2`,
-        [id, userId],
-      );
-    } catch (e) {
-      return {error: 'Performer not found.'};
-    }
-  }
-
-  static async findForUser(userId, id) {
-    try {
-      return await db.one(
-        `${sqlGetPerformer()}
-         WHERE id = $1 AND user_id = $2`,
-        [id, userId],
-      );
-    } catch (e) {
-      return {error: 'Performer not found.'};
-    }
-  }
-
-  static async createForUser(userId, params = {}) {
-    let values = {};
-    let columns = [];
-    let keys = [];
-    [
-      'name',
-      'location',
-      'phone',
-      'details',
-      'website',
-      'rating',
-      'active',
-    ].forEach(column => {
-      if (typeof params[column] !== 'undefined' && params[column] !== null) {
-        columns.push(column);
-        keys.push(`\$\{${column}}`);
-        values[column] = params[column];
-      }
+class Performer extends Model {
+  static associate(models) {
+    Performer.belongsToMany(models.Genre, {
+      through: 'genres_performers',
+      foreignKey: 'performerId',
     });
 
+    Performer.hasMany(models.Image, {
+      foreignKey: 'ownerId',
+      constraints: false,
+      scope: {
+        ownerType: 'Performer',
+      },
+    });
+
+    Performer.hasMany(models.YoutubeLink, {
+      foreignKey: 'ownerId',
+      constraints: false,
+      scope: {
+        ownerType: 'Performer',
+      },
+    });
+
+    Performer.hasMany(models.Booking);
+  }
+
+  static async allActive(sorting = 'latest', limit = 5, offset = 0) {
+    switch (sorting) {
+      case 'latest':
+        sorting = ['id', 'DESC'];
+        break;
+      case 'top':
+        sorting = ['rating', 'DESC'];
+        break;
+    }
     try {
-      return await db.one(
-        `INSERT INTO public.performers (
-          ${columns.join(', ')}, user_id, created_at, updated_at
-        )
-        VALUES (
-          ${keys}, \$\{userId\}, now(), now()
-        )
-        RETURNING *`,
-        {...values, ...{userId: userId}},
-      );
+      return await Performer.findAll({
+        attributes: ['id', 'name', 'rating', 'type'],
+        where: {active: true},
+        include: [
+          {
+            model: Image,
+            attributes: ['image'],
+            where: {
+              selected: true,
+            },
+          },
+        ],
+        order: [sorting],
+        limit: limit || 10,
+        offset: offset || 0,
+      });
     } catch (e) {
-      return {error: 'Error creating a performer.'};
+      return {error: e};
     }
   }
 
-  static async updateForUser(userId, params = {}) {
-    let columns = [];
-    let values = {};
-    ['name', 'location', 'phone', 'details', 'website', 'active'].forEach(
-      column => {
-        if (typeof params[column] !== 'undefined' && params[column] !== null) {
-          columns.push(`${column} = \$\{${column}\}`);
-          values[column] = params[column];
-        }
-      },
-    );
-
-    try {
-      return await db.one(
-        `UPDATE public.performers
-        SET ${columns.join(', ')}, updated_at = now()
-        WHERE active IS TRUE
-        AND user_id = \$\{userId\}
-        AND id = $\{id\}
-        RETURNING *`,
-        {...values, ...{userId: userId}, ...{id: params.id}},
-      );
-    } catch (e) {
-      return {error: 'Error updating performer.'};
+  static async basicFind(id, userId) {
+    const wheres = {id: id};
+    if (userId) {
+      wheres.userId = userId;
     }
+    try {
+      return await Performer.findOne({where: wheres});
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  static async find(id, userId) {
+    const wheres = {id: id, active: true};
+    if (userId) {
+      wheres.userId = userId;
+    }
+    try {
+      return await Performer.findOne({
+        attributes: [
+          'id',
+          'name',
+          'active',
+          'details',
+          'location',
+          'phone',
+          'rating',
+          'website',
+        ],
+        where: wheres,
+        include: [
+          {
+            model: Genre,
+            attributes: ['id', 'name'],
+            required: false,
+            through: {
+              attributes: [],
+            },
+          },
+          {
+            model: Image,
+            attributes: ['id', 'image', 'selected'],
+            required: false,
+          },
+          {
+            model: YoutubeLink,
+            attributes: ['id', 'link'],
+            required: false,
+          },
+          {
+            model: Booking,
+            attributes: ['id', ['bookingDate', 'date']],
+            on: BookingJoin,
+            required: false,
+          },
+        ],
+      });
+    } catch (e) {
+      return {error: e};
+    }
+  }
+
+  async updateImages({removeIds, newImages, userId}) {
+    return await db.transaction(async (t) => {
+      if (removeIds && removeIds.length > 0) {
+        await Image.destroy({
+          where: {
+            id: removeIds,
+            ownerId: this.id,
+            ownerType: 'Performer',
+          },
+        });
+      }
+      if (newImages && newImages.length > 0) {
+        const newRows = newImages.map((image) => {
+          return {ownerId: this.id, ownerType: 'Performer', image, userId};
+        });
+        await Image.bulkCreate(newRows);
+      }
+      return await Image.findAll({
+        where: {
+          ownerId: this.id,
+          ownerType: 'Performer',
+        },
+      });
+    });
+  }
+
+  async updateGenres({removeIds, newGenreIds}) {
+    return await db.transaction(async (t) => {
+      if (removeIds && removeIds.length > 0) {
+        await this.removeGenres(removeIds);
+      }
+      if (newGenreIds && newGenreIds.length > 0) {
+        await this.addGenres(newGenreIds);
+      }
+      return await this.getGenres();
+    });
+  }
+
+  async updateYoutubeLinks({removeIds, newLinks, userId}) {
+    return await db.transaction(async (t) => {
+      if (removeIds && removeIds.length > 0) {
+        await YoutubeLink.destroy({
+          where: {
+            id: removeIds,
+            ownerId: this.id,
+            ownerType: 'Performer',
+          },
+        });
+      }
+      if (newLinks && newLinks.length > 0) {
+        const newRows = newLinks.map((link) => {
+          return {
+            ownerId: this.id,
+            ownerType: 'Performer',
+            link,
+            userId,
+          };
+        });
+        await YoutubeLink.bulkCreate(newRows);
+      }
+      return await YoutubeLink.findAll({
+        where: {
+          ownerId: this.id,
+          ownerType: 'Performer',
+          userId,
+        },
+      });
+    });
+  }
+
+  static async search(params = {}) {
+    const includes = [
+      {
+        model: Image,
+        attributes: ['id', 'image', 'selected'],
+        required: true,
+      },
+    ];
+    const wheres = {
+      active: true,
+      location: {
+        [Op.iLike]: `%${params.location}%`,
+      },
+    };
+
+    if (params.genres) {
+      includes.push({
+        model: Genre,
+        attributes: [],
+        required: true,
+        through: {
+          attributes: [],
+        },
+        where: {
+          active: true,
+          id: {
+            [Op.in]: params.genres,
+          },
+        },
+      });
+    }
+
+    if (params.date) {
+      includes.push({
+        model: Booking,
+        attributes: [],
+        on: BookingJoin,
+        required: false,
+        where: {
+          bookingDate: params.date,
+        },
+      });
+      wheres['$Bookings$'] = null;
+    }
+
+    return await Performer.findAll({
+      attributes: ['id', 'name', 'rating'],
+      where: wheres,
+      include: includes,
+    });
   }
 }
 
-module.exports = PerformerModel;
+Performer.init(
+  {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    details: {
+      type: DataTypes.TEXT,
+    },
+    website: {
+      type: DataTypes.STRING,
+    },
+    rating: {
+      type: DataTypes.INTEGER,
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    type: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return 'performer';
+      },
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
+  },
+  {
+    sequelize: db,
+    tableName: 'performers',
+  },
+);
+
+module.exports = Performer;

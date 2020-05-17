@@ -8,10 +8,10 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('users', () => {
-  describe('GET /profile', () => {
+  describe('GET /user/profile', () => {
     it('returns 401 error for user not signed in', async () => {
-      const user = await create('users');
-      const res = await chai.request(app).get('/profile');
+      await create('users');
+      const res = await chai.request(app).get('/user/profile');
       res.should.have.status(401);
       res.body.should.be.an('object');
       res.body.should.deep.eq({});
@@ -20,10 +20,9 @@ describe('users', () => {
     it('returns user profile for signed in user', async () => {
       const user = await create('users');
       const token = await authUser(user);
-
       const res = await chai
         .request(app)
-        .get('/profile')
+        .get('/user/profile')
         .set('Authorization', `Bearer ${token}`);
 
       res.should.have.status(200);

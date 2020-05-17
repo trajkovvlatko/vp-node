@@ -1,59 +1,49 @@
-const db = require('../../config/database');
+const {DataTypes, Model} = require('sequelize');
+const sequelize = require('../../config/database');
 
-class GenreModel {
-  static async all() {
+class Genre extends Model {
+  static async allActive() {
     try {
-      return await db.any(`
-        SELECT id, name
-        FROM public.genres
-        WHERE active IS TRUE
-        ORDER BY id`);
+      return await Genre.findAll({
+        attributes: ['id', 'name'],
+        where: {
+          active: true,
+        },
+      });
     } catch (e) {
       return {error: e};
     }
   }
 
-  static async create(params) {
-    try {
-      return await db.one(
-        `
-        INSERT INTO public.genres (name, active, created_at, updated_at)
-        VALUES ($1, $2, now(), now())
-        RETURNING *`,
-        [params.name, params.active],
-      );
-    } catch (e) {
-      return {error: 'Error creating a genre.'};
-    }
-  }
-
-  static async saveForPerformer(performerId, genreId) {
-    try {
-      return await db.one(
-        `
-        INSERT INTO public.genres_performers
-          (genre_id, performer_id, created_at, updated_at)
-        VALUES ($1, $2, now(), now())
-        RETURNING *`,
-        [genreId, performerId],
-      );
-    } catch (e) {
-      return {error: 'Error saving genre to performer.'};
-    }
-  }
-
-  static async deleteForPerformer(performerId) {
-    try {
-      return await db.none(
-        `
-        DELETE FROM public.genres_performers
-        WHERE performer_id = $1`,
-        [performerId],
-      );
-    } catch (e) {
-      return {error: 'Error deleting genres from performer.'};
-    }
+  static associate(models) {
+    Genre.belongsToMany(models.Performer, {
+      through: 'genres_performers',
+      foreignKey: 'genreId',
+    });
   }
 }
+Genre.init(
+  {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
+  },
+  {
+    sequelize,
+    tableName: 'genres',
+  },
+);
 
-module.exports = GenreModel;
+module.exports = Genre;
