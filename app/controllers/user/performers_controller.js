@@ -84,7 +84,7 @@ router.post('/:id/images', async function (req, res) {
     });
     res.send(
       all.map((i) => {
-        return {id: i.id, image: i.image, selected: i.selected};
+        return {id: i.id, imageUrl: i.imageUrl, selected: i.selected};
       }),
     );
   } catch (e) {

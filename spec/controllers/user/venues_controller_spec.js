@@ -4,6 +4,9 @@ const app = require('../../../app.js');
 const create = require('../../factories');
 const {authUser} = require('../../spec_helper');
 const Image = require('../../../app/models/image_model.js');
+const fs = require('fs');
+const data = fs.readFileSync('./config/default.json');
+const {host, link} = JSON.parse(data).upload.test;
 
 chai.use(chaiHttp);
 chai.should();
@@ -459,17 +462,17 @@ describe('user/venues', () => {
         res.body.should.deep.eq([
           {
             id: images[2].id,
-            image: images[2].image,
+            imageUrl: images[2].imageUrl,
             selected: images[2].selected,
           },
           {
             id: images[2].id + 1,
-            image: 'img4',
+            imageUrl: `${host}/${link}/img4`,
             selected: false,
           },
           {
             id: images[2].id + 2,
-            image: 'img5',
+            imageUrl: `${host}/${link}/img5`,
             selected: false,
           },
         ]);
@@ -487,7 +490,7 @@ describe('user/venues', () => {
         res.body.should.deep.eq([
           {
             id: images[2].id,
-            image: images[2].image,
+            imageUrl: images[2].imageUrl,
             selected: images[2].selected,
           },
         ]);

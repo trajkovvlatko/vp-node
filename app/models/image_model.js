@@ -5,7 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const data = fs.readFileSync('./config/default.json');
 const env = process.env.NODE_ENV || 'development';
-const {host, dir} = JSON.parse(data).upload[env];
+const {host, dir, link} = JSON.parse(data).upload[env];
 
 class Image extends Model {
   static upload(req, res, imagePath) {
@@ -65,7 +65,7 @@ Image.init(
     imageUrl: {
       type: new DataTypes.VIRTUAL(DataTypes.STRING, ['image']),
       get() {
-        return `${host}/${dir}/${this.get('image')}`;
+        return `${host}/${link}/${this.get('image')}`;
       },
     },
     createdAt: {

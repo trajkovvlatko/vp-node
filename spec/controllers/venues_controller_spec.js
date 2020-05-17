@@ -4,7 +4,7 @@ const app = require('../../app.js');
 const create = require('../factories');
 const fs = require('fs');
 const data = fs.readFileSync('./config/default.json');
-const {host, dir} = JSON.parse(data).upload.test;
+const {host, link} = JSON.parse(data).upload.test;
 require('../spec_helper');
 
 chai.use(chaiHttp);
@@ -58,14 +58,14 @@ describe('venues', () => {
         name: venue2.name,
         type: 'venue',
         rating: venue2.rating,
-        imageUrl: `${host}/${dir}/${img2.image}`,
+        imageUrl: `${host}/${link}/${img2.image}`,
       });
       res.body[1].should.deep.eq({
         id: venue1.id,
         name: venue1.name,
         type: 'venue',
         rating: venue1.rating,
-        imageUrl: `${host}/${dir}/${img1.image}`,
+        imageUrl: `${host}/${link}/${img1.image}`,
       });
     });
   });
@@ -160,7 +160,7 @@ describe('venues', () => {
           {
             id: img.id,
             image: img.image,
-            imageUrl: `${host}/${dir}/${img.image}`,
+            imageUrl: `${host}/${link}/${img.image}`,
             selected: img.selected,
           },
         ],
