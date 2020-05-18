@@ -163,16 +163,11 @@ class Venue extends Model {
     });
   }
 
-  async updateProperties({removeIds, newPropertyIds}) {
-    return await db.transaction(async (t) => {
-      if (removeIds && removeIds.length > 0) {
-        await this.removeProperties(removeIds);
-      }
-      if (newPropertyIds && newPropertyIds.length > 0) {
-        await this.addProperties(newPropertyIds);
-      }
-      return await this.getProperties();
-    });
+  async updateProperties(propertyIds = []) {
+    if (propertyIds.length > 0) {
+      await this.setProperties(propertyIds);
+    }
+    return await this.getProperties();
   }
 
   async updateYoutubeLinks({removeIds, newLinks, userId}) {

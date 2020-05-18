@@ -97,9 +97,8 @@ router.patch('/:id/properties', async function (req, res) {
   }
 
   try {
-    const removeIds = req.body.remove_property_ids;
-    const newPropertyIds = req.body.property_ids;
-    const all = await venue.updateProperties({removeIds, newPropertyIds});
+    const propertyIds = req.body.property_ids;
+    const all = await venue.updateProperties(propertyIds);
     res.send(
       all.map((p) => {
         return {

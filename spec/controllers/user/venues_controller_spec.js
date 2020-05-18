@@ -385,8 +385,7 @@ describe('user/venues', () => {
         });
         (await venue.getProperties()).length.should.eq(3);
         options = {
-          remove_property_ids: [properties[0].id, properties[1].id],
-          property_ids: [properties[3].id],
+          property_ids: [properties[2].id, properties[3].id],
         };
       });
 

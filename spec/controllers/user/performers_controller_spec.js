@@ -396,8 +396,7 @@ describe('user/performers', () => {
         });
         (await performer.getGenres()).length.should.eq(3);
         options = {
-          remove_genre_ids: [genres[0].id, genres[1].id],
-          genre_ids: [genres[3].id],
+          genre_ids: [genres[2].id, genres[3].id],
         };
       });
 

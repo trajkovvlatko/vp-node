@@ -100,9 +100,8 @@ router.patch('/:id/genres', async function (req, res) {
   }
 
   try {
-    const removeIds = req.body.remove_genre_ids;
-    const newGenreIds = req.body.genre_ids;
-    const all = await performer.updateGenres({removeIds, newGenreIds});
+    const genreIds = req.body.genre_ids;
+    const all = await performer.updateGenres(genreIds);
     res.send(
       all.map((g) => {
         return {

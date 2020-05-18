@@ -163,16 +163,11 @@ class Performer extends Model {
     });
   }
 
-  async updateGenres({removeIds, newGenreIds}) {
-    return await db.transaction(async (t) => {
-      if (removeIds && removeIds.length > 0) {
-        await this.removeGenres(removeIds);
-      }
-      if (newGenreIds && newGenreIds.length > 0) {
-        await this.addGenres(newGenreIds);
-      }
-      return await this.getGenres();
-    });
+  async updateGenres(genreIds = []) {
+    if (genreIds.length > 0) {
+      await this.setGenres(genreIds);
+    }
+    return await this.getGenres();
   }
 
   async updateYoutubeLinks({removeIds, newLinks, userId}) {
