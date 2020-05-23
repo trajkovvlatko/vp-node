@@ -74,12 +74,14 @@ router.post('/:id/images', async function (req, res) {
       `performers/${performer.id}`,
     );
     let removeIds = req.body.remove_image_ids;
+    const selectedId = req.body.selected_image_id;
     if (removeIds && removeIds.length > 0) {
       removeIds = removeIds.split(',').map((i) => parseInt(i));
     }
     const all = await performer.updateImages({
       removeIds,
       newImages,
+      selectedId,
       userId: req.user.id,
     });
     res.send(

@@ -137,8 +137,8 @@ class Venue extends Model {
     }
   }
 
-  async updateImages({removeIds, newImages, userId}) {
-    return await db.transaction(async (t) => {
+  async updateImages({removeIds, newImages, selectedId, userId}) {
+    return await db.transaction(async () => {
       if (removeIds && removeIds.length > 0) {
         await Image.destroy({
           where: {
@@ -154,12 +154,24 @@ class Venue extends Model {
         });
         await Image.bulkCreate(newRows);
       }
-      return await Image.findAll({
-        where: {
-          ownerId: this.id,
-          ownerType: 'Venue',
-        },
-      });
+      const finder = {ownerId: this.id, ownerType: 'Venue'};
+
+      const all = await Image.findAll({where: finder});
+      const currentlySelected = all.filter((img) => img.selected)[0];
+      if (!currentlySelected && all.length > 0) {
+        selectedId = all[0].id;
+      }
+
+      if (selectedId) {
+        const selectedImage = await Image.findByPk(selectedId);
+        if (selectedImage) {
+          await Image.update({selected: false}, {where: finder});
+          selectedImage.selected = true;
+          await selectedImage.save();
+        }
+      }
+
+      return await Image.findAll({where: finder, order: [['id', 'ASC']]});
     });
   }
 

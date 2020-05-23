@@ -52,7 +52,7 @@ const sequelize = new Sequelize(database, user, password, {
   dialect: 'postgres',
   schema: 'public',
   freezeTableName: true,
-  logging: console.log,
+  logging: false, // console.log,
 });
 
 module.exports = sequelize;

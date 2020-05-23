@@ -74,9 +74,11 @@ router.post('/:id/images', async function (req, res) {
     if (removeIds && removeIds.length > 0) {
       removeIds = removeIds.split(',').map((i) => parseInt(i));
     }
+    const selectedId = req.body.selected_image_id;
     const all = await venue.updateImages({
       removeIds,
       newImages,
+      selectedId,
       userId: req.user.id,
     });
     res.send(
