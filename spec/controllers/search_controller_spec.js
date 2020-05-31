@@ -52,13 +52,8 @@ describe('search', () => {
           id: performer.id,
           name: performer.name,
           rating: performer.rating,
-          Images: [
-            {
-              id: performerImage.id,
-              image: performerImage.image,
-              selected: performerImage.selected,
-            },
-          ],
+          imageUrl: performerImage.get('imageUrl'),
+          type: 'performer',
         });
       });
 
@@ -101,13 +96,8 @@ describe('search', () => {
           id: performer.id,
           name: performer.name,
           rating: performer.rating,
-          Images: [
-            {
-              id: performerImage.id,
-              image: performerImage.image,
-              selected: performerImage.selected,
-            },
-          ],
+          imageUrl: performerImage.get('imageUrl'),
+          type: 'performer',
         });
       });
 
@@ -168,13 +158,8 @@ describe('search', () => {
           id: performer2.id,
           name: performer2.name,
           rating: performer2.rating,
-          Images: [
-            {
-              id: image.id,
-              image: image.image,
-              selected: image.selected,
-            },
-          ],
+          imageUrl: image.get('imageUrl'),
+          type: 'performer',
         });
       });
 
@@ -248,25 +233,15 @@ describe('search', () => {
             id: performer1.id,
             name: performer1.name,
             rating: performer1.rating,
-            Images: [
-              {
-                id: image1.id,
-                image: image1.image,
-                selected: image1.selected,
-              },
-            ],
+            imageUrl: image1.get('imageUrl'),
+            type: 'performer',
           },
           {
             id: performer2.id,
             name: performer2.name,
             rating: performer2.rating,
-            Images: [
-              {
-                id: image2.id,
-                image: image2.image,
-                selected: image2.selected,
-              },
-            ],
+            imageUrl: image2.get('imageUrl'),
+            type: 'performer',
           },
         ]);
       });
@@ -301,13 +276,8 @@ describe('search', () => {
           id: venue.id,
           name: venue.name,
           rating: venue.rating,
-          Images: [
-            {
-              id: image.id,
-              image: image.image,
-              selected: image.selected,
-            },
-          ],
+          imageUrl: image.get('imageUrl'),
+          type: 'venue',
         });
       });
 
@@ -333,13 +303,8 @@ describe('search', () => {
           id: venue.id,
           name: venue.name,
           rating: venue.rating,
-          Images: [
-            {
-              id: image.id,
-              image: image.image,
-              selected: image.selected,
-            },
-          ],
+          imageUrl: image.get('imageUrl'),
+          type: 'venue',
         });
       });
 
@@ -380,25 +345,15 @@ describe('search', () => {
             id: venue1.id,
             name: venue1.name,
             rating: venue1.rating,
-            Images: [
-              {
-                id: image1.id,
-                image: image1.image,
-                selected: image1.selected,
-              },
-            ],
+            imageUrl: image1.get('imageUrl'),
+            type: 'venue',
           },
           {
             id: venue2.id,
             name: venue2.name,
             rating: venue2.rating,
-            Images: [
-              {
-                id: image2.id,
-                image: image2.image,
-                selected: image2.selected,
-              },
-            ],
+            imageUrl: image2.get('imageUrl'),
+            type: 'venue',
           },
         ]);
 
@@ -420,13 +375,8 @@ describe('search', () => {
           id: venue2.id,
           name: venue2.name,
           rating: venue2.rating,
-          Images: [
-            {
-              id: image2.id,
-              image: image2.image,
-              selected: image2.selected,
-            },
-          ],
+          imageUrl: image2.get('imageUrl'),
+          type: 'venue',
         });
       });
 
@@ -491,25 +441,15 @@ describe('search', () => {
             id: venue1.id,
             name: venue1.name,
             rating: venue1.rating,
-            Images: [
-              {
-                id: image1.id,
-                image: image1.image,
-                selected: image1.selected,
-              },
-            ],
+            imageUrl: image1.get('imageUrl'),
+            type: 'venue',
           },
           {
             id: venue2.id,
             name: venue2.name,
             rating: venue2.rating,
-            Images: [
-              {
-                id: image2.id,
-                image: image2.image,
-                selected: image2.selected,
-              },
-            ],
+            imageUrl: image2.get('imageUrl'),
+            type: 'venue',
           },
         ]);
       });
