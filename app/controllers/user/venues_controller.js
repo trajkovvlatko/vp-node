@@ -5,10 +5,30 @@ const {Image, Venue} = require('../../models');
 /* GET index */
 router.get('/', async function (req, res) {
   const venues = await req.user.getVenues({
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'location', 'rating'],
     order: [['id', 'ASC']],
+    include: [
+      {
+        model: Image,
+        attributes: ['image', 'imageUrl'],
+        where: {
+          selected: true,
+        },
+      },
+    ],
   });
-  res.send(venues);
+  res.send(
+    venues.map((venue) => {
+      const p = venue.dataValues;
+      return {
+        id: p.id,
+        name: p.name,
+        imageUrl: venue.Images[0].get('imageUrl'),
+        rating: p.rating,
+        location: p.location,
+      };
+    }),
+  );
 });
 
 /* GET active */

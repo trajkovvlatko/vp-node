@@ -5,10 +5,30 @@ const {Image, Performer} = require('../../models');
 /* GET index */
 router.get('/', async function (req, res) {
   const performers = await req.user.getPerformers({
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'location', 'rating'],
     order: [['id', 'ASC']],
+    include: [
+      {
+        model: Image,
+        attributes: ['image', 'imageUrl'],
+        where: {
+          selected: true,
+        },
+      },
+    ],
   });
-  res.send(performers);
+  res.send(
+    performers.map((performer) => {
+      const p = performer.dataValues;
+      return {
+        id: p.id,
+        name: p.name,
+        imageUrl: performer.Images[0].get('imageUrl'),
+        rating: p.rating,
+        location: p.location,
+      };
+    }),
+  );
 });
 
 /* GET active */

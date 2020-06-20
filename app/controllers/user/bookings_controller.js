@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Venue, Performer} = require('../../models');
+const {Image, Venue, Performer} = require('../../models');
 
 /* GET requested list */
 router.get('/requested', async function (req, res) {
@@ -26,12 +26,12 @@ router.get('/requested', async function (req, res) {
           ...r.dataValues,
           performerName:
             r.requestedType === 'Performer'
-              ? performers[r.requestedId]
-              : performers[r.requesterId],
+              ? performers[r.requestedId].name
+              : performers[r.requesterId].name,
           venueName:
             r.requestedType === 'Venue'
-              ? venues[r.requestedId]
-              : venues[r.requesterId],
+              ? venues[r.requestedId].name
+              : venues[r.requesterId].name,
         };
       }),
     );
@@ -48,25 +48,29 @@ router.get('/upcoming', async function (req, res) {
     const venues = await getUsedRecords(results, Venue);
     res.send(
       results.map((r) => {
+        let performer, venue;
+        if (r.requestedType === 'Performer') {
+          performer = performers[r.requestedId];
+          venue = venues[r.requesterId];
+        } else {
+          performer = performers[r.requesterId];
+          venue = venues[r.requestedId];
+        }
         return {
           id: r.id,
           status: r.status,
           bookingDate: r.bookingDate,
-          performerId:
-            r.requestedType === 'Performer' ? r.requestedId : r.requesterId,
-          performerName:
-            r.requestedType === 'Performer'
-              ? performers[r.requestedId]
-              : performers[r.requesterId],
-          venueId: r.requestedType === 'Venue' ? r.requestedId : r.requesterId,
-          venueName:
-            r.requestedType === 'Venue'
-              ? venues[r.requestedId]
-              : venues[r.requesterId],
+          performerId: performer.id,
+          performerName: performer.name,
+          performerImageUrl: performer.imageUrl,
+          venueId: venue.id,
+          venueName: venue.name,
+          venueImageUrl: venue.imageUrl,
         };
       }),
     );
   } catch (e) {
+    console.log(e);
     res.status(500).send({error: 'Error fetching upcoming bookings.'});
   }
 });
@@ -80,10 +84,10 @@ router.get('/:id', async function (req, res) {
       const venue = await getUsedRecords([result], Venue);
       res.send({
         ...result.dataValues,
-        performerId: parseInt(Object.keys(performer)[0]),
-        performerName: Object.values(performer)[0],
-        venueId: parseInt(Object.keys(venue)[0]),
-        venueName: Object.values(venue)[0],
+        performerId: Object.keys(performer)[0].id,
+        performerName: Object.values(performer)[0].name,
+        venueId: Object.keys(venue)[0].id,
+        venueName: Object.values(venue)[0].name,
       });
     } else {
       res.status(404).send({error: 'Cannot find booking.'});
@@ -201,11 +205,25 @@ async function getUsedRecords(results, klass) {
     return r.requesterType === klass.name ? r.requesterId : r.requestedId;
   });
   const dbRecords = await klass.findAll({
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'location', 'rating'],
     where: {id: ids},
+    include: [
+      {
+        model: Image,
+        attributes: ['image', 'imageUrl'],
+        where: {
+          selected: true,
+        },
+      },
+    ],
   });
-  return dbRecords.reduce((map, p) => {
-    map[p.dataValues.id] = p.dataValues.name;
+  return dbRecords.reduce((map, record) => {
+    const r = record.dataValues;
+    map[r.id] = {
+      id: r.id,
+      name: r.name,
+      imageUrl: record.Images[0].get('imageUrl'),
+    };
     return map;
   }, {});
 }
