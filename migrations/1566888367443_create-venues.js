@@ -1,13 +1,11 @@
-/* eslint-disable camelcase */
-
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   const columns = {
     id: {type: 'serial', primaryKey: true},
     userId: {type: 'integer', references: 'users', notNull: true},
     name: {type: 'string', notNull: true},
     location: {type: 'string', notNull: true},
+    address: {type: 'string', notNull: true},
+    email: {type: 'string', notNull: true},
     phone: {type: 'string', notNull: true},
     details: {type: 'text'},
     website: {type: 'string'},

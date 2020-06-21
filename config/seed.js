@@ -18,6 +18,7 @@ async function addPerformer(user) {
     name: `Performer ${i}`,
     location: randomElement(locations),
     phone: `${i}${i}${i}${i}${i}`,
+    email: `email-${i}@performer.com`,
     details: `${i} - Lorem Ipsum is simply dummy text of the printing and
       typesetting industry. Lorem Ipsum has been the industry's standard
       dummy text ever since the 1500s, when an unknown printer took a galley
@@ -70,6 +71,8 @@ async function addVenue(user) {
     name: `Venue ${i}`,
     location: randomElement(locations),
     phone: `${i}${i}${i}${i}${i}`,
+    email: `email-${i}@venue.com`,
+    address: `address-${i}`,
     details: `${i} - Lorem Ipsum is simply dummy text of the printing and
       typesetting industry. Lorem Ipsum has been the industry's standard
       dummy text ever since the 1500s, when an unknown printer took a galley

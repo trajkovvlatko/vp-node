@@ -97,6 +97,8 @@ class Venue extends Model {
         attributes: [
           'id',
           'name',
+          'email',
+          'address',
           'active',
           'details',
           'location',
@@ -278,6 +280,14 @@ Venue.init(
       allowNull: false,
     },
     phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    address: {
       type: DataTypes.STRING,
       allowNull: false,
     },

@@ -5,12 +5,13 @@ const {Image, Venue} = require('../../models');
 /* GET index */
 router.get('/', async function (req, res) {
   const venues = await req.user.getVenues({
-    attributes: ['id', 'name', 'location', 'rating'],
+    attributes: ['id', 'name', 'email', 'address', 'location', 'rating'],
     order: [['id', 'ASC']],
     include: [
       {
         model: Image,
         attributes: ['image', 'imageUrl'],
+        required: false,
         where: {
           selected: true,
         },
@@ -20,10 +21,14 @@ router.get('/', async function (req, res) {
   res.send(
     venues.map((venue) => {
       const p = venue.dataValues;
+      const imageUrl =
+        venue.Images.length > 0 ? venue.Images[0].get('imageUrl') : '';
       return {
         id: p.id,
         name: p.name,
-        imageUrl: venue.Images[0].get('imageUrl'),
+        email: p.email,
+        address: p.address,
+        imageUrl: imageUrl,
         rating: p.rating,
         location: p.location,
       };
@@ -60,7 +65,16 @@ router.patch('/:id', async function (req, res) {
   }
   try {
     await venue.update(
-      ({name, location, phone, details, website, active} = req.body),
+      ({
+        name,
+        email,
+        address,
+        location,
+        phone,
+        details,
+        website,
+        active,
+      } = req.body),
     );
     res.send(venue);
   } catch (e) {
@@ -73,7 +87,16 @@ router.patch('/:id', async function (req, res) {
 router.post('/', async function (req, res) {
   try {
     const venue = await req.user.createVenue(
-      ({name, location, phone, details, website, active} = req.body),
+      ({
+        name,
+        email,
+        address,
+        location,
+        phone,
+        details,
+        website,
+        active,
+      } = req.body),
     );
     res.send(venue);
   } catch (e) {

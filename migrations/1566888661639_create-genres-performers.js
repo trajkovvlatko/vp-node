@@ -1,7 +1,3 @@
-/* eslint-disable camelcase */
-
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   const columns = {
     genreId: {type: 'integer', references: 'genres', notNull: true},

@@ -5,12 +5,13 @@ const {Image, Performer} = require('../../models');
 /* GET index */
 router.get('/', async function (req, res) {
   const performers = await req.user.getPerformers({
-    attributes: ['id', 'name', 'location', 'rating'],
+    attributes: ['id', 'name', 'email', 'location', 'rating'],
     order: [['id', 'ASC']],
     include: [
       {
         model: Image,
         attributes: ['image', 'imageUrl'],
+        required: false,
         where: {
           selected: true,
         },
@@ -20,10 +21,13 @@ router.get('/', async function (req, res) {
   res.send(
     performers.map((performer) => {
       const p = performer.dataValues;
+      const imageUrl =
+        performer.Images.length > 0 ? performer.Images[0].get('imageUrl') : '';
       return {
         id: p.id,
         name: p.name,
-        imageUrl: performer.Images[0].get('imageUrl'),
+        email: p.email,
+        imageUrl: imageUrl,
         rating: p.rating,
         location: p.location,
       };
@@ -60,7 +64,7 @@ router.patch('/:id', async function (req, res) {
   }
   try {
     await performer.update(
-      ({name, location, phone, details, website, active} = req.body),
+      ({name, email, location, phone, details, website, active} = req.body),
     );
     res.send(performer);
   } catch (e) {
@@ -72,7 +76,7 @@ router.patch('/:id', async function (req, res) {
 router.post('/', async function (req, res) {
   try {
     const performer = await req.user.createPerformer(
-      ({name, location, phone, details, website, active} = req.body),
+      ({name, email, location, phone, details, website, active} = req.body),
     );
     res.send(performer);
   } catch (e) {

@@ -21,13 +21,13 @@ router.post('/login', function (req, res) {
         return res.send(err);
       }
       const token = jwt.sign(user.dataValues, secret);
-      return res.json({token, name: user.name});
+      return res.json({token, name: user.name, email: user.email});
     });
   })(req, res);
 });
 
 /* POST register. */
-router.post('/register', async function (req, res, next) {
+router.post('/register', async function (req, res) {
   try {
     const {name, email, password} = {...req.body};
     if (!name || !email || !password) {

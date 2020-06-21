@@ -13,6 +13,7 @@ router.get('/requested', async function (req, res) {
         'requesterId',
         'requestedType',
         'requestedId',
+        'createdAt',
       ],
       where: {
         status: 'requested',
@@ -66,6 +67,7 @@ router.get('/upcoming', async function (req, res) {
           venueId: venue.id,
           venueName: venue.name,
           venueImageUrl: venue.imageUrl,
+          venueAddress: venue.address,
         };
       }),
     );
@@ -204,8 +206,12 @@ async function getUsedRecords(results, klass) {
   const ids = results.map((r) => {
     return r.requesterType === klass.name ? r.requesterId : r.requestedId;
   });
+  const columns = ['id', 'name', 'location', 'rating'];
+  if (klass.name === 'Venue') {
+    columns.push('address');
+  }
   const dbRecords = await klass.findAll({
-    attributes: ['id', 'name', 'location', 'rating'],
+    attributes: columns,
     where: {id: ids},
     include: [
       {
@@ -223,6 +229,7 @@ async function getUsedRecords(results, klass) {
       id: r.id,
       name: r.name,
       imageUrl: record.Images[0].get('imageUrl'),
+      address: r.address,
     };
     return map;
   }, {});
