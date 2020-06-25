@@ -22,7 +22,7 @@ router.get('/', async function (req, res) {
           id: v.id,
           name: v.name,
           type: 'venue',
-          rating: v.rating,
+          rating: v.rating || 0,
           imageUrl: venue.Images[0].get('imageUrl'),
         };
       }),
@@ -31,7 +31,7 @@ router.get('/', async function (req, res) {
 });
 
 /* GET show */
-router.get('/:id', async function (req, res, next) {
+router.get('/:id', async function (req, res) {
   const venue = await Venue.find(req.params.id);
   if (venue) {
     res.send(venue);

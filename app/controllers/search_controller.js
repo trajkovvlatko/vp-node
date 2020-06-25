@@ -29,7 +29,7 @@ router.get('/:type/:location', async function (req, res, next) {
         id: p.id,
         name: p.name,
         type: type,
-        rating: p.rating,
+        rating: p.rating || 0,
         imageUrl: p.Images[0].get('imageUrl'),
       };
     }),

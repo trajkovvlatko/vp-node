@@ -28,7 +28,7 @@ router.get('/', async function (req, res) {
         name: p.name,
         email: p.email,
         imageUrl: imageUrl,
-        rating: p.rating,
+        rating: p.rating || 0,
         location: p.location,
       };
     }),
