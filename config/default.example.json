@@ -1,9 +1,42 @@
 {
+  "upload": {
+    "development": {
+      "host": "",
+      "link": "uploads",
+      "dir": "public/uploads"
+    },
+    "test": {
+      "host": "",
+      "link": "uploads",
+      "dir": "tmp"
+    },
+    "production": {
+      "host": "",
+      "link": "uploads",
+      "dir": "public/uploads"
+    }
+  },
   "db": {
-    "user": "",
-    "password": "",
-    "host": "",
-    "port": 5432,
-    "database": ""
+    "development": {
+      "user": "",
+      "password": "",
+      "host": "localhost",
+      "port": 5432,
+      "database": "vp_development"
+    },
+    "test": {
+      "user": "",
+      "password": "",
+      "host": "localhost",
+      "port": 5432,
+      "database": "vp_test"
+    },
+    "production": {
+      "user": "",
+      "password": "",
+      "host": "",
+      "port": 5432,
+      "database": "vp_production"
+    }
   }
 }
