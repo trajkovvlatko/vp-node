@@ -1,9 +1,4 @@
-const fs = require('fs');
-const env = process.env.NODE_ENV;
-const data = fs.readFileSync('./config/default.json');
-const config = JSON.parse(data).db[env];
-const {user, password, host, port, database} = config;
-
+const {host, port, user, password, database} = require('../config/get');
 const {exec, spawn} = require('child_process');
 const dbUrl = `postgres://${user}:${password}@${host}:${port}/${database}`;
 const migratePath = `./node_modules/node-pg-migrate/bin/node-pg-migrate`;
