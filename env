@@ -1,0 +1,9 @@
+POSTGRES_USER=docker_pg_user
+POSTGRES_PASSWORD=docker_pg_password
+POSTGRES_HOST=dev_database
+POSTGRES_DB=vp_development
+POSTGRES_PORT=5432
+DATABASE=vp_development
+
+WAIT_HOSTS=dev_database:5432
+WAIT_HOST_CONNECT_TIMEOUT=30
