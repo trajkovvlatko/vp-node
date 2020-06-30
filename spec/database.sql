@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: bookings; Type: TABLE; Schema: public; Owner: youplay
+-- Name: bookings; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.bookings (
@@ -39,10 +39,10 @@ CREATE TABLE public.bookings (
 );
 
 
-ALTER TABLE public.bookings OWNER TO youplay;
+ALTER TABLE public.bookings OWNER TO docker_pg_user;
 
 --
--- Name: bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.bookings_id_seq
@@ -54,17 +54,17 @@ CREATE SEQUENCE public.bookings_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.bookings_id_seq OWNER TO youplay;
+ALTER TABLE public.bookings_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.bookings_id_seq OWNED BY public.bookings.id;
 
 
 --
--- Name: genres; Type: TABLE; Schema: public; Owner: youplay
+-- Name: genres; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.genres (
@@ -76,10 +76,10 @@ CREATE TABLE public.genres (
 );
 
 
-ALTER TABLE public.genres OWNER TO youplay;
+ALTER TABLE public.genres OWNER TO docker_pg_user;
 
 --
--- Name: genres_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: genres_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.genres_id_seq
@@ -91,17 +91,17 @@ CREATE SEQUENCE public.genres_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.genres_id_seq OWNER TO youplay;
+ALTER TABLE public.genres_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: genres_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: genres_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.genres_id_seq OWNED BY public.genres.id;
 
 
 --
--- Name: genres_performers; Type: TABLE; Schema: public; Owner: youplay
+-- Name: genres_performers; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.genres_performers (
@@ -112,10 +112,10 @@ CREATE TABLE public.genres_performers (
 );
 
 
-ALTER TABLE public.genres_performers OWNER TO youplay;
+ALTER TABLE public.genres_performers OWNER TO docker_pg_user;
 
 --
--- Name: images; Type: TABLE; Schema: public; Owner: youplay
+-- Name: images; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.images (
@@ -130,10 +130,10 @@ CREATE TABLE public.images (
 );
 
 
-ALTER TABLE public.images OWNER TO youplay;
+ALTER TABLE public.images OWNER TO docker_pg_user;
 
 --
--- Name: images_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: images_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.images_id_seq
@@ -145,17 +145,17 @@ CREATE SEQUENCE public.images_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.images_id_seq OWNER TO youplay;
+ALTER TABLE public.images_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.images_id_seq OWNED BY public.images.id;
 
 
 --
--- Name: performers; Type: TABLE; Schema: public; Owner: youplay
+-- Name: performers; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.performers (
@@ -174,10 +174,10 @@ CREATE TABLE public.performers (
 );
 
 
-ALTER TABLE public.performers OWNER TO youplay;
+ALTER TABLE public.performers OWNER TO docker_pg_user;
 
 --
--- Name: performers_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: performers_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.performers_id_seq
@@ -189,17 +189,17 @@ CREATE SEQUENCE public.performers_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.performers_id_seq OWNER TO youplay;
+ALTER TABLE public.performers_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: performers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: performers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.performers_id_seq OWNED BY public.performers.id;
 
 
 --
--- Name: pgmigrations; Type: TABLE; Schema: public; Owner: youplay
+-- Name: pgmigrations; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.pgmigrations (
@@ -209,10 +209,10 @@ CREATE TABLE public.pgmigrations (
 );
 
 
-ALTER TABLE public.pgmigrations OWNER TO youplay;
+ALTER TABLE public.pgmigrations OWNER TO docker_pg_user;
 
 --
--- Name: pgmigrations_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: pgmigrations_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.pgmigrations_id_seq
@@ -224,17 +224,17 @@ CREATE SEQUENCE public.pgmigrations_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.pgmigrations_id_seq OWNER TO youplay;
+ALTER TABLE public.pgmigrations_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: pgmigrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: pgmigrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.pgmigrations_id_seq OWNED BY public.pgmigrations.id;
 
 
 --
--- Name: properties; Type: TABLE; Schema: public; Owner: youplay
+-- Name: properties; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.properties (
@@ -246,10 +246,10 @@ CREATE TABLE public.properties (
 );
 
 
-ALTER TABLE public.properties OWNER TO youplay;
+ALTER TABLE public.properties OWNER TO docker_pg_user;
 
 --
--- Name: properties_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: properties_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.properties_id_seq
@@ -261,17 +261,17 @@ CREATE SEQUENCE public.properties_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.properties_id_seq OWNER TO youplay;
+ALTER TABLE public.properties_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: properties_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: properties_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.properties_id_seq OWNED BY public.properties.id;
 
 
 --
--- Name: properties_venues; Type: TABLE; Schema: public; Owner: youplay
+-- Name: properties_venues; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.properties_venues (
@@ -282,10 +282,10 @@ CREATE TABLE public.properties_venues (
 );
 
 
-ALTER TABLE public.properties_venues OWNER TO youplay;
+ALTER TABLE public.properties_venues OWNER TO docker_pg_user;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: youplay
+-- Name: users; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.users (
@@ -299,10 +299,10 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO youplay;
+ALTER TABLE public.users OWNER TO docker_pg_user;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -314,17 +314,17 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO youplay;
+ALTER TABLE public.users_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: venues; Type: TABLE; Schema: public; Owner: youplay
+-- Name: venues; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.venues (
@@ -344,10 +344,10 @@ CREATE TABLE public.venues (
 );
 
 
-ALTER TABLE public.venues OWNER TO youplay;
+ALTER TABLE public.venues OWNER TO docker_pg_user;
 
 --
--- Name: venues_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: venues_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.venues_id_seq
@@ -359,17 +359,17 @@ CREATE SEQUENCE public.venues_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.venues_id_seq OWNER TO youplay;
+ALTER TABLE public.venues_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: venues_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: venues_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.venues_id_seq OWNED BY public.venues.id;
 
 
 --
--- Name: youtube_links; Type: TABLE; Schema: public; Owner: youplay
+-- Name: youtube_links; Type: TABLE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE TABLE public.youtube_links (
@@ -383,10 +383,10 @@ CREATE TABLE public.youtube_links (
 );
 
 
-ALTER TABLE public.youtube_links OWNER TO youplay;
+ALTER TABLE public.youtube_links OWNER TO docker_pg_user;
 
 --
--- Name: youtube_links_id_seq; Type: SEQUENCE; Schema: public; Owner: youplay
+-- Name: youtube_links_id_seq; Type: SEQUENCE; Schema: public; Owner: docker_pg_user
 --
 
 CREATE SEQUENCE public.youtube_links_id_seq
@@ -398,80 +398,80 @@ CREATE SEQUENCE public.youtube_links_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.youtube_links_id_seq OWNER TO youplay;
+ALTER TABLE public.youtube_links_id_seq OWNER TO docker_pg_user;
 
 --
--- Name: youtube_links_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: youplay
+-- Name: youtube_links_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: docker_pg_user
 --
 
 ALTER SEQUENCE public.youtube_links_id_seq OWNED BY public.youtube_links.id;
 
 
 --
--- Name: bookings id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: bookings id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.bookings ALTER COLUMN id SET DEFAULT nextval('public.bookings_id_seq'::regclass);
 
 
 --
--- Name: genres id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: genres id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.genres ALTER COLUMN id SET DEFAULT nextval('public.genres_id_seq'::regclass);
 
 
 --
--- Name: images id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: images id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.images ALTER COLUMN id SET DEFAULT nextval('public.images_id_seq'::regclass);
 
 
 --
--- Name: performers id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: performers id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.performers ALTER COLUMN id SET DEFAULT nextval('public.performers_id_seq'::regclass);
 
 
 --
--- Name: pgmigrations id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: pgmigrations id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.pgmigrations ALTER COLUMN id SET DEFAULT nextval('public.pgmigrations_id_seq'::regclass);
 
 
 --
--- Name: properties id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: properties id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.properties ALTER COLUMN id SET DEFAULT nextval('public.properties_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: venues id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: venues id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.venues ALTER COLUMN id SET DEFAULT nextval('public.venues_id_seq'::regclass);
 
 
 --
--- Name: youtube_links id; Type: DEFAULT; Schema: public; Owner: youplay
+-- Name: youtube_links id; Type: DEFAULT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.youtube_links ALTER COLUMN id SET DEFAULT nextval('public.youtube_links_id_seq'::regclass);
 
 
 --
--- Name: bookings bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.bookings
@@ -479,7 +479,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.genres
@@ -487,7 +487,7 @@ ALTER TABLE ONLY public.genres
 
 
 --
--- Name: images images_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: images images_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.images
@@ -495,7 +495,7 @@ ALTER TABLE ONLY public.images
 
 
 --
--- Name: performers performers_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: performers performers_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.performers
@@ -503,7 +503,7 @@ ALTER TABLE ONLY public.performers
 
 
 --
--- Name: pgmigrations pgmigrations_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: pgmigrations pgmigrations_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.pgmigrations
@@ -511,7 +511,7 @@ ALTER TABLE ONLY public.pgmigrations
 
 
 --
--- Name: properties properties_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties properties_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.properties
@@ -519,7 +519,7 @@ ALTER TABLE ONLY public.properties
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.users
@@ -527,7 +527,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: venues venues_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: venues venues_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.venues
@@ -535,7 +535,7 @@ ALTER TABLE ONLY public.venues
 
 
 --
--- Name: youtube_links youtube_links_pkey; Type: CONSTRAINT; Schema: public; Owner: youplay
+-- Name: youtube_links youtube_links_pkey; Type: CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.youtube_links
@@ -543,28 +543,28 @@ ALTER TABLE ONLY public.youtube_links
 
 
 --
--- Name: genres_name_unique_index; Type: INDEX; Schema: public; Owner: youplay
+-- Name: genres_name_unique_index; Type: INDEX; Schema: public; Owner: docker_pg_user
 --
 
 CREATE UNIQUE INDEX genres_name_unique_index ON public.genres USING btree (name);
 
 
 --
--- Name: properties_name_unique_index; Type: INDEX; Schema: public; Owner: youplay
+-- Name: properties_name_unique_index; Type: INDEX; Schema: public; Owner: docker_pg_user
 --
 
 CREATE UNIQUE INDEX properties_name_unique_index ON public.properties USING btree (name);
 
 
 --
--- Name: users_email_unique_index; Type: INDEX; Schema: public; Owner: youplay
+-- Name: users_email_unique_index; Type: INDEX; Schema: public; Owner: docker_pg_user
 --
 
 CREATE UNIQUE INDEX users_email_unique_index ON public.users USING btree (email);
 
 
 --
--- Name: bookings bookings_fromUserId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_fromUserId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.bookings
@@ -572,7 +572,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: bookings bookings_toUserId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: bookings bookings_toUserId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.bookings
@@ -580,7 +580,7 @@ ALTER TABLE ONLY public.bookings
 
 
 --
--- Name: genres_performers genres_performers_genreId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres_performers genres_performers_genreId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.genres_performers
@@ -588,7 +588,7 @@ ALTER TABLE ONLY public.genres_performers
 
 
 --
--- Name: genres_performers genres_performers_performerId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: genres_performers genres_performers_performerId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.genres_performers
@@ -596,7 +596,7 @@ ALTER TABLE ONLY public.genres_performers
 
 
 --
--- Name: images images_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: images images_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.images
@@ -604,7 +604,7 @@ ALTER TABLE ONLY public.images
 
 
 --
--- Name: performers performers_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: performers performers_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.performers
@@ -612,7 +612,7 @@ ALTER TABLE ONLY public.performers
 
 
 --
--- Name: properties_venues properties_venues_propertyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties_venues properties_venues_propertyId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.properties_venues
@@ -620,7 +620,7 @@ ALTER TABLE ONLY public.properties_venues
 
 
 --
--- Name: properties_venues properties_venues_venueId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: properties_venues properties_venues_venueId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.properties_venues
@@ -628,7 +628,7 @@ ALTER TABLE ONLY public.properties_venues
 
 
 --
--- Name: venues venues_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: venues venues_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.venues
@@ -636,7 +636,7 @@ ALTER TABLE ONLY public.venues
 
 
 --
--- Name: youtube_links youtube_links_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: youplay
+-- Name: youtube_links youtube_links_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: docker_pg_user
 --
 
 ALTER TABLE ONLY public.youtube_links
@@ -646,4 +646,3 @@ ALTER TABLE ONLY public.youtube_links
 --
 -- PostgreSQL database dump complete
 --
-

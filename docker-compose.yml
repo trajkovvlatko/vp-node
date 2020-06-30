@@ -3,7 +3,7 @@ services:
   app:
     build: .
     depends_on:
-      - postgres
+      - dev_database
     ports:
       - "4000:4000"
     env_file:
@@ -11,15 +11,22 @@ services:
     command: sh -c "./scripts/wait && ./scripts/docker-entrypoint.sh"
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
 
-  postgres:
+  dev_database:
     image: postgres:11.6-alpine
     ports:
       - "35432:5432"
     env_file:
       - .env
     volumes:
-      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - database-data:/var/lib/postgresql/data/
+
+  test_database:
+    image: postgres:11.6-alpine
+    ports:
+      - "45432:5432"
+    env_file:
+      - .env.test
+
 volumes:
-  database-data: # named volumes can be managed easier using docker-compose
+  database-data:
