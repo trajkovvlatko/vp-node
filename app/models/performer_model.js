@@ -88,9 +88,12 @@ class Performer extends Model {
   }
 
   static async find(id, userId) {
-    const wheres = {id: id, active: true};
+    const wheres = {id: id};
     if (userId) {
+      // if user is present, allow fetching of inactive performers
       wheres.userId = userId;
+    } else {
+      wheres.active = true;
     }
     try {
       return await Performer.findOne({

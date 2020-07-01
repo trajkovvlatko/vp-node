@@ -9,7 +9,7 @@ if (['up', 'down'].indexOf(direction) === -1) {
   return;
 }
 
-const command = `NODE_ENV=development DATABASE_URL=${dbUrl} ${migratePath} ${direction}`
+const command = `DATABASE_URL=${dbUrl} ${migratePath} ${direction}`
 exec(command, (err, stdout, stderr) => {
   if (err) {
     console.error(err);

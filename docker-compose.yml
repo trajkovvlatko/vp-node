@@ -8,7 +8,7 @@ services:
       - "4000:4000"
     env_file:
       - .env
-    command: sh -c "./scripts/wait && ./scripts/docker-entrypoint.sh"
+    command: sh -c "./bin/wait && ./bin/docker-entrypoint.sh"
     volumes:
       - .:/usr/src/app
 
@@ -20,6 +20,16 @@ services:
       - .env
     volumes:
       - database-data:/var/lib/postgresql/data/
+
+  test_app:
+    build: .
+    depends_on:
+      - test_database
+    env_file:
+      - .env.test
+    command: sh -c "./bin/wait && ./bin/docker-entrypoint.sh"
+    volumes:
+      - .:/usr/src/app
 
   test_database:
     image: postgres:11.6-alpine

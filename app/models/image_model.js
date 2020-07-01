@@ -2,10 +2,9 @@ const {DataTypes, Model} = require('sequelize');
 const sequelize = require('../../config/database');
 const path = require('path');
 const multer = require('multer');
-const fs = require('fs');
-const data = fs.readFileSync('./config/default.json');
-const env = process.env.NODE_ENV || 'development';
-const {host, dir, link} = JSON.parse(data).upload[env];
+const host = process.env.UPLOAD_HOST;
+const dir = process.env.UPLOAD_DIR;
+const link = process.env.UPLOAD_LINK;
 
 class Image extends Model {
   static upload(req, res, imagePath) {

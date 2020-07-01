@@ -21,4 +21,4 @@ COPY . .
 
 EXPOSE 4000 9229
 
-CMD "scripts/wait && scripts/docker-entrypoint.sh"
+CMD "bin/wait && bin/docker-entrypoint.sh"

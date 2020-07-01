@@ -2,9 +2,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../app.js');
 const create = require('../factories');
-const fs = require('fs');
-const data = fs.readFileSync('./config/default.json');
-const {host, link} = JSON.parse(data).upload.test;
+const host = process.env.UPLOAD_HOST;
+const link = process.env.UPLOAD_LINK;
 require('../spec_helper');
 
 chai.use(chaiHttp);

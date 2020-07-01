@@ -87,8 +87,10 @@ router.get('/:id', async function (req, res) {
         ...result.dataValues,
         performerId: Object.keys(performer)[0].id,
         performerName: Object.values(performer)[0].name,
+        performerImageUrl: Object.values(performer)[0].imageUrl,
         venueId: Object.keys(venue)[0].id,
         venueName: Object.values(venue)[0].name,
+        venueImageUrl: Object.keys(venue)[0].imageUrl,
       });
     } else {
       res.status(404).send({error: 'Cannot find booking.'});
@@ -128,7 +130,6 @@ router.post(
       });
       res.send({id: result.id, status: result.status});
     } catch (e) {
-      console.log(e);
       return res.status(500).send({error: 'Error while creating a booking.'});
     }
   },
