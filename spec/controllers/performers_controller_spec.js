@@ -137,6 +137,7 @@ describe('performers', () => {
       res.body.should.deep.eq({
         id: expected.id,
         name: expected.name,
+        email: expected.email,
         location: expected.location,
         phone: expected.phone,
         details: expected.details,

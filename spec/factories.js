@@ -94,6 +94,7 @@ async function addImage(options) {
 async function addPerformer(options) {
   const performer = models.Performer.build({
     name: options.name || rand(),
+    email: options.email || `${rand()}@${rand()}.com`,
     userId: options.userId,
     location: options.location || rand(),
     phone: options.phone || rand(),
@@ -114,10 +115,12 @@ async function addPerformer(options) {
 async function addVenue(options) {
   return await models.Venue.create({
     name: options.name || rand(),
+    email: options.email || `${rand()}@${rand()}.com`,
     userId: options.userId,
     location: options.location || rand(),
     phone: options.phone || rand(),
     rating: options.rating || 2,
+    address: options.address || rand(),
     active:
       typeof options.active !== 'undefined' && options.active !== null
         ? options.active

@@ -72,7 +72,6 @@ router.get('/upcoming', async function (req, res) {
       }),
     );
   } catch (e) {
-    console.log(e);
     res.status(500).send({error: 'Error fetching upcoming bookings.'});
   }
 });

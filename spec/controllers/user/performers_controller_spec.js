@@ -124,10 +124,18 @@ describe('user/performers', () => {
           {
             id: performer1.id,
             name: performer1.name,
+            email: performer1.email,
+            imageUrl: '',
+            location: performer1.location,
+            rating: performer1.rating,
           },
           {
             id: performer2.id,
             name: performer2.name,
+            email: performer2.email,
+            imageUrl: '',
+            location: performer2.location,
+            rating: performer2.rating,
           },
         ]);
       });
@@ -203,6 +211,7 @@ describe('user/performers', () => {
         res.body.should.deep.eq({
           id: performer.id,
           name: performer.name,
+          email: performer.email,
           active: performer.active,
           location: performer.location,
           details: performer.details,
@@ -271,6 +280,7 @@ describe('user/performers', () => {
       it('creates a new performer', async () => {
         const options = {
           name: 'new name',
+          email: 'new email',
           location: 'new location',
           phone: 'new phone',
           details: 'new details',

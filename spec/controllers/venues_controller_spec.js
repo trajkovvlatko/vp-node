@@ -145,6 +145,8 @@ describe('venues', () => {
       res.body.should.deep.eq({
         id: expected.id,
         name: expected.name,
+        email: expected.email,
+        address: expected.address,
         location: expected.location,
         phone: expected.phone,
         details: expected.details,

@@ -8,13 +8,25 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('user/bookings', async () => {
-  let user, otherUser, performer, venue, pending;
+  let user, otherUser, performer, venue, pending, performerImage, venueImage;
 
   beforeEach(async () => {
     user = await create('users');
     otherUser = await create('users');
     performer = await create('performers', {userId: user.id});
+    performerImage = await create('images', {
+      userId: user.id,
+      ownerId: performer.id,
+      ownerType: 'Performer',
+      selected: true,
+    });
     venue = await create('venues', {userId: user.id});
+    venueImage = await create('images', {
+      userId: user.id,
+      ownerId: venue.id,
+      ownerType: 'Venue',
+      selected: true,
+    });
     pending = await create('bookings', {
       fromUserId: user.id,
       toUserId: otherUser.id,
@@ -115,6 +127,7 @@ describe('user/bookings', async () => {
           bookingDate: requested.bookingDate,
           performerName: performer.name,
           venueName: venue.name,
+          createdAt: requested.createdAt.toISOString(),
         });
       });
     });
@@ -192,8 +205,11 @@ describe('user/bookings', async () => {
             status: accepted.status,
             performerId: performer.id,
             performerName: performer.name,
+            performerImageUrl: performerImage.imageUrl,
             venueId: venue.id,
             venueName: venue.name,
+            venueAddress: venue.address,
+            venueImageUrl: venueImage.imageUrl,
           },
           {
             id: canceled.id,
@@ -201,8 +217,11 @@ describe('user/bookings', async () => {
             status: canceled.status,
             performerId: performer.id,
             performerName: performer.name,
+            performerImageUrl: performerImage.imageUrl,
             venueId: venue.id,
             venueName: venue.name,
+            venueAddress: venue.address,
+            venueImageUrl: venueImage.imageUrl,
           },
         ]);
       });
@@ -244,9 +263,7 @@ describe('user/bookings', async () => {
           requestedId: booking.requestedId,
           status: booking.status,
           bookingDate: booking.bookingDate,
-          performerId: performer.id,
           performerName: performer.name,
-          venueId: venue.id,
           venueName: venue.name,
         });
       });

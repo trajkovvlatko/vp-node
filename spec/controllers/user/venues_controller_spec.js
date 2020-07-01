@@ -112,10 +112,20 @@ describe('user/venues', () => {
         res.body.should.deep.eq([
           {
             id: venue1.id,
+            address: venue1.address,
+            email: venue1.email,
+            imageUrl: '',
+            location: venue1.location,
+            rating: venue1.rating,
             name: venue1.name,
           },
           {
             id: venue2.id,
+            address: venue2.address,
+            email: venue2.email,
+            imageUrl: '',
+            location: venue2.location,
+            rating: venue2.rating,
             name: venue2.name,
           },
         ]);
@@ -192,6 +202,8 @@ describe('user/venues', () => {
         res.body.should.deep.eq({
           id: venue.id,
           name: venue.name,
+          email: venue.email,
+          address: venue.address,
           active: venue.active,
           location: venue.location,
           details: venue.details,
@@ -248,6 +260,8 @@ describe('user/venues', () => {
       it('creates a new venue', async () => {
         const options = {
           name: 'new name',
+          email: 'new email',
+          address: 'new address',
           location: 'new location',
           phone: 'new phone',
           details: 'new details',
