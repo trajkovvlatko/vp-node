@@ -2,7 +2,7 @@ const db = require('./database');
 const models = require('../app/models');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const locations = ['Sweden', 'Denmark', 'Norway', 'Finland'];
+const locations = ['Sweden', 'Denmark', 'Norway'];
 const phones = [
   '070 441 45 62',
   '071 442 55 63',
@@ -88,54 +88,60 @@ const venueNames = [
 ];
 
 const youtubeLinks = [
-  'https://www.youtube.com/watch?v=q0hyYWKXF0Q',
-  'https://www.youtube.com/watch?v=EgBJmlPo8Xw',
-  'https://www.youtube.com/watch?v=UPOT2tgY9QQ',
-  'https://www.youtube.com/watch?v=4NRXx6U8ABQ',
-  'https://www.youtube.com/watch?v=JR49dyo-y0E',
-  'https://www.youtube.com/watch?v=cBVGlBWQzuc',
-  'https://www.youtube.com/watch?v=PmYypVozQb4',
-  'https://www.youtube.com/watch?v=jzD_yyEcp0M',
-  'https://www.youtube.com/watch?v=SmbmeOgWsqE',
-  'https://www.youtube.com/watch?v=m7Bc3pLyij0',
-  'https://www.youtube.com/watch?v=VF-r5TtlT9w',
-  'https://www.youtube.com/watch?v=7wtfhZwyrcc',
-  'https://www.youtube.com/watch?v=8EJ3zbKTWQ8',
-  'https://www.youtube.com/watch?v=w2Ov5jzm3j8',
+  'https://www.youtube.com/embed/q0hyYWKXF0Q',
+  'https://www.youtube.com/embed/EgBJmlPo8Xw',
+  'https://www.youtube.com/embed/UPOT2tgY9QQ',
+  'https://www.youtube.com/embed/4NRXx6U8ABQ',
+  'https://www.youtube.com/embed/JR49dyo-y0E',
+  'https://www.youtube.com/embed/cBVGlBWQzuc',
+  'https://www.youtube.com/embed/PmYypVozQb4',
+  'https://www.youtube.com/embed/jzD_yyEcp0M',
+  'https://www.youtube.com/embed/SmbmeOgWsqE',
+  'https://www.youtube.com/embed/m7Bc3pLyij0',
+  'https://www.youtube.com/embed/VF-r5TtlT9w',
+  'https://www.youtube.com/embed/7wtfhZwyrcc',
+  'https://www.youtube.com/embed/8EJ3zbKTWQ8',
+  'https://www.youtube.com/embed/w2Ov5jzm3j8',
 ];
 
-const addresses = [
-  'Norra Bäckebo 42, Timmernabben',
-  'Trädgårdsgatan 41, Hudiksvall',
-  'Knektvägen 29, Torna-hällestad',
-  'Korsgatan 62, StrÖmstad',
-  'Figgeberg Gårdeby 42, MÖlnbo',
-  'Änggårda Anga 69, Slite',
-  'Utveda 27, Björna',
-  'Mjölkalånga 41, Höganäs',
-  'Hökgatan 59, Vallsta',
-  'Hantverkarg 95, Ingarö',
-  'Libecksvägen 81, Sköllersta',
-  'Lillesäter Kullberg 8, Nattavaaraby',
-  'Arveliveien 223, Greåker',
-  'Høyanfjellet 17, Skien',
-  'Sorgenfrigata 208, Sellebakk',
-  'Fjellstua 46, Halden',
-  'Bekkeveien 219, Blommenholm',
-  'Brandstorpveien 43, Skjeberg',
-  'Heggeliveien 50, Blommenholm',
-  'Eilif Gulbrandsons veg 219, Heimdal',
-  'Nicolaysens vei 222, Bergen',
-  'Storgata 65, Mo i rana',
-  'Konglevegen 178, Lillehammer',
-  'Tømmeråsen 175, Paradis',
-  'Eskelundsvej 85, København V',
-  'Skolegyden 47, Sjælland',
-  'Søndre Havnevej 41, Barrit',
-  'Askelund 64, Bogø By',
-  'Sønderstræde 73, København V',
-  'Odensevej 76, Gadbjerg',
-];
+const addresses = {
+  Sweden: [
+    'Norra Bäckebo 42, Timmernabben',
+    'Trädgårdsgatan 41, Hudiksvall',
+    'Knektvägen 29, Torna-hällestad',
+    'Korsgatan 62, StrÖmstad',
+    'Figgeberg Gårdeby 42, MÖlnbo',
+    'Änggårda Anga 69, Slite',
+    'Utveda 27, Björna',
+    'Mjölkalånga 41, Höganäs',
+    'Hökgatan 59, Vallsta',
+    'Hantverkarg 95, Ingarö',
+  ],
+  Norway: [
+    'Høyanfjellet 17, Skien',
+    'Sorgenfrigata 208, Sellebakk',
+    'Fjellstua 46, Halden',
+    'Bekkeveien 219, Blommenholm',
+    'Brandstorpveien 43, Skjeberg',
+    'Heggeliveien 50, Blommenholm',
+    'Eilif Gulbrandsons veg 219, Heimdal',
+    'Nicolaysens vei 222, Bergen',
+    'Storgata 65, Mo i rana',
+    'Tømmeråsen 175, Paradis',
+  ],
+  Denmark: [
+    'Eskelundsvej 85, København V',
+    'Skolegyden 47, Sjælland',
+    'Søndre Havnevej 41, Barrit',
+    'Askelund 64, Bogø By',
+    'Sønderstræde 73, København V',
+    'Odensevej 76, Gadbjerg',
+    'Libecksvej 81, København',
+    'Lillesæter Kullberg 8, Barrit',
+    'Arvelivej 223, Gadbjerg',
+    'Tømmeråsen 175, København',
+  ],
+};
 
 function randomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -211,12 +217,13 @@ async function addPerformer(user) {
 
 async function addVenue(user) {
   const i = rand();
+  const location = randomElement(locations);
   const venue = await user.createVenue({
     name: venueNames.pop(),
-    location: randomElement(locations),
+    location: location,
     phone: randomElement(phones),
     email: `email-${i}@venue.com`,
-    address: addresses.pop(),
+    address: randomElement(addresses[location]),
     details: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.`,
     website: `http://venue-website-${i}.asdf`,
     rating: randomElement([3, 4, 5]),

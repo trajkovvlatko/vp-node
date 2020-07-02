@@ -170,8 +170,7 @@ class Performer extends Model {
         const selectedImage = await Image.findByPk(selectedId);
         if (selectedImage) {
           await Image.update({selected: false}, {where: finder});
-          selectedImage.selected = true;
-          await selectedImage.save();
+          await Image.update({selected: true}, {where: {id: selectedImage.id}});
         }
       }
 

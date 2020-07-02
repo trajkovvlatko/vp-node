@@ -266,8 +266,8 @@ describe('user/bookings', async () => {
           performerName: performer.name,
           performerImageUrl: performerImage.imageUrl,
           venueName: venue.name,
+          venueImageUrl: venueImage.imageUrl,
         });
-        // TODO: Check why `venueImageUrl: venueImage.imageUrl` is not included
       });
 
       it("doesn't return other user's bookings", async () => {

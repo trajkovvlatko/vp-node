@@ -90,7 +90,7 @@ router.get('/:id', async function (req, res) {
         performerImageUrl: Object.values(performer)[0].imageUrl,
         venueId: Object.keys(venue)[0].id,
         venueName: Object.values(venue)[0].name,
-        venueImageUrl: Object.keys(venue)[0].imageUrl,
+        venueImageUrl: Object.values(venue)[0].imageUrl,
       });
     } else {
       res.status(404).send({error: 'Cannot find booking.'});
