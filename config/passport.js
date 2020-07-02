@@ -5,8 +5,7 @@ const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-const fs = require('fs');
-const secret = JSON.parse(fs.readFileSync('./config/secrets.json')).JWT.secret;
+const secret = process.env.JWT_SECRET;
 const {User} = require('../app/models');
 
 passport.use(

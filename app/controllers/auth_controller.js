@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const fs = require('fs');
-const secret = JSON.parse(fs.readFileSync('./config/secrets.json')).JWT.secret;
+const secret = process.env.JWT_SECRET;
 const User = require('../models/user_model.js');
 
 /* POST login. */
